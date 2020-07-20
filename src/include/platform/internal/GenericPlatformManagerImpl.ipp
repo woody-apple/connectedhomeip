@@ -33,14 +33,12 @@
 #include <platform/internal/GenericPlatformManagerImpl.h>
 
 #include <support/CodeUtils.h>
+#include <support/CHIPMem.h>
 #include <support/logging/CHIPLogging.h>
 
 namespace chip {
 namespace DeviceLayer {
 namespace Internal {
-
-// Fully instantiate the generic implementation class in whatever compilation unit includes this file.
-template class GenericPlatformManagerImpl<PlatformManagerImpl>;
 
 extern CHIP_ERROR InitEntropy();
 
@@ -123,7 +121,7 @@ CHIP_ERROR GenericPlatformManagerImpl<ImplClass>::_AddEventHandler(PlatformManag
         }
     }
 
-    eventHandler = (AppEventHandler *) malloc(sizeof(AppEventHandler));
+    eventHandler = (AppEventHandler *) chip::Platform::MemoryAlloc(sizeof(AppEventHandler));
     VerifyOrExit(eventHandler != NULL, err = CHIP_ERROR_NO_MEMORY);
 
     eventHandler->Next    = mAppEventHandlerList;
@@ -148,7 +146,7 @@ void GenericPlatformManagerImpl<ImplClass>::_RemoveEventHandler(PlatformManager:
         if (eventHandler->Handler == handler && eventHandler->Arg == arg)
         {
             *eventHandlerIndirectPtr = eventHandler->Next;
-            free(eventHandler);
+            chip::Platform::MemoryFree(eventHandler);
         }
         else
         {
@@ -269,6 +267,9 @@ void GenericPlatformManagerImpl<ImplClass>::HandleMessageLayerActivityChanged(bo
 #endif
     }
 }
+
+// Fully instantiate the generic implementation class in whatever compilation unit includes this file.
+template class GenericPlatformManagerImpl<PlatformManagerImpl>;
 
 } // namespace Internal
 } // namespace DeviceLayer

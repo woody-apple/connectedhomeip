@@ -31,17 +31,19 @@
 #include <platform/internal/GenericConfigurationManagerImpl.h>
 #include <support/Base64.h>
 #include <support/CodeUtils.h>
+#include <support/CHIPMem.h>
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ThreadStackManager.h>
 #endif
 
+#if CHIP_DEVICE_CONFIG_LOG_PROVISIONING_HASH
+#include <crypto/CHIPCryptoPAL.h>
+#endif
+
 namespace chip {
 namespace DeviceLayer {
 namespace Internal {
-
-// Fully instantiate the generic implementation class in whatever compilation unit includes this file.
-template class GenericConfigurationManagerImpl<ConfigurationManagerImpl>;
 
 template <class ImplClass>
 CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_Init()
@@ -97,7 +99,7 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_ConfigureChipStack()
 
 #if CHIP_DEVICE_CONFIG_LOG_PROVISIONING_HASH
     {
-        uint8_t provHash[Platform::Security::SHA256::kHashLength];
+        uint8_t provHash[chip::Crypto::kSHA256_Hash_Length];
         char provHashBase64[BASE64_ENCODED_LEN(sizeof(provHash)) + 1];
         err = Impl()->_ComputeProvisioningHash(provHash, sizeof(provHash));
         if (err == CHIP_NO_ERROR)
@@ -824,15 +826,14 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_ComputeProvisioningHash(
     CHIP_ERROR err = CHIP_NO_ERROR;
 
 #if CHIP_DEVICE_CONFIG_LOG_PROVISIONING_HASH
-    using HashAlgo = Platform::Security::SHA256;
+    using HashAlgo = chip::Crypto::Hash_SHA256_stream;
 
-    CHIP_ERROR err = CHIP_NO_ERROR;
     HashAlgo hash;
     uint8_t * dataBuf = NULL;
     size_t dataBufSize;
     constexpr uint16_t kLenFieldLen = 4; // 4 hex characters
 
-    VerifyOrExit(hashBufSize >= HashAlgo::kHashLength, err = CHIP_ERROR_BUFFER_TOO_SMALL);
+    VerifyOrExit(hashBufSize >= chip::Crypto::kSHA256_Hash_Length, err = CHIP_ERROR_BUFFER_TOO_SMALL);
 
     // Compute a hash of the device's provisioning data.  The generated hash value confirms to the form
     // described in the CHIP Chip: Factory Provisioning Specification.
@@ -881,7 +882,7 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_ComputeProvisioningHash(
         // Create a temporary buffer to hold the certificate.  (This will also be used for
         // the private key).
         dataBufSize = certLen;
-        dataBuf     = (uint8_t *) Platform::Security::MemoryAlloc(dataBufSize);
+        dataBuf     = (uint8_t *) chip::Platform::MemoryAlloc(dataBufSize);
         VerifyOrExit(dataBuf != NULL, err = CHIP_ERROR_NO_MEMORY);
 
         // Read the certificate.
@@ -902,10 +903,10 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_ComputeProvisioningHash(
         // (This will also be used for the private key).
         if (certsLen > dataBufSize)
         {
-            Platform::Security::MemoryFree(dataBuf);
+            chip::Platform::MemoryFree(dataBuf);
 
             dataBufSize = certsLen;
-            dataBuf     = (uint8_t *) Platform::Security::MemoryAlloc(dataBufSize);
+            dataBuf     = (uint8_t *) chip::Platform::MemoryAlloc(dataBufSize);
             VerifyOrExit(dataBuf != NULL, err = CHIP_ERROR_NO_MEMORY);
         }
 
@@ -954,8 +955,8 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_ComputeProvisioningHash(
 exit:
     if (dataBuf != NULL)
     {
-        Crypto::ClearSecretData(dataBuf, dataBufSize);
-        Platform::Security::MemoryFree(dataBuf);
+        chip::Crypto::ClearSecretData(dataBuf, dataBufSize);
+        chip::Platform::MemoryFree(dataBuf);
     }
 #endif // CHIP_DEVICE_CONFIG_LOG_PROVISIONING_HASH
 
@@ -1049,6 +1050,9 @@ void GenericConfigurationManagerImpl<ImplClass>::LogDeviceConfig()
 }
 
 #endif // CHIP_PROGRESS_LOGGING
+
+// Fully instantiate the generic implementation class in whatever compilation unit includes this file.
+template class GenericConfigurationManagerImpl<ConfigurationManagerImpl>;
 
 } // namespace Internal
 } // namespace DeviceLayer

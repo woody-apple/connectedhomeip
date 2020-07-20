@@ -1,0 +1,26 @@
+name: Bloat Check
+on:
+    schedule:
+        - cron: '*/5 * * * *'
+
+
+jobs:
+    pull_request_update:
+        name: Report on pull requests
+
+        runs-on: ubuntu-latest
+
+        container:
+            image: connectedhomeip/chip-build:0.3.0
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Report
+              run: |
+                  scripts/helpers/bloat_check.py                        \
+                       --github-repository project-chip/connectedhomeip \
+                       --github-api-token "${{ secrets.GITHUB_TOKEN }}"
+
+
