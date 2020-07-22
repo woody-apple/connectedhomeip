@@ -17,11 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern "C" {
-#include "chip-zcl/chip-zcl-buffer.h"
-#include "chip-zcl/chip-zcl.h"
-#include "gen/gen-command-id.h"
-} // extern "C"
+#include "chip-zcl/chip-zcl-zpro-codec.h"
 
 #import "CHIPDeviceController.h"
 #import "CHIPError.h"
@@ -104,6 +100,12 @@ constexpr chip::NodeId kRemoteDeviceId = 12344321;
         }
     }
     return self;
+}
+
+static void onConnected(
+    chip::DeviceController::ChipDeviceController * cppController, chip::Transport::PeerConnectionState * state, void * appReqState)
+{
+    CHIP_LOG_ERROR("Connected");
 }
 
 static void doKeyExchange(
@@ -208,8 +210,33 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
     }
 
     // Start the IO pump
-    [self _serviceEvents];
+    dispatch_async(_chipSelectQueue, ^() {
+        self.cppController->ServiceEvents();
+    });
+    return YES;
+}
 
+- (BOOL)connect:(NSString *)deviceName error:(NSError * __autoreleasing *)error
+{
+    CHIP_ERROR err = CHIP_NO_ERROR;
+
+    [self.lock lock];
+    err = self.cppController->ConnectDevice(
+        kRemoteDeviceId, [deviceName UTF8String], (__bridge void *) self, onConnected, onMessageReceived, onInternalError);
+    [self.lock unlock];
+
+    if (err != CHIP_NO_ERROR) {
+        CHIP_LOG_ERROR("Error(%d): %@, connect failed", err, [CHIPError errorForCHIPErrorCode:err]);
+        if (error) {
+            *error = [CHIPError errorForCHIPErrorCode:err];
+        }
+        return NO;
+    }
+
+    // Start the IO pump
+    dispatch_async(_chipSelectQueue, ^() {
+        self.cppController->ServiceEvents();
+    });
     return YES;
 }
 
@@ -261,7 +288,7 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
     return YES;
 }
 
-- (BOOL)sendCHIPCommand:(ChipZclClusterId_t)cluster command:(ChipZclCommandId_t)command
+- (BOOL)sendCHIPCommand:(uint32_t (^)(chip::System::PacketBuffer *, uint16_t))encodeCommandBlock
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
     [self.lock lock];
@@ -269,24 +296,8 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
     static const size_t bufferSize = 1024;
     chip::System::PacketBuffer * buffer = chip::System::PacketBuffer::NewWithAvailableSize(bufferSize);
 
-    ChipZclBuffer_t * zcl_buffer = (ChipZclBuffer_t *) buffer;
-    ChipZclCommandContext_t ctx = {
-        1, // endpointId
-        cluster, // clusterId
-        true, // clusterSpecific
-        false, // mfgSpecific
-        0, // mfgCode
-        command, // commandId
-        ZCL_DIRECTION_CLIENT_TO_SERVER, // direction
-        0, // payloadStartIndex
-        nullptr, // request
-        nullptr // response
-    };
-    chipZclEncodeZclHeader(zcl_buffer, &ctx);
-
-    const size_t data_len = chipZclBufferDataLength(zcl_buffer);
-
-    buffer->SetDataLength(data_len);
+    uint32_t dataLength = encodeCommandBlock(buffer, (uint16_t) bufferSize);
+    buffer->SetDataLength(dataLength);
 
     err = self.cppController->SendMessage((__bridge void *) self, buffer);
     [self.lock unlock];
@@ -295,6 +306,30 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
         return NO;
     }
     return YES;
+}
+
+- (BOOL)sendOnCommand
+{
+    return [self sendCHIPCommand:^(chip::System::PacketBuffer * buffer, uint16_t bufferSize) {
+        // Hardcode endpoint to 1 for now
+        return encodeOnCommand(buffer->Start(), bufferSize, 1);
+    }];
+}
+
+- (BOOL)sendOffCommand
+{
+    return [self sendCHIPCommand:^(chip::System::PacketBuffer * buffer, uint16_t bufferSize) {
+        // Hardcode endpoint to 1 for now
+        return encodeOffCommand(buffer->Start(), bufferSize, 1);
+    }];
+}
+
+- (BOOL)sendToggleCommand
+{
+    return [self sendCHIPCommand:^(chip::System::PacketBuffer * buffer, uint16_t bufferSize) {
+        // Hardcode endpoint to 1 for now
+        return encodeToggleCommand(buffer->Start(), bufferSize, 1);
+    }];
 }
 
 - (BOOL)disconnect:(NSError * __autoreleasing *)error
@@ -327,31 +362,6 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
     return isConnected ? YES : NO;
 }
 
-// TODO kill this with fire (NW might implicitly replace this?)
-- (void)_serviceEvents
-{
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(self.chipSelectQueue, ^() {
-        typeof(self) strongSelf = weakSelf;
-        if (!strongSelf) {
-            return;
-        }
-
-        [self.lock lock];
-
-        if (!self.cppController->IsConnected()) {
-            [self.lock unlock];
-            // cancel the loop, it'll restart the next time a connection is established
-            return;
-        }
-
-        self.cppController->ServiceEvents();
-        [self.lock unlock];
-
-        [self _serviceEvents];
-    });
-}
-
 - (void)registerCallbacks:appCallbackQueue onMessage:(ControllerOnMessageBlock)onMessage onError:(ControllerOnErrorBlock)onError
 {
     self.appCallbackQueue = appCallbackQueue;
@@ -360,11 +370,3 @@ static void onInternalError(chip::DeviceController::ChipDeviceController * devic
 }
 
 @end
-
-extern "C" {
-// We have to have this empty callback, because the ZCL code links against it.
-void chipZclPostAttributeChangeCallback(uint8_t endpoint, ChipZclClusterId clusterId, ChipZclAttributeId attributeId, uint8_t mask,
-    uint16_t manufacturerCode, uint8_t type, uint8_t size, uint8_t * value)
-{
-}
-} // extern "C"

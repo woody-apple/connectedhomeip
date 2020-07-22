@@ -32,6 +32,7 @@
 #include <core/CHIPCore.h>
 #include <core/CHIPTLV.h>
 #include <support/DLLUtil.h>
+#include <transport/BLE.h>
 #include <transport/SecureSessionMgr.h>
 #include <transport/UDP.h>
 
@@ -62,6 +63,21 @@ public:
     CHIP_ERROR Shutdown();
 
     // ----- Connection Management -----
+    /**
+     * @brief
+     *   Connect to a CHIP device with a given name for Rendezvous
+     *
+     * @param[in] remoteDeviceId        The remote device Id.
+     * @param[in] deviceName            The name of the requested Device
+     * @param[in] appReqState           Application specific context to be passed back when a message is received or on error
+     * @param[in] onConnected           Callback for when the connection is established
+     * @param[in] onMessageReceived     Callback for when a message is received
+     * @param[in] onError               Callback for when an error occurs
+     * @return CHIP_ERROR               The connection status
+     */
+    CHIP_ERROR ConnectDevice(NodeId remoteDeviceId, const char * deviceName, void * appReqState, NewConnectionHandler onConnected,
+                             MessageReceiveHandler onMessageReceived, ErrorHandler onError);
+
     /**
      * @brief
      *   Connect to a CHIP device at a given address and an optional port
@@ -142,21 +158,18 @@ public:
     // ----- IO -----
     /**
      * @brief
-     *   Allow the CHIP Stack to process any pending events
-     *   This can be called in an event handler loop to tigger callbacks within the CHIP stack
-     *   Note - Some platforms might need to implement their own event handler
+     * Start the event loop task within the CHIP stack
+     * @return CHIP_ERROR   The return status
      */
-    void ServiceEvents();
+    CHIP_ERROR ServiceEvents();
 
     /**
      * @brief
-     *   Get pointers to the Layers ownerd by the controller
-     *
-     * @param[out] systemLayer   A pointer to the SystemLayer object
-     * @param[out] inetLayer     A pointer to the InetLayer object
-     * @return CHIP_ERROR   Indicates whether the layers were populated correctly
+     *   Allow the CHIP Stack to process any pending events
+     *   This can be called in an event handler loop to tigger callbacks within the CHIP stack
+     * @return CHIP_ERROR   The return status
      */
-    CHIP_ERROR GetLayers(Layer ** systemLayer, InetLayer ** inetLayer);
+    CHIP_ERROR ServiceEventSignal();
 
     virtual void OnMessageReceived(const MessageHeader & header, Transport::PeerConnectionState * state,
                                    System::PacketBuffer * msgBuf, SecureSessionMgrBase * mgr);
@@ -164,6 +177,10 @@ public:
     virtual void OnNewConnection(Transport::PeerConnectionState * state, SecureSessionMgrBase * mgr);
 
 private:
+#if CONFIG_NETWORK_LAYER_BLE
+    friend class Transport::BLE;
+#endif
+
     enum
     {
         kState_NotInitialized = 0,
@@ -177,10 +194,8 @@ private:
         kConnectionState_SecureConnected = 2,
     };
 
-    System::Layer * mSystemLayer;
-    Inet::InetLayer * mInetLayer;
-
     SecureSessionMgr<Transport::UDP> * mSessionManager;
+    Transport::Base * mUnsecuredTransport;
 
     ConnectionState mConState;
     void * mAppReqState;

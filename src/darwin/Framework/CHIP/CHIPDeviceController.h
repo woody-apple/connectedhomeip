@@ -39,11 +39,12 @@ typedef void (^ControllerOnErrorBlock)(NSError * error);
       local_key:(NSData *)local_key
        peer_key:(NSData *)peer_key
           error:(NSError * __autoreleasing *)error;
+- (BOOL)connect:(NSString *)deviceName error:(NSError * __autoreleasing *)error;
 - (nullable AddressInfo *)getAddressInfo;
 - (BOOL)sendMessage:(NSData *)message error:(NSError * __autoreleasing *)error;
-// We can't include definitions of ChipZclClusterId_t and ChipZclCommandId_t
-// here, but they're just integers, so pass them that way.
-- (BOOL)sendCHIPCommand:(uint16_t)cluster command:(uint16_t)command;
+- (BOOL)sendOnCommand;
+- (BOOL)sendOffCommand;
+- (BOOL)sendToggleCommand;
 - (BOOL)disconnect:(NSError * __autoreleasing *)error;
 - (BOOL)isConnected;
 
