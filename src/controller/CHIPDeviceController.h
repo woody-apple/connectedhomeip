@@ -194,8 +194,11 @@ private:
         kConnectionState_SecureConnected = 2,
     };
 
+    System::Layer * mSystemLayer;
+    Inet::InetLayer * mInetLayer;
+
     SecureSessionMgr<Transport::UDP> * mSessionManager;
-    Transport::Base * mUnsecuredTransport;
+    Transport::Base * mUnsecuredTransport = NULL;
 
     ConnectionState mConState;
     void * mAppReqState;
