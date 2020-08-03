@@ -21,8 +21,6 @@
 
 #include "Display.h"
 
-#if CONFIG_HAVE_DISPLAY
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -37,7 +35,5 @@ private:
     int mVLED;
     bool mState;
 };
-
-#endif // CONFIG_HAVE_DISPLAY
 
 #endif // _BLUETOOTH_WIDGET_H

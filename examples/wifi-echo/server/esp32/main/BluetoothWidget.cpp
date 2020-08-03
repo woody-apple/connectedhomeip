@@ -25,8 +25,6 @@
 
 #include "ScreenManager.h"
 
-#if CONFIG_HAVE_DISPLAY
-
 #include "BluetoothWidget.h"
 
 #include "esp_log.h"
@@ -36,7 +34,10 @@ extern const char * TAG;
 
 void BluetoothWidget::Init()
 {
-    mVLED  = -1;
+#if CONFIG_HAVE_DISPLAY
+    mVLED = -1;
+#endif // CONFIG_HAVE_DISPLAY
+
     mState = false;
 }
 
@@ -46,13 +47,16 @@ void BluetoothWidget::Set(bool state)
     mState           = state;
     if (stateChange)
     {
+#if CONFIG_HAVE_DISPLAY
         if (mVLED != -1)
         {
             ScreenManager::SetVLED(mVLED, mState);
         }
+#endif // CONFIG_HAVE_DISPLAY
     }
 }
 
+#if CONFIG_HAVE_DISPLAY
 void BluetoothWidget::SetVLED(int id)
 {
     mVLED = id;
@@ -61,5 +65,4 @@ void BluetoothWidget::SetVLED(int id)
         ScreenManager::SetVLED(mVLED, mState);
     }
 }
-
 #endif // CONFIG_HAVE_DISPLAY

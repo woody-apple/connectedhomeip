@@ -31,6 +31,7 @@ if (device_platform != "none") {
     configs = [ "${chip_root}/src:includes" ]
 
     defines = []
+    libs = []
     if (chip_device_project_config_include != "") {
       defines += [ "CHIP_DEVICE_PROJECT_CONFIG_INCLUDE=${chip_device_project_config_include}" ]
     }
@@ -38,6 +39,20 @@ if (device_platform != "none") {
       defines += [ "CHIP_DEVICE_PLATFORM_CONFIG_INCLUDE=${chip_device_platform_config_include}" ]
     }
 
+    if (device_platform == "darwin") {
+      frameworks = [
+        "CoreFoundation.framework",
+        "CoreBluetooth.framework",
+        "Foundation.framework",
+      ]
+      defines += [
+        "CONFIG_DEVICE_LAYER=1",
+        "CHIP_DEVICE_LAYER_TARGET_DARWIN=1",
+        "CHIP_DEVICE_LAYER_TARGET=Darwin",
+      ]
+    } else {
+      defines += [ "CHIP_DEVICE_LAYER_TARGET_DARWIN=0" ]
+    }
     if (device_platform == "linux") {
       defines += [
         "CONFIG_DEVICE_LAYER=1",
@@ -55,6 +70,9 @@ if (device_platform != "none") {
       ]
     } else {
       defines += [ "CHIP_DEVICE_LAYER_TARGET_NRF5=0" ]
+    }
+    if (chip_enable_openthread) {
+      defines += [ "CHIP_DEVICE_CONFIG_ENABLE_THREAD=1" ]
     }
   }
 
@@ -113,11 +131,32 @@ if (device_platform != "none") {
 
     public_configs = [ ":platform_config" ]
 
-    if (chip_enable_openthread) {
-      sources += [ "OpenThread/OpenThreadUtils.cpp" ]
-    }
-
-    if (device_platform == "linux") {
+    if (device_platform == "darwin") {
+      sources += [
+        "Darwin/BLEManagerImpl.cpp",
+        "Darwin/BLEManagerImpl.h",
+        "Darwin/BleApplicationDelegate.h",
+        "Darwin/BleApplicationDelegateImpl.mm",
+        "Darwin/BleConnectionDelegate.h",
+        "Darwin/BleConnectionDelegateImpl.mm",
+        "Darwin/BlePlatformConfig.h",
+        "Darwin/BlePlatformDelegate.h",
+        "Darwin/BlePlatformDelegateImpl.mm",
+        "Darwin/CHIPDevicePlatformConfig.h",
+        "Darwin/CHIPDevicePlatformEvent.h",
+        "Darwin/CHIPPlatformConfig.h",
+        "Darwin/ConfigurationManagerImpl.cpp",
+        "Darwin/ConfigurationManagerImpl.h",
+        "Darwin/ConnectivityManagerImpl.cpp",
+        "Darwin/ConnectivityManagerImpl.h",
+        "Darwin/InetPlatformConfig.h",
+        "Darwin/PlatformManagerImpl.cpp",
+        "Darwin/PlatformManagerImpl.h",
+        "Darwin/PosixConfig.cpp",
+        "Darwin/PosixConfig.h",
+        "Darwin/SystemPlatformConfig.h",
+      ]
+    } else if (device_platform == "linux") {
       sources += [
         "Linux/BLEManagerImpl.cpp",
         "Linux/BLEManagerImpl.h",
@@ -148,6 +187,7 @@ if (device_platform != "none") {
           "Linux/ThreadStackManagerImpl.cpp",
           "Linux/ThreadStackManagerImpl.h",
         ]
+        public_deps += [ "${chip_root}/third_party/ot-br-posix:ot_br_client" ]
       }
 
       public_deps += [ "${chip_root}/third_party/inipp" ]
@@ -179,6 +219,7 @@ if (device_platform != "none") {
 
       if (chip_enable_openthread) {
         sources += [
+          "OpenThread/OpenThreadUtils.cpp",
           "nRF5/ThreadStackManagerImpl.cpp",
           "nRF5/ThreadStackManagerImpl.h",
         ]

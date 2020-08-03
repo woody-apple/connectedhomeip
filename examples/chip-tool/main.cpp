@@ -124,7 +124,7 @@ void ShowUsage(const char * executable)
             "Usage: \n"
             "  %s command [params]\n"
             "  Supported commands and their parameters:\n"
-            "    echo-ble device-ble-name\n"
+            "    echo-ble discriminator setupPINCode\n"
             "    echo device-ip-address device-port\n"
             "    off device-ip-address device-port endpoint-id\n"
             "    on device-ip-address device-port endpoint-id\n"
@@ -169,7 +169,7 @@ bool DetermineCommand(int argc, char * argv[], Command * command)
     if (EqualsLiteral(argv[1], "toggle"))
     {
         *command = Command::Toggle;
-        return argc == 4;
+        return argc == 5;
     }
 
     if (EqualsLiteral(argv[1], "echo"))
@@ -181,7 +181,7 @@ bool DetermineCommand(int argc, char * argv[], Command * command)
     if (EqualsLiteral(argv[1], "echo-ble"))
     {
         *command = Command::EchoBle;
-        return argc == 3;
+        return argc == 4;
     }
 
     fprintf(stderr, "Unknown command: %s\n", argv[3]);
@@ -192,13 +192,18 @@ struct CommandArgs
 {
     IPAddress hostAddr;
     uint16_t port;
-    char * name;
+    uint16_t discriminator;
+    uint32_t setupPINCode;
     uint8_t endpointId;
 };
 
 bool DetermineArgsBle(char * argv[], CommandArgs * commandArgs)
 {
-    commandArgs->name = argv[2];
+    std::string discriminator_str(argv[2]);
+    commandArgs->discriminator = std::stoi(discriminator_str);
+
+    std::string setup_pin_code_str(argv[3]);
+    commandArgs->setupPINCode = std::stoi(setup_pin_code_str);
     return true;
 }
 
@@ -289,9 +294,11 @@ void DoEcho(DeviceController::ChipDeviceController * controller, const char * id
     }
 }
 
-void DoEchoBle(DeviceController::ChipDeviceController * controller, const std::string & name)
+void DoEchoBle(DeviceController::ChipDeviceController * controller, const uint16_t discriminator)
 {
-    DoEcho(controller, name.c_str());
+    char name[4];
+    snprintf(name, sizeof(name), "%u", discriminator);
+    DoEcho(controller, "");
 }
 
 void DoEchoIP(DeviceController::ChipDeviceController * controller, const IPAddress & hostAddr, uint16_t port)
@@ -325,7 +332,7 @@ void DoOnOff(DeviceController::ChipDeviceController * controller, Command comman
         dataLength = encodeToggleCommand(buffer->Start(), bufferSize, endpoint);
         break;
     default:
-        fprintf(stderr, "Unknown command: %d\n", command);
+        fprintf(stderr, "Unknown command: %d\n", int(command));
         return;
     }
     buffer->SetDataLength(dataLength);
@@ -350,9 +357,10 @@ CHIP_ERROR ExecuteCommand(DeviceController::ChipDeviceController * controller, C
     switch (command)
     {
     case Command::EchoBle:
-        err = controller->ConnectDevice(kRemoteDeviceId, commandArgs.name, NULL, OnConnect, OnMessage, OnError);
+        err = controller->ConnectDevice(kRemoteDeviceId, commandArgs.discriminator, commandArgs.setupPINCode, NULL, OnConnect,
+                                        OnMessage, OnError);
         VerifyOrExit(err == CHIP_NO_ERROR, fprintf(stderr, "Failed to connect to the device"));
-        DoEchoBle(controller, commandArgs.name);
+        DoEchoBle(controller, commandArgs.discriminator);
         break;
 
     case Command::Echo:

@@ -551,14 +551,14 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_GetSetupPinCode(uint32_t
     CHIP_ERROR err;
 
     err = Impl()->ReadConfigValue(ImplClass::kConfigKey_SetupPinCode, setupPinCode);
-#ifdef CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE
-    if (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE != 0 && err == CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND)
+#if defined(CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE) && CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE
+    if (err == CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND)
     {
         setupPinCode = CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE;
-        ChipLogProgress(DeviceLayer, "Pairing code not found; using default: %08u", CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE);
+        ChipLogProgress(DeviceLayer, "Setup PIN code not found; using default: %08u", CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE);
         err = CHIP_NO_ERROR;
     }
-#endif // CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE
+#endif // defined(CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE) && CHIP_DEVICE_CONFIG_USE_TEST_SETUP_PIN_CODE
     SuccessOrExit(err);
 
 exit:
@@ -577,15 +577,15 @@ CHIP_ERROR GenericConfigurationManagerImpl<ImplClass>::_GetSetupDiscriminator(ui
     CHIP_ERROR err;
 
     err = Impl()->ReadConfigValue(ImplClass::kConfigKey_SetupDiscriminator, setupDiscriminator);
-#ifdef CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR
-    if (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR != 0 && err == CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR)
+#if defined(CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR) && CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR
+    if (err == CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND)
     {
         setupDiscriminator = CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR;
-        ChipLogProgress(DeviceLayer, "Pairing code not found; using default: %03x",
+        ChipLogProgress(DeviceLayer, "Setup PIN discriminator not found; using default: %03x",
                         CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR);
         err = CHIP_NO_ERROR;
     }
-#endif // CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR
+#endif // defined(CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR) && CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR
     SuccessOrExit(err);
 
 exit:
@@ -786,7 +786,7 @@ GenericConfigurationManagerImpl<ImplClass>::_GetBLEDeviceIdentificationInfo(Ble:
 {
     CHIP_ERROR err;
     uint16_t id;
-    uint16_t discriminator = 0x0ABC; // FIXME: use discriminator from factory data
+    uint32_t discriminator;
 
     deviceIdInfo.Init();
 
@@ -797,6 +797,9 @@ GenericConfigurationManagerImpl<ImplClass>::_GetBLEDeviceIdentificationInfo(Ble:
     err = Impl()->_GetProductId(id);
     SuccessOrExit(err);
     deviceIdInfo.SetProductId(id);
+
+    err = Impl()->_GetSetupDiscriminator(discriminator);
+    SuccessOrExit(err);
     deviceIdInfo.SetDeviceDiscriminator(discriminator);
 
     deviceIdInfo.PairingStatus = Impl()->_IsPairedToAccount() ? Ble::ChipBLEDeviceIdentificationInfo::kPairingStatus_Paired
