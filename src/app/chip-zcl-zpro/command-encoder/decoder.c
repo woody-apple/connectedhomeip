@@ -26,73 +26,73 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: Make this return a CHIP_ERROR
-bool extractApsFrame(void * buffer, uint32_t buf_length, EmberApsFrame * outApsFrame)
+uint16_t extractApsFrame(uint8_t * buffer, uint32_t buf_length, EmberApsFrame * outApsFrame)
 {
+
     if (buffer == NULL || buf_length == 0 || outApsFrame == NULL)
     {
-        return false;
+        return 0;
     }
     // Skip first byte, because that's the always-0 frame control.
     uint8_t nextByteToRead = 1;
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->profileId, buffer + nextByteToRead, sizeof(outApsFrame->profileId));
     nextByteToRead += sizeof(outApsFrame->profileId);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->clusterId, buffer + nextByteToRead, sizeof(outApsFrame->clusterId));
     nextByteToRead += sizeof(outApsFrame->clusterId);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->sourceEndpoint, buffer + nextByteToRead, sizeof(outApsFrame->sourceEndpoint));
     nextByteToRead += sizeof(outApsFrame->sourceEndpoint);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->destinationEndpoint, buffer + nextByteToRead, sizeof(outApsFrame->destinationEndpoint));
     nextByteToRead += sizeof(outApsFrame->destinationEndpoint);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->options, buffer + nextByteToRead, sizeof(outApsFrame->options));
     nextByteToRead += sizeof(outApsFrame->options);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->groupId, buffer + nextByteToRead, sizeof(outApsFrame->groupId));
     nextByteToRead += sizeof(outApsFrame->groupId);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->sequence, buffer + nextByteToRead, sizeof(outApsFrame->sequence));
     nextByteToRead += sizeof(outApsFrame->sequence);
 
     if (nextByteToRead >= buf_length)
     {
-        return false;
+        return 0;
     }
     memcpy(&outApsFrame->radius, buffer + nextByteToRead, sizeof(outApsFrame->radius));
     nextByteToRead += sizeof(outApsFrame->radius);
 
-    return true;
+    return nextByteToRead;
 }
 
 void printApsFrame(EmberApsFrame * frame)
@@ -105,14 +105,14 @@ void printApsFrame(EmberApsFrame * frame)
 
 uint16_t extractMessage(uint8_t * buffer, uint16_t buffer_length, uint8_t ** msg)
 {
-    // buffer is at least 16 bytes long and the msg is 3 bytes long and 13 bytes offset into the buffer.
-    // This is hard coded now till we refactor encoder.c to not have this be hardcoded.
+    // The message starts after the EmberApsFrame.
     uint16_t result = 0;
-    if (msg && buffer_length >= 16)
+    EmberApsFrame frame;
+    uint16_t apsFrameSize = extractApsFrame(buffer, buffer_length, &frame);
+    if (msg && apsFrameSize > 0)
     {
-        // These are hard coded for now.
-        *msg   = buffer + 13;
-        result = 3;
+        *msg   = buffer + apsFrameSize;
+        result = buffer_length - apsFrameSize;
     }
     else if (msg)
     {

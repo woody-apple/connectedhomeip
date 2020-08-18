@@ -17,6 +17,12 @@ import("//build_overrides/pigweed.gni")
 
 import("//build/config/compiler/compiler.gni")
 
+declare_args() {
+  # Enable -Werror. This can be disabled if using a different compiler
+  # with unfixed or unsupported wanings.
+  treat_warnings_as_errors = true
+}
+
 if (current_cpu == "arm") {
   import("//build/config/arm.gni")
 }
@@ -90,6 +96,7 @@ config("optimize_default") {
 config("disabled_warnings") {
   cflags = [
     "-Wno-deprecated-declarations",
+    "-Wno-unknown-warning-option",
   ]
   cflags_cc = [
     "-Wno-non-virtual-dtor",
@@ -100,16 +107,23 @@ config("disabled_warnings") {
       "-Wno-psabi",
       "-Wno-cast-function-type",
       "-Wno-maybe-uninitialized",
-      "-Wno-unknown-warning-option",
     ]
   }
 }
 
 config("strict_warnings") {
-  cflags = [
-    "-Wall",
-    "-Werror",
-  ]
+  cflags = [ "-Wall" ]
+
+  ldflags = []
+
+  if (treat_warnings_as_errors) {
+    cflags += [ "-Werror" ]
+    ldflags += [ "-Werror" ]
+  }
+
+  if (is_clang) {
+    cflags += [ "-Wimplicit-fallthrough" ]
+  }
 }
 
 config("warnings_default") {
@@ -206,12 +220,14 @@ config("stack_protector_default") {
 }
 
 config("pic_default") {
-  cflags = [ "-fPIC" ]
-  ldflags = cflags
+  if (enable_pic) {
+    cflags = [ "-fPIC" ]
+    ldflags = cflags
+  }
 }
 
 config("pie_default") {
-  if (current_os == "linux") {
+  if (enable_pie) {
     ldflags = [ "-pie" ]
   }
 }

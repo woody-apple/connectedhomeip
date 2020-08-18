@@ -27,6 +27,8 @@ typedef void (^ControllerOnConnectedBlock)(void);
 typedef void (^ControllerOnMessageBlock)(NSData * message);
 typedef void (^ControllerOnErrorBlock)(NSError * error);
 
+@protocol CHIPDeviceControllerDelegate;
+
 @interface AddressInfo : NSObject
 
 @property (readonly, copy) NSString * ip;
@@ -49,6 +51,17 @@ typedef void (^ControllerOnErrorBlock)(NSError * error);
 - (BOOL)disconnect:(NSError * __autoreleasing *)error;
 - (BOOL)isConnected;
 
+/**
+ * Test whether a given message is likely to be a data model command.
+ */
++ (BOOL)isDataModelCommand:(NSData * _Nonnull)message;
+
+/**
+ * Given a data model command, convert it to some sort of human-readable
+ * string that describes what it is, as far as we can tell.
+ */
++ (NSString *)commandToString:(NSData * _Nonnull)command;
+
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
@@ -58,20 +71,42 @@ typedef void (^ControllerOnErrorBlock)(NSError * error);
 + (CHIPDeviceController *)sharedController;
 
 /**
- * Register callbacks for network activity.
+ * Set the Delegate for the Device Controller as well as the Queue on which the Delegate callbacks will be triggered
  *
- * @param[in] appCallbackQueue the queue that should be used to deliver the
- *                             message/error callbacks for this consumer.
+ * @param[in] delegate The delegate the Device Controller should use
  *
- * @param[in] onMessage the block to call when the controller gets a message
- *                      from the network.
- *
- * @param[in] onError the block to call when there is a network error.
+ * @param[in] queue The queue on which the Device Controller will deliver callbacks
  */
-- (void)registerCallbacks:(dispatch_queue_t)appCallbackQueue
-              onConnected:(ControllerOnConnectedBlock)onConnected
-                onMessage:(ControllerOnMessageBlock)onMessage
-                  onError:(ControllerOnErrorBlock)onError;
+- (void)setDelegate:(id<CHIPDeviceControllerDelegate>)delegate queue:(dispatch_queue_t)queue;
+
+@end
+
+/**
+ * The protocol definition for the CHIPDeviceControllerDelegate
+ *
+ * All delegate methods will be called on the supplied Delegate Queue.
+ */
+@protocol CHIPDeviceControllerDelegate <NSObject>
+
+/**
+ * Notify the delegate when a connection request succeeds
+ *
+ */
+- (void)deviceControllerOnConnected;
+
+/**
+ * Notify the delegate that a message was received
+ *
+ * @param[in] message The received message
+ */
+- (void)deviceControllerOnMessage:(NSData *)message;
+
+/**
+ * Notify the Delegate that an error occurred
+ *
+ * @param[in] error The error that occurred
+ */
+- (void)deviceControllerOnError:(NSError *)error;
 
 @end
 

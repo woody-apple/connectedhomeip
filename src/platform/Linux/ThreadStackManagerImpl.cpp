@@ -286,9 +286,11 @@ ConnectivityManager::ThreadDeviceType ThreadStackManagerImpl::_GetThreadDeviceTy
             type = linkMode.mDeviceType ? ConnectivityManager::ThreadDeviceType::kThreadDeviceType_FullEndDevice
                                         : ConnectivityManager::ThreadDeviceType::kThreadDeviceType_MinimalEndDevice;
         }
+        break;
     case DeviceRole::OTBR_DEVICE_ROLE_ROUTER:
     case DeviceRole::OTBR_DEVICE_ROLE_LEADER:
         type = ConnectivityManager::ThreadDeviceType::kThreadDeviceType_Router;
+        break;
     default:
         ChipLogError(DeviceLayer, "Unknown Thread role: %d", static_cast<int>(role));
         break;
@@ -416,12 +418,12 @@ CHIP_ERROR ThreadStackManagerImpl::_JoinerStart(void)
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
-extern ThreadStackManager & ThreadStackMgr(void)
+ThreadStackManager & ThreadStackMgr(void)
 {
     return chip::DeviceLayer::ThreadStackManagerImpl::sInstance;
 }
 
-extern ThreadStackManagerImpl & ThreadStackMgrImpl(void)
+ThreadStackManagerImpl & ThreadStackMgrImpl(void)
 {
     return chip::DeviceLayer::ThreadStackManagerImpl::sInstance;
 }

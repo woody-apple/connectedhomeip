@@ -77,6 +77,8 @@ public:
     CHIP_ERROR GetPrimary802154MACAddress(uint8_t * buf);
 
     CHIP_ERROR JoinerStart(void);
+    CHIP_ERROR SetThreadProvision(const Internal::DeviceNetworkInfo & netInfo);
+    CHIP_ERROR SetThreadEnabled(bool val);
 
 private:
     // ===== Members for internal use by the following friends.
@@ -106,11 +108,9 @@ private:
 
     void OnPlatformEvent(const ChipDeviceEvent * event);
     bool IsThreadEnabled(void);
-    CHIP_ERROR SetThreadEnabled(bool val);
     bool IsThreadProvisioned(void);
     bool IsThreadAttached(void);
     CHIP_ERROR GetThreadProvision(Internal::DeviceNetworkInfo & netInfo, bool includeCredentials);
-    CHIP_ERROR SetThreadProvision(const Internal::DeviceNetworkInfo & netInfo);
     void ErasePersistentInfo(void);
     ConnectivityManager::ThreadDeviceType GetThreadDeviceType(void);
     CHIP_ERROR SetThreadDeviceType(ConnectivityManager::ThreadDeviceType threadRole);
@@ -156,10 +156,9 @@ extern ThreadStackManagerImpl & ThreadStackMgrImpl(void);
  */
 #ifdef EXTERNAL_THREADSTACKMANAGERIMPL_HEADER
 #include EXTERNAL_THREADSTACKMANAGERIMPL_HEADER
-#else
+#elif defined(CHIP_DEVICE_LAYER_TARGET)
 #define THREADSTACKMANAGERIMPL_HEADER <platform/CHIP_DEVICE_LAYER_TARGET/ThreadStackManagerImpl.h>
 #include THREADSTACKMANAGERIMPL_HEADER
-#endif
 
 namespace chip {
 namespace DeviceLayer {
@@ -310,4 +309,5 @@ inline CHIP_ERROR ThreadStackManager::JoinerStart(void)
 } // namespace DeviceLayer
 } // namespace chip
 
+#endif // defined(CHIP_DEVICE_LAYER_TARGET)
 #endif // THREAD_STACK_MANAGER_H

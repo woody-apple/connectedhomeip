@@ -34,9 +34,13 @@
 
 #include <platform/CHIPDeviceLayer.h>
 #if CHIP_ENABLE_OPENTHREAD
+#include <platform/OpenThread/OpenThreadUtils.h>
 #include <platform/ThreadStackManager.h>
+#include <platform/internal/DeviceNetworkInfo.h>
+#include <platform/nRF5/ThreadStackManagerImpl.h>
 #endif
 #include <support/ErrorStr.h>
+#include <system/SystemClock.h>
 
 #define FACTORY_RESET_TRIGGER_TIMEOUT 3000
 #define FACTORY_RESET_CANCEL_WINDOW_TIMEOUT 3000
@@ -55,6 +59,8 @@ static LEDWidget sStatusLED;
 static LEDWidget sLockLED;
 static LEDWidget sUnusedLED;
 static LEDWidget sUnusedLED_1;
+
+static LEDWidget sLockStatusLED;
 
 static bool sIsThreadProvisioned     = false;
 static bool sIsThreadEnabled         = false;
@@ -98,6 +104,9 @@ int AppTask::Init()
 
     sLockLED.Init(LOCK_STATE_LED);
     sLockLED.Set(!BoltLockMgr().IsUnlocked());
+
+    sLockStatusLED.Init(LOCK_STATE_LED_GPIO);
+    sLockStatusLED.Set(!BoltLockMgr().IsUnlocked());
 
     sUnusedLED.Init(BSP_LED_2);
     sUnusedLED_1.Init(BSP_LED_3);
@@ -159,10 +168,72 @@ int AppTask::Init()
     return ret;
 }
 
+void AppTask::HandleBLEConnectionOpened(chip::Ble::BLEEndPoint * endPoint)
+{
+    ChipLogProgress(DeviceLayer, "AppTask: Connection opened");
+
+    GetAppTask().mBLEEndPoint    = endPoint;
+    endPoint->OnMessageReceived  = AppTask::HandleBLEMessageReceived;
+    endPoint->OnConnectionClosed = AppTask::HandleBLEConnectionClosed;
+}
+
+void AppTask::HandleBLEConnectionClosed(chip::Ble::BLEEndPoint * endPoint, BLE_ERROR err)
+{
+    ChipLogProgress(DeviceLayer, "AppTask: Connection closed");
+
+    GetAppTask().mBLEEndPoint = nullptr;
+}
+
+void AppTask::HandleBLEMessageReceived(chip::Ble::BLEEndPoint * endPoint, chip::System::PacketBuffer * buffer)
+{
+#if CHIP_ENABLE_OPENTHREAD
+    uint16_t bufferLen = buffer->DataLength();
+    uint8_t * data     = buffer->Start();
+    chip::DeviceLayer::Internal::DeviceNetworkInfo networkInfo;
+    ChipLogProgress(DeviceLayer, "AppTask: Receive message size %u", bufferLen);
+
+    memcpy(networkInfo.ThreadNetworkName, data, sizeof(networkInfo.ThreadNetworkName));
+    data += sizeof(networkInfo.ThreadNetworkName);
+
+    memcpy(networkInfo.ThreadExtendedPANId, data, sizeof(networkInfo.ThreadExtendedPANId));
+    data += sizeof(networkInfo.ThreadExtendedPANId);
+
+    memcpy(networkInfo.ThreadMeshPrefix, data, sizeof(networkInfo.ThreadMeshPrefix));
+    data += sizeof(networkInfo.ThreadMeshPrefix);
+
+    memcpy(networkInfo.ThreadNetworkKey, data, sizeof(networkInfo.ThreadNetworkKey));
+    data += sizeof(networkInfo.ThreadNetworkKey);
+
+    memcpy(networkInfo.ThreadPSKc, data, sizeof(networkInfo.ThreadPSKc));
+    data += sizeof(networkInfo.ThreadPSKc);
+
+    networkInfo.ThreadPANId = data[0] | (data[1] << 8);
+    data += sizeof(networkInfo.ThreadPANId);
+    networkInfo.ThreadChannel = data[0];
+    data += sizeof(networkInfo.ThreadChannel);
+
+    networkInfo.FieldPresent.ThreadExtendedPANId = *data;
+    data++;
+    networkInfo.FieldPresent.ThreadMeshPrefix = *data;
+    data++;
+    networkInfo.FieldPresent.ThreadPSKc = *data;
+    data++;
+    networkInfo.NetworkId              = 0;
+    networkInfo.FieldPresent.NetworkId = true;
+
+    ThreadStackMgr().SetThreadEnabled(false);
+    ThreadStackMgr().SetThreadProvision(networkInfo);
+    ThreadStackMgr().SetThreadEnabled(true);
+#endif
+    endPoint->Close();
+    chip::System::PacketBuffer::Free(buffer);
+}
+
 void AppTask::AppTaskMain(void * pvParameter)
 {
     ret_code_t ret;
     AppEvent event;
+    uint64_t mLastChangeTimeUS = 0;
 
     ret = sAppTask.Init();
     if (ret != NRF_SUCCESS)
@@ -170,6 +241,9 @@ void AppTask::AppTaskMain(void * pvParameter)
         NRF_LOG_INFO("AppTask.Init() failed: %s", chip::ErrorStr(ret));
         APP_ERROR_HANDLER(ret);
     }
+
+    chip::DeviceLayer::ConnectivityMgr().AddCHIPoBLEConnectionHandler(&AppTask::HandleBLEConnectionOpened);
+    SetDeviceName("LockDemo._chip._udp.local.");
 
     while (true)
     {
@@ -235,6 +309,18 @@ void AppTask::AppTaskMain(void * pvParameter)
         sLockLED.Animate();
         sUnusedLED.Animate();
         sUnusedLED_1.Animate();
+
+        sLockStatusLED.Set(!BoltLockMgr().IsUnlocked());
+        sLockStatusLED.Animate();
+
+        uint64_t nowUS            = chip::System::Platform::Layer::GetClock_Monotonic();
+        uint64_t nextChangeTimeUS = mLastChangeTimeUS + 5 * 1000 * 1000UL;
+
+        if (nowUS > nextChangeTimeUS)
+        {
+            PublishService();
+            mLastChangeTimeUS = nowUS;
+        }
     }
 }
 
@@ -299,7 +385,7 @@ void AppTask::ButtonEventHandler(uint8_t pin_no, uint8_t button_action)
         return;
     }
 
-    AppEvent button_event;
+    AppEvent button_event           = {};
     button_event.Type               = AppEvent::kEventType_Button;
     button_event.ButtonEvent.PinNo  = pin_no;
     button_event.ButtonEvent.Action = button_action;
@@ -318,6 +404,10 @@ void AppTask::ButtonEventHandler(uint8_t pin_no, uint8_t button_action)
         button_event.Handler = JoinHandler;
     }
 #endif
+    else
+    {
+        return;
+    }
 
     sAppTask.PostEvent(&button_event);
 }

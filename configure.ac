@@ -1757,6 +1757,7 @@ NL_WITH_OPTIONAL_INTERNAL_PACKAGE(
                 -DOPENTHREAD_CONFIG_HEAP_EXTERNAL_ENABLE=1 \
                 -DOPENTHREAD_CONFIG_JOINER_ENABLE=1 \
                 -DOPENTHREAD_CONFIG_NCP_UART_ENABLE=1 \
+                -DOPENTHREAD_CONFIG_IP6_SLAAC_ENABLE=1 \
                 -DUART_AS_SERIAL_TRANSPORT=1"
 
             (mkdir -p ${ac_pwd}/third_party/openthread \
@@ -2461,11 +2462,9 @@ third_party/ot-br-posix/Makefile
 src/Makefile
 src/include/Makefile
 src/app/Makefile
-src/app/chip-zcl/Makefile
 src/app/chip-zcl-zpro/Makefile
-src/app/gen/Makefile
-src/app/plugin/Makefile
-src/app/plugin/tests/Makefile
+src/app/clusters/Makefile
+src/app/util/Makefile
 src/ble/Makefile
 src/ble/tests/Makefile
 src/controller/java/Makefile

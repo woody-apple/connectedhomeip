@@ -15,6 +15,8 @@
  *    limitations under the License.
  */
 
+#include "Server.h"
+
 #include "FreeRTOS.h"
 #include "nrf_log.h"
 #include "task.h"
@@ -36,17 +38,24 @@
 #include <transport/SecureSessionMgr.h>
 #include <transport/UDP.h>
 
-#include "Server.h"
-#include "chip-zcl/chip-zcl.h"
+#if CHIP_ENABLE_OPENTHREAD
+#include <openthread/message.h>
+#include <openthread/udp.h>
+#include <platform/OpenThread/OpenThreadUtils.h>
+#include <platform/ThreadStackManager.h>
+#include <platform/internal/DeviceNetworkInfo.h>
+#include <platform/nRF5/ThreadStackManagerImpl.h>
+#endif
 
-extern "C" {
-#include "gen/gen-cluster-id.h"
-#include "gen/gen-types.h"
-}
+#include "attribute-storage.h"
+#include "chip-zcl/chip-zcl-zpro-codec.h"
+#include "gen/znet-bookkeeping.h"
+#include "util.h"
 
 using namespace ::chip;
 using namespace ::chip::Inet;
 using namespace ::chip::Transport;
+using namespace ::chip::DeviceLayer;
 
 // Transport Callbacks
 namespace {
@@ -55,6 +64,9 @@ namespace {
 // "nRF5"
 #define EXAMPLE_SERVER_NODEID 0x3546526e
 #endif // EXAMPLE_SERVER_NODEID
+
+char deviceName[128];
+constexpr uint16_t kUDPBroadcastPort = 23367;
 
 const uint8_t local_private_key[] = { 0xc6, 0x1a, 0x2f, 0x89, 0x36, 0x67, 0x2b, 0x26, 0x12, 0x47, 0x4f,
                                       0x11, 0x0e, 0x34, 0x15, 0x81, 0x81, 0x12, 0xfc, 0x36, 0xeb, 0x65,
@@ -85,7 +97,7 @@ public:
 
         NRF_LOG_INFO("Packet received from %s: %zu bytes", src_addr, static_cast<size_t>(data_len));
 
-        HandleDataModelMessage(buffer);
+        HandleDataModelMessage(header, buffer, mgr);
         buffer = NULL;
 
     exit:
@@ -118,18 +130,40 @@ private:
      * @param [in] buffer The buffer holding the message.  This function guarantees
      *                    that it will free the buffer before returning.
      */
-    void HandleDataModelMessage(System::PacketBuffer * buffer)
+    void HandleDataModelMessage(const MessageHeader & header, System::PacketBuffer * buffer, SecureSessionMgrBase * mgr)
     {
-        ChipZclStatus_t zclStatus = chipZclProcessIncoming((ChipZclBuffer_t *) buffer);
-        if (zclStatus == CHIP_ZCL_STATUS_SUCCESS)
+        EmberApsFrame frame;
+        bool ok = extractApsFrame(buffer->Start(), buffer->DataLength(), &frame) > 0;
+        if (ok)
+        {
+            NRF_LOG_INFO("APS frame processing success!");
+        }
+        else
+        {
+            NRF_LOG_INFO("APS frame processing failure!");
+            System::PacketBuffer::Free(buffer);
+            return;
+        }
+
+        ChipResponseDestination responseDest(header.GetSourceNodeId().Value(), mgr);
+        uint8_t * message;
+        uint16_t messageLen = extractMessage(buffer->Start(), buffer->DataLength(), &message);
+        ok                  = emberAfProcessMessage(&frame,
+                                   0, // type
+                                   message, messageLen,
+                                   &responseDest, // source identifier
+                                   NULL);
+
+        System::PacketBuffer::Free(buffer);
+
+        if (ok)
         {
             NRF_LOG_INFO("Data model processing success!");
         }
         else
         {
-            NRF_LOG_INFO("Data model processing failure: %d", zclStatus);
+            NRF_LOG_INFO("Data model processing failure!");
         }
-        System::PacketBuffer::Free(buffer);
     }
 };
 
@@ -137,9 +171,60 @@ static ServerCallback gCallbacks;
 
 } // namespace
 
+void SetDeviceName(const char * newDeviceName)
+{
+    strncpy(deviceName, newDeviceName, sizeof(deviceName) - 1);
+}
+
+void PublishService()
+{
+    chip::Inet::IPAddress addr;
+    if (!ConnectivityMgrImpl().IsThreadAttached())
+    {
+        return;
+    }
+    ThreadStackMgrImpl().LockThreadStack();
+    otError error = OT_ERROR_NONE;
+    otMessageInfo messageInfo;
+    otUdpSocket mSocket;
+    otMessage * message = nullptr;
+
+    memset(&mSocket, 0, sizeof(mSocket));
+    memset(&messageInfo, 0, sizeof(messageInfo));
+
+    // Select a address to send
+    const otNetifAddress * otAddrs = otIp6GetUnicastAddresses(ThreadStackMgrImpl().OTInstance());
+    for (const otNetifAddress * otAddr = otAddrs; otAddr != NULL; otAddr = otAddr->mNext)
+    {
+        addr = chip::DeviceLayer::Internal::ToIPAddress(otAddr->mAddress);
+        if (otAddr->mValid && !otAddr->mRloc &&
+            (!addr.IsIPv6ULA() ||
+             ::chip::DeviceLayer::Internal::IsOpenThreadMeshLocalAddress(ThreadStackMgrImpl().OTInstance(), addr)))
+        {
+            memcpy(&messageInfo.mSockAddr, &(otAddr->mAddress), sizeof(otAddr->mAddress));
+            break;
+        }
+    }
+
+    message = otUdpNewMessage(ThreadStackMgrImpl().OTInstance(), nullptr);
+    otIp6AddressFromString("ff03::1", &messageInfo.mPeerAddr);
+    messageInfo.mPeerPort = kUDPBroadcastPort;
+    otMessageAppend(message, deviceName, static_cast<uint16_t>(strlen(deviceName)));
+
+    error = otUdpSend(ThreadStackMgrImpl().OTInstance(), &mSocket, message, &messageInfo);
+
+    if (error != OT_ERROR_NONE && message != nullptr)
+    {
+        otMessageFree(message);
+        NRF_LOG_INFO("Failed to otUdpSend: %d", error);
+    }
+    ThreadStackMgrImpl().UnlockThreadStack();
+}
+
 void InitDataModelHandler()
 {
-    chipZclEndpointInit();
+    emberAfEndpointConfigure();
+    emAfInit();
 }
 
 // The echo server assumes the platform's networking has been setup already
