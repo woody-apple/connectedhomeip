@@ -2,6 +2,43 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Bootstrap",
+            "type": "shell",
+            "command": "scripts/build/gn_gen.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "isBackground": false,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["relative", "${workspaceFolder}/out/debug/"]
+            }
+        },
+        {
+            "label": "Generate",
+            "type": "shell",
+            "command": "scripts/build/gn_gen.sh",
+            "dependsOn": "Bootstrap",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "isBackground": false,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["relative", "${workspaceFolder}/out/debug/"]
+            }
+        },
+        {
             "label": "Build",
             "type": "shell",
             "command": "scripts/build/gn_build.sh",
@@ -24,7 +61,7 @@
             "type": "shell",
             "command": "scripts/helpers/update_compile_commands.sh",
             "group": "none",
-            "dependsOn": "Build",
+            "dependsOn": "Generate",
             "isBackground": false,
             "presentation": {
                 "reveal": "always",
@@ -37,7 +74,7 @@
             "type": "shell",
             "command": "echo NOT Supported yet - https://github.com/project-chip/connectedhomeip/issues/2238",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "isBackground": false,
             "presentation": {
                 "reveal": "always",
@@ -50,7 +87,7 @@
             "type": "shell",
             "command": "scripts/tests/gn_tests.sh",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -58,7 +95,7 @@
             "type": "shell",
             "command": "echo NOT Supported yet - https://github.com/project-chip/connectedhomeip/issues/720",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -66,7 +103,7 @@
             "type": "shell",
             "command": "scripts/helpers/clean.sh",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -104,7 +141,7 @@
             "type": "shell",
             "command": "scripts/examples/nrf_example.sh examples/lock-app/nrf5 out/lock_app_debug",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -112,7 +149,7 @@
             "type": "shell",
             "command": "scripts/examples/nrf_example.sh examples/lighting-app/nrf5 out/lighting_app_debug",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -127,7 +164,7 @@
             "type": "shell",
             "command": "echo NOT supported yet - https://github.com/project-chip/connectedhomeip/issues/1510",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -135,7 +172,7 @@
             "type": "shell",
             "command": "scripts/examples/build_example.sh examples/chip-tool out/chip_tool_debug",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -143,7 +180,7 @@
             "type": "shell",
             "command": "scripts/examples/build_example.sh examples/shell out/shell_debug",
             "group": "none",
-            "dependsOn": "Bootstrap",
+            "dependsOn": "Generate",
             "problemMatcher": ["$gcc"]
         }
     ]
