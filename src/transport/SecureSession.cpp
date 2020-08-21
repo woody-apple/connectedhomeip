@@ -35,9 +35,8 @@ namespace chip {
 
 namespace {
 
-const char * kManualKeyExchangeChannelInfo = "Manual Key Exchanged Channel";
-
 constexpr size_t kAESCCMIVLen = 12;
+constexpr size_t kMaxAADLen   = 128;
 
 } // namespace
 
@@ -109,9 +108,8 @@ void SecureSession::Reset(void)
 
 CHIP_ERROR SecureSession::GetIV(const MessageHeader & header, uint8_t * iv, size_t len)
 {
-    CHIP_ERROR err     = CHIP_NO_ERROR;
-    uint64_t nodeID    = 0;
-    uint32_t messageID = 0;
+    CHIP_ERROR err  = CHIP_NO_ERROR;
+    uint64_t nodeID = 0;
 
     BufBound bbuf(iv, len);
 
@@ -122,11 +120,28 @@ CHIP_ERROR SecureSession::GetIV(const MessageHeader & header, uint8_t * iv, size
         nodeID = header.GetSourceNodeId().Value();
     }
 
-    VerifyOrExit(bbuf.Put(&nodeID, sizeof(nodeID)) == sizeof(nodeID), err = CHIP_ERROR_NO_MEMORY);
-
-    messageID = header.GetMessageId();
-    VerifyOrExit(bbuf.Put(&messageID, sizeof(messageID)) == sizeof(nodeID) + sizeof(messageID), err = CHIP_ERROR_NO_MEMORY);
+    bbuf.PutLE64(nodeID);
+    bbuf.PutLE32(header.GetMessageId());
     VerifyOrExit(bbuf.Fit(), err = CHIP_ERROR_NO_MEMORY);
+
+exit:
+    return err;
+}
+
+CHIP_ERROR SecureSession::GetAdditionalAuthData(const MessageHeader & header, uint8_t * aad, size_t & len)
+{
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    size_t actualEncodedHeaderSize;
+
+    VerifyOrExit(len >= header.EncodeSizeBytes(), err = CHIP_ERROR_INVALID_ARGUMENT);
+
+    // Use unencrypted part of header as AAD. This will help
+    // integrity protect the whole message
+    err = header.Encode(aad, len, &actualEncodedHeaderSize);
+    SuccessOrExit(err);
+
+    VerifyOrExit(len >= actualEncodedHeaderSize, err = CHIP_ERROR_INVALID_ARGUMENT);
+    len = actualEncodedHeaderSize;
 
 exit:
     return err;
@@ -137,6 +152,8 @@ CHIP_ERROR SecureSession::Encrypt(const unsigned char * input, size_t input_leng
     CHIP_ERROR error = CHIP_NO_ERROR;
     uint64_t tag     = 0;
     uint8_t IV[kAESCCMIVLen];
+    uint8_t AAD[kMaxAADLen];
+    size_t aadLen = sizeof(AAD);
 
     VerifyOrExit(mKeyAvailable, error = CHIP_ERROR_INVALID_USE_OF_SESSION_KEY);
     VerifyOrExit(input != NULL, error = CHIP_ERROR_INVALID_ARGUMENT);
@@ -146,7 +163,10 @@ CHIP_ERROR SecureSession::Encrypt(const unsigned char * input, size_t input_leng
     error = GetIV(header, IV, sizeof(IV));
     SuccessOrExit(error);
 
-    error = AES_CCM_encrypt(input, input_length, NULL, 0, mKey, sizeof(mKey), (const unsigned char *) IV, sizeof(IV), output,
+    error = GetAdditionalAuthData(header, AAD, aadLen);
+    SuccessOrExit(error);
+
+    error = AES_CCM_encrypt(input, input_length, AAD, aadLen, mKey, sizeof(mKey), (const unsigned char *) IV, sizeof(IV), output,
                             (unsigned char *) &tag, sizeof(tag));
     SuccessOrExit(error);
 
@@ -163,6 +183,8 @@ CHIP_ERROR SecureSession::Decrypt(const unsigned char * input, size_t input_leng
     size_t taglen       = header.GetTagLength();
     const uint8_t * tag = header.GetTag();
     uint8_t IV[kAESCCMIVLen];
+    uint8_t AAD[kMaxAADLen];
+    size_t aadLen = sizeof(AAD);
 
     VerifyOrExit(mKeyAvailable, error = CHIP_ERROR_INVALID_USE_OF_SESSION_KEY);
     VerifyOrExit(input != NULL, error = CHIP_ERROR_INVALID_ARGUMENT);
@@ -172,24 +194,13 @@ CHIP_ERROR SecureSession::Decrypt(const unsigned char * input, size_t input_leng
     error = GetIV(header, IV, sizeof(IV));
     SuccessOrExit(error);
 
-    error = AES_CCM_decrypt(input, input_length, NULL, 0, (const unsigned char *) tag, taglen, mKey, sizeof(mKey),
+    error = GetAdditionalAuthData(header, AAD, aadLen);
+    SuccessOrExit(error);
+
+    error = AES_CCM_decrypt(input, input_length, AAD, aadLen, (const unsigned char *) tag, taglen, mKey, sizeof(mKey),
                             (const unsigned char *) IV, sizeof(IV), output);
 exit:
     return error;
-}
-
-CHIP_ERROR SecureSession::TemporaryManualKeyExchange(const unsigned char * remote_public_key, const size_t public_key_length,
-                                                     const unsigned char * local_private_key, const size_t private_key_length)
-{
-    CHIP_ERROR err  = CHIP_NO_ERROR;
-    size_t info_len = strlen(kManualKeyExchangeChannelInfo);
-
-    err = Init(remote_public_key, public_key_length, local_private_key, private_key_length, NULL, 0,
-               (const unsigned char *) kManualKeyExchangeChannelInfo, info_len);
-    SuccessOrExit(err);
-
-exit:
-    return err;
 }
 
 } // namespace chip
