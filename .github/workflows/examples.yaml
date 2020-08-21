@@ -48,11 +48,11 @@ jobs:
               run: scripts/build/gn_bootstrap.sh
             - name: Build example nRF5 Lock App
               run:
-                  scripts/examples/gn_nrf_example.sh examples/lock-app/nrf5
+                  scripts/examples/nrf_example.sh examples/lock-app/nrf5
                   out/lock_app_debug
             - name: Build example nRF5 Lighting App
               run:
-                  scripts/examples/gn_nrf_example.sh examples/lighting-app/nrf5
+                  scripts/examples/nrf_example.sh examples/lighting-app/nrf5
                   out/lighting_app_debug
             - name: Binary artifact suffix
               id: outsuffix
@@ -99,11 +99,11 @@ jobs:
               run: scripts/build/gn_bootstrap.sh
             - name: Build example Standalone Echo Client
               run:
-                  scripts/examples/gn_build_example.sh examples/chip-tool
+                  scripts/examples/build_example.sh examples/chip-tool
                   out/chip_tool_debug
             - name: Build example Standalone Shell
               run:
-                  scripts/examples/gn_build_example.sh examples/shell
+                  scripts/examples/build_example.sh examples/shell
                   out/shell_debug
             - name: Binary artifact suffix
               id: outsuffix

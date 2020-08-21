@@ -2,25 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Main Build",
+            "label": "Build",
             "type": "shell",
-            "command": "scripts/build/default.sh",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": "Bootstrap",
-            "isBackground": false,
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            },
-            "problemMatcher": ["$gcc"]
-        },
-        {
-            "label": "GN Build",
-            "type": "shell",
-            "command": "./gn_build.sh",
+            "command": "scripts/build/gn_build.sh",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -40,7 +24,7 @@
             "type": "shell",
             "command": "scripts/helpers/update_compile_commands.sh",
             "group": "none",
-            "dependsOn": "GN Build",
+            "dependsOn": "Build",
             "isBackground": false,
             "presentation": {
                 "reveal": "always",
@@ -51,7 +35,7 @@
         {
             "label": "Auto-enforce coding style",
             "type": "shell",
-            "command": "scripts/helpers/auto_enforce_code_style.sh",
+            "command": "echo NOT Supported yet - https://github.com/project-chip/connectedhomeip/issues/2238",
             "group": "none",
             "dependsOn": "Bootstrap",
             "isBackground": false,
@@ -62,25 +46,9 @@
             "problemMatcher": ["$gcc"]
         },
         {
-            "label": "Verify coding style conformance",
-            "type": "shell",
-            "command": "scripts/helpers/code_style_check.sh",
-            "group": "none",
-            "dependsOn": "Bootstrap",
-            "problemMatcher": ["$gcc"]
-        },
-        {
             "label": "Run Unit and Functional Tests",
             "type": "shell",
-            "command": "scripts/tests/all_tests.sh",
-            "group": "none",
-            "dependsOn": "Bootstrap",
-            "problemMatcher": ["$gcc"]
-        },
-        {
-            "label": "Run Distribution Generation",
-            "type": "shell",
-            "command": "scripts/build/distribution_check.sh",
+            "command": "scripts/tests/gn_tests.sh",
             "group": "none",
             "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
@@ -88,7 +56,7 @@
         {
             "label": "Run Code Coverage",
             "type": "shell",
-            "command": "scripts/tools/codecoverage.sh; code -r build/default/src/chip.info/index.html",
+            "command": "echo NOT Supported yet - https://github.com/project-chip/connectedhomeip/issues/720",
             "group": "none",
             "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
@@ -102,48 +70,49 @@
             "problemMatcher": ["$gcc"]
         },
         {
-            "label": "Bootstrap",
-            "type": "shell",
-            "command": "scripts/build/bootstrap.sh",
-            "group": "none",
-            "problemMatcher": ["$gcc"]
-        },
-        {
             "label": "Clean Tree",
             "type": "shell",
             "command": "scripts/helpers/clean_tree.sh",
             "group": "none",
             "problemMatcher": ["$gcc"]
         },
-        {
-            "label": "Run Setup Payload Tests",
-            "type": "shell",
-            "command": "scripts/tests/setup_payload_tests.sh",
-            "group": "none",
-            "dependsOn": "Bootstrap",
-            "problemMatcher": ["$gcc"]
-        },
-        {
-            "label": "Build QRCode Payload Tests",
-            "type": "shell",
-            "command": "scripts/tests/qrcode_payload_tests.sh",
-            "group": "none",
-            "dependsOn": "Bootstrap",
-            "problemMatcher": ["$gcc"]
-        },
-        {
-            "label": "Build & Run Crypto Tests",
-            "type": "shell",
-            "command": "scripts/tests/crypt_tests.sh",
-            "group": "none",
-            "problemMatcher": ["$gcc"]
-        },
+        // {
+        //     "label": "Run Setup Payload Tests",
+        //     "type": "shell",
+        //     "command": "scripts/tests/setup_payload_tests.sh",
+        //     "group": "none",
+        //     "dependsOn": "Bootstrap",
+        //     "problemMatcher": ["$gcc"]
+        // },
+        // {
+        //     "label": "Build QRCode Payload Tests",
+        //     "type": "shell",
+        //     "command": "scripts/tests/qrcode_payload_tests.sh",
+        //     "group": "none",
+        //     "dependsOn": "Bootstrap",
+        //     "problemMatcher": ["$gcc"]
+        // },
+        // {
+        //     "label": "Build & Run Crypto Tests",
+        //     "type": "shell",
+        //     "command": "scripts/tests/crypt_tests.sh",
+        //     "group": "none",
+        //     "problemMatcher": ["$gcc"]
+        // },
         {
             "label": "Build nRF5 Lock App",
             "type": "shell",
-            "command": "scripts/examples/nrf_lock_app.sh",
+            "command": "scripts/examples/nrf_example.sh examples/lock-app/nrf5 out/lock_app_debug",
             "group": "none",
-            "dependsOn": "Clean Tree",
+            "dependsOn": "Bootstrap",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build nRF5 Lighting App",
+            "type": "shell",
+            "command": "scripts/examples/nrf_example.sh examples/lighting-app/nrf5 out/lighting_app_debug",
+            "group": "none",
+            "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
         },
         {
@@ -156,25 +125,25 @@
         {
             "label": "Build ESP32 Echo Example",
             "type": "shell",
-            "command": "scripts/examples/esp_echo_app.sh",
+            "command": "echo NOT supported yet - https://github.com/project-chip/connectedhomeip/issues/1510",
             "group": "none",
-            "dependsOn": "Clean Tree",
+            "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
         },
         {
             "label": "Build Standalone Echo Client",
             "type": "shell",
-            "command": "scripts/examples/standalone_echo_client.sh",
+            "command": "scripts/examples/build_example.sh examples/chip-tool out/chip_tool_debug",
             "group": "none",
-            "dependsOn": "Clean Tree",
+            "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
         },
         {
             "label": "Build Standalone Shell",
             "type": "shell",
-            "command": "scripts/examples/standalone_shell.sh",
+            "command": "scripts/examples/build_example.sh examples/shell out/shell_debug",
             "group": "none",
-            "dependsOn": "Clean Tree",
+            "dependsOn": "Bootstrap",
             "problemMatcher": ["$gcc"]
         }
     ]
