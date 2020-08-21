@@ -47,6 +47,7 @@
                 "isDefault": true
             },
             "isBackground": false,
+            "dependsOn": "Generate",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
