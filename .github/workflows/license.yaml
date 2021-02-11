@@ -8,11 +8,9 @@ on:
 jobs:
     check:
         name: License Checks
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              with:
-                  fetch-depth: 0
             - name: Check License Header
               uses: apache/skywalking-eyes@main # always prefer to use a revision instead of `main`.
               env:

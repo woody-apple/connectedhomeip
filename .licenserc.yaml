@@ -1,15 +1,36 @@
 header:
-  license:
-    spdx-id: Apache-2.0
-    copyright-owner: Project CHIP Authors 
+    license:
+        spdx-id: Apache-2.0
+        copyright-owner: Project CHIP Authors
 
-  paths-ignore:
-    - 'dist'
-    - 'licenses'
-    - '**/*.md'
-    - 'LICENSE'
-    - 'NOTICE'
-    - 'third_party'
+    paths: # `paths` are the path list that will be checked (and fixed) by license-eye, default is ['**'].
+        - "**"
 
-  comment: on-failure
+    paths-ignore: # `paths-ignore` are the path list that will be ignored by license-eye.
+        - ".dependabot"
+        - ".github"
+        - "dist"
+        - "templates"
+        - "third_party"
 
+        - "LICENSE"
+        - "NOTICE"
+        - ".editorconfig"
+        - ".eslintignore"
+        - ".gitattributes"
+        - ".gitignore"
+        - ".node-inspectorrc"
+        - ".prettierignore"
+        - ".vimrc"
+        - ".whitesource"
+
+        - "**/*.md"
+        - "**/*.lock"
+        - "**/*.yaml"
+        - "**/*.yml"
+        - "**/*.json"
+        - "**/*.toml"
+        - "**/*.svg"
+        - "**/*.js"
+
+    comment: on-failure # on what condition license-eye will comment on the pull request, `on-failure`, `always`, `never`.
