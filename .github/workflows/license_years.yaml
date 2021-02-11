@@ -15,5 +15,5 @@ jobs:
                   fetch-depth: 0
             - uses: FantasticFiasco/action-update-license-year@v2
               with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  token: ${{ secrets.PAC_TOKEN }}
                   path: "*.cpp"
