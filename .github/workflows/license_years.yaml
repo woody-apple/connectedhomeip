@@ -1,0 +1,19 @@
+name: License Years
+
+on:
+    # push:
+    # pull_request:
+    workflow_dispatch:
+
+jobs:
+    check:
+        name: License Years
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - uses: FantasticFiasco/action-update-license-year@v2
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  path: "*.cpp"

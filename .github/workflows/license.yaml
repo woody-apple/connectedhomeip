@@ -1,0 +1,16 @@
+name: Licenses
+
+on:
+    # push:
+    # pull_request:
+    workflow_dispatch:
+
+jobs:
+    check:
+        name: License Checks
+        runs-on: ubuntu-18.04
+        steps:
+            - name: Check License Header
+              uses: apache/skywalking-eyes@main # always prefer to use a revision instead of `main`.
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed only when you want License-Eye to comment on the pull request.
