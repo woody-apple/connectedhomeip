@@ -7,11 +7,14 @@ header:
         - "**"
 
     paths-ignore: # `paths-ignore` are the path list that will be ignored by license-eye.
+        - "config"
+        - "**/connectedhomeip/**"
+        - "**/third_party/**"
+        - "third_party"
         - ".dependabot"
         - ".github"
         - "dist"
         - "templates"
-        - "third_party"
 
         - "LICENSE"
         - "NOTICE"

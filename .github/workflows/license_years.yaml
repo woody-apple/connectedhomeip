@@ -8,12 +8,12 @@ on:
 jobs:
     check:
         name: License Years
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
               with:
                   fetch-depth: 0
             - uses: FantasticFiasco/action-update-license-year@v2
               with:
-                  token: ${{ secrets.PAC_TOKEN }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
                   path: "*.cpp"
