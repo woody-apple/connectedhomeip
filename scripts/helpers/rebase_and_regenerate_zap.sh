@@ -3,9 +3,6 @@
 
 set -e
 
-GITHUB_TOKEN=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
-PR_NUMBER=177
-
 if [ -z "$PR_NUMBER" ]; then
 	PR_NUMBER=$(jq -r ".pull_request.number" "$GITHUB_EVENT_PATH")
 	if [[ "$PR_NUMBER" == "null" ]]; then
@@ -45,10 +42,10 @@ for ((i = 0 ; i < $MAX_RETRIES ; i++)); do
 	fi
 done
 
-if [[ "$REBASEABLE" != "true" ]] ; then
-	echo "GitHub doesn't think that the PR is rebaseable!"
-	exit 1
-fi
+# if [[ "$REBASEABLE" != "true" ]] ; then
+# 	echo "GitHub doesn't think that the PR is rebaseable!"
+# 	exit 1
+# fi
 
 BASE_REPO=$(echo "$pr_resp" | jq -r .base.repo.full_name)
 BASE_BRANCH=$(echo "$pr_resp" | jq -r .base.ref)
