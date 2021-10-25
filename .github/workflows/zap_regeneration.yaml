@@ -79,6 +79,8 @@ jobs:
                 git add src/controller/java/zap-generated/*
             - name: GitHub Commit & Push
               uses: actions-js/push@v1.3
+              with:
+                 github_token: ${{ secrets.APPLE_PERSONAL_ACCESS_TOKEN }}
 #            - uses: GuillaumeFalourd/git-commit-push@v1
 #              with:
                 # email: ${{ github.actor }}@users.noreply.github.com
