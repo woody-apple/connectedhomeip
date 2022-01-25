@@ -165,7 +165,7 @@ int TestCommissioningWindowManager()
     InitializeChip(&theSuite);
     nlTestRunner(&theSuite, nullptr);
 
-    // TODO: The platform memory was intentionally left not deinitialized so that minimal mdns can destruct
+    // TODO [$61ef8970dc80f900093558bb]: The platform memory was intentionally left not deinitialized so that minimal mdns can destruct
     chip::DeviceLayer::PlatformMgr().ScheduleWork(TearDownTask, 0);
     sleep(kTestTaskWaitSeconds);
 

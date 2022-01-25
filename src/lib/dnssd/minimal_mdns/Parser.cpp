@@ -51,7 +51,7 @@ bool QueryData::Parse(const BytesRange & validData, const uint8_t ** start)
         return false;
     }
 
-    // TODO: should there be checks for valid mType/class?
+    // TODO [$61ef8970dc80f9000935596c]: should there be checks for valid mType/class?
 
     mType = static_cast<QType>(chip::Encoding::BigEndian::Read16(nameEnd));
 

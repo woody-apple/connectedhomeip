@@ -26,7 +26,7 @@ namespace chip {
 namespace app {
 namespace Clusters {
 
-// TODO: Should this be OTAProvider::Delegate?
+// TODO [$61ef8970dc80f900093558a8]: Should this be OTAProvider::Delegate?
 /** @brief
  *    Defines methods for implementing application-specific logic for the OTA Provider Cluster.
  */

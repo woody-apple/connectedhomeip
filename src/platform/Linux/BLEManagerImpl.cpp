@@ -555,7 +555,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "HandleTXCharCCCDWrite() failed: %s", ErrorStr(err));
-        // TODO: fail connection
+        // TODO [$61ef8970dc80f900093559a3]: fail connection
     }
 }
 

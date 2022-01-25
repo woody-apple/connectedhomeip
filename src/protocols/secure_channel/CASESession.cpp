@@ -389,7 +389,7 @@ CHIP_ERROR CASESession::SendSigma1()
     // The state is being updated here before the message is successfully sent.
     // This is done here due to limitation in unit test harness, where the SendMessage() immediately calls
     // the OnMessageReceived(). If mState was updated after SendMessage, the receive will fail in unit tests.
-    // TODO: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
+    // TODO [$61ef8970dc80f900093559d4]: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
     mState = kSentSigma1;
 
     // Call delegate to send the msg to peer
@@ -516,7 +516,7 @@ CHIP_ERROR CASESession::SendSigma2Resume(const ByteSpan & initiatorRandom)
 
     ReturnErrorOnFailure(tlvWriter.Put(TLV::ContextTag(3), GetLocalSessionId()));
 
-    // TODO: Add support for optional MRP parameters
+    // TODO [$61ef8970dc80f900093559d5]: Add support for optional MRP parameters
 
     ReturnErrorOnFailure(tlvWriter.EndContainer(outerContainerType));
     ReturnErrorOnFailure(tlvWriter.Finalize(&msg_R2_resume));
@@ -524,7 +524,7 @@ CHIP_ERROR CASESession::SendSigma2Resume(const ByteSpan & initiatorRandom)
     // The state is being updated here before the message is successfully sent.
     // This is done here due to limitation in unit test harness, where the SendMessage() immediately calls
     // the OnMessageReceived(). If mState was updated after SendMessage, the receive will fail in unit tests.
-    // TODO: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
+    // TODO [$61ef8970dc80f900093559d6]: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
     mState = kSentSigma2Resume;
 
     // Call delegate to send the msg to peer
@@ -652,7 +652,7 @@ CHIP_ERROR CASESession::SendSigma2()
     // The state is being updated here before the message is successfully sent.
     // This is done here due to limitation in unit test harness, where the SendMessage() immediately calls
     // the OnMessageReceived(). If mState was updated after SendMessage, the receive will fail in unit tests.
-    // TODO: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
+    // TODO [$61ef8970dc80f900093559d7]: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
     mState = kSentSigma2;
 
     // Call delegate to send the msg to peer
@@ -704,7 +704,7 @@ CHIP_ERROR CASESession::HandleSigma2Resume(System::PacketBufferHandle && msg)
 
     SendStatusReport(mExchangeCtxt, kProtocolCodeSuccess);
 
-    // TODO: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
+    // TODO [$61ef8970dc80f900093559d8]: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
     // on running out of session contexts.
 
     mCASESessionEstablished = true;
@@ -986,7 +986,7 @@ CHIP_ERROR CASESession::SendSigma3()
     // The state is being updated here before the message is successfully sent.
     // This is done here due to limitation in unit test harness, where the SendMessage() immediately calls
     // the OnMessageReceived(). If mState was updated after SendMessage, the receive will fail in unit tests.
-    // TODO: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
+    // TODO [$61ef8970dc80f900093559d9]: Update secure session SendMessage() unit test harness to do asynchronous send and receives.
     mState = kSentSigma3;
 
     // Call delegate to send the Msg3 to peer
@@ -1122,7 +1122,7 @@ CHIP_ERROR CASESession::HandleSigma3(System::PacketBufferHandle && msg)
 
     SendStatusReport(mExchangeCtxt, kProtocolCodeSuccess);
 
-    // TODO: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
+    // TODO [$61ef8970dc80f900093559da]: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
     // on running out of session contexts.
 
     mCASESessionEstablished = true;
@@ -1290,7 +1290,7 @@ CHIP_ERROR CASESession::RetrieveIPK(FabricId fabricId, MutableByteSpan & ipk)
     return CHIP_NO_ERROR;
 }
 
-// TODO: Remove this and replace with system method to retrieve current time
+// TODO [$61ef8970dc80f900093559db]: Remove this and replace with system method to retrieve current time
 CHIP_ERROR CASESession::SetEffectiveTime(void)
 {
     using namespace ASN1;
@@ -1319,7 +1319,7 @@ void CASESession::OnSuccessStatusReport()
 
     mState = kInitialized;
 
-    // TODO: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
+    // TODO [$61ef8970dc80f900093559dc]: Set timestamp on the new session, to allow selecting a least-recently-used session for eviction
     // on running out of session contexts.
 }
 

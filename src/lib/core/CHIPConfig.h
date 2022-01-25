@@ -2547,7 +2547,7 @@ extern const char CHIP_NON_PRODUCTION_MARKER[];
 #define CHIP_CONFIG_MAX_GROUPS_PER_FABRIC 1
 #endif
 
-// TODO: Need to cap number of KeySets
+// TODO [$61ef8970dc80f9000935594d]: Need to cap number of KeySets
 
 /**
  * @def CHIP_CONFIG_MAX_GROUP_ENDPOINTS_PER_FABRIC

@@ -263,7 +263,7 @@ CHIP_ERROR Server::OnMessageReceived(Messaging::ExchangeContext * exchangeContex
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
     VerifyOrReturnError(!buffer.IsNull(), err = CHIP_ERROR_INVALID_ARGUMENT);
-    // TODO: BDX messages will also be possible in the future.
+    // TODO [$61ef8970dc80f900093558b9]: BDX messages will also be possible in the future.
     HandleDataModelMessage(exchangeContext, std::move(buffer));
 
     return err;

@@ -313,7 +313,7 @@ def WriteAction(out, target, project, sources, synthetic_dependencies):
         WriteVariable(out, sources_type_name, ' ')
     out.write('\n')
 
-    # TODO: CMake 3.7 is introducing DEPFILE
+    # TODO [$61ef8970dc80f90009355868]: CMake 3.7 is introducing DEPFILE
 
     out.write('  WORKING_DIRECTORY "')
     out.write(CMakeStringEscape(project.build_path))
@@ -329,7 +329,7 @@ def WriteAction(out, target, project, sources, synthetic_dependencies):
 def ExpandPlaceholders(source, a):
     source_dir, source_file_part = posixpath.split(source)
     source_name_part, _ = posixpath.splitext(source_file_part)
-    # TODO: {{source_gen_dir}}, {{source_out_dir}}, {{response_file_name}}
+    # TODO [$61ef8970dc80f90009355869]: {{source_gen_dir}}, {{source_out_dir}}, {{response_file_name}}
     return a.replace('{{source}}', source) \
             .replace('{{source_file_part}}', source_file_part) \
             .replace('{{source_name_part}}', source_name_part) \
@@ -340,7 +340,7 @@ def ExpandPlaceholders(source, a):
 def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
     all_outputs = target.properties.get('outputs', [])
     inputs = target.properties.get('sources', [])
-    # TODO: consider expanding 'output_patterns' instead.
+    # TODO [$61ef8970dc80f9000935586a]: consider expanding 'output_patterns' instead.
     outputs_per_input = len(all_outputs) / len(inputs)
     for count, source in enumerate(inputs):
         source_abs_path = project.GetAbsolutePath(source)
@@ -367,7 +367,7 @@ def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
             out.write('"\n')
 
         script = target.properties['script']
-        # TODO: need to expand {{xxx}} in arguments
+        # TODO [$61ef8970dc80f9000935586b]: need to expand {{xxx}} in arguments
         arguments = target.properties['args']
         out.write('  COMMAND python3 "')
         out.write(CMakeStringEscape(project.GetAbsolutePath(script)))
@@ -387,7 +387,7 @@ def WriteActionForEach(out, target, project, sources, synthetic_dependencies):
         out.write(CMakeStringEscape(source_abs_path))
         out.write('"\n')
 
-        # TODO: CMake 3.7 is introducing DEPFILE
+        # TODO [$61ef8970dc80f9000935586c]: CMake 3.7 is introducing DEPFILE
 
         out.write('  WORKING_DIRECTORY "')
         out.write(CMakeStringEscape(project.build_path))
@@ -406,7 +406,7 @@ def WriteCopy(out, target, project, sources, synthetic_dependencies):
     inputs = target.properties.get('sources', [])
     raw_outputs = target.properties.get('outputs', [])
 
-    # TODO: consider expanding 'output_patterns' instead.
+    # TODO [$61ef8970dc80f9000935586d]: consider expanding 'output_patterns' instead.
     outputs = []
     for output in raw_outputs:
         output_abs_path = project.GetAbsolutePath(output)
@@ -465,7 +465,7 @@ def WriteCompilerFlags(out, target, project, sources):
     if 'obj' in sources:
         SetFilesProperty(out, sources['obj'], 'EXTERNAL_OBJECT', ('True',), '')
 
-    # TODO: 'output_name', 'output_dir', 'output_extension'
+    # TODO [$61ef8970dc80f9000935586e]: 'output_name', 'output_dir', 'output_extension'
     # This includes using 'source_outputs' to direct compiler output.
 
     # should not use output_dir, or library will not in android studio folders
@@ -497,7 +497,7 @@ def WriteCompilerFlags(out, target, project, sources):
     # "arflags", "asmflags", "cflags",
     # "cflags_c", "clfags_cc", "cflags_objc", "clfags_objcc"
     # CMake does not have per target lang compile flags.
-    # TODO: $<$<COMPILE_LANGUAGE:CXX>:cflags_cc style generator expression.
+    # TODO [$61ef8970dc80f9000935586f]: $<$<COMPILE_LANGUAGE:CXX>:cflags_cc style generator expression.
     #       http://public.kitware.com/Bug/view.php?id=14857
 
     # -march flag is gnerated by android studio, remove it here
@@ -532,7 +532,7 @@ def WriteCompilerFlags(out, target, project, sources):
     elif 'objcc' in sources and not any(k in sources for k in ('asm', 'c', 'cxx', 'objc')):
         flags.extend(cflags_objcc)
     else:
-        # TODO: This is broken, one cannot generally set properties on files,
+        # TODO [$61ef8970dc80f90009355870]: This is broken, one cannot generally set properties on files,
         # as other targets may require different properties on the same files.
         if 'asm' in sources and cflags_asm:
             SetFilesProperty(out, sources['asm'],

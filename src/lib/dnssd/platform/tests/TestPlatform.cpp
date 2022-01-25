@@ -199,7 +199,7 @@ void TestCommissionableNode(nlTestSuite * inSuite, void * inContext)
     NL_TEST_ASSERT(inSuite, test::AddExpectedCall(commissionableSmall) == CHIP_NO_ERROR);
     NL_TEST_ASSERT(inSuite, mdnsPlatform.Advertise(commissionableNodeParamsSmall) == CHIP_NO_ERROR);
 
-    // TODO: Right now, platform impl doesn't stop commissionable node before starting a new one. Add stop call here once that is
+    // TODO [$61ef8970dc80f90009355971]: Right now, platform impl doesn't stop commissionable node before starting a new one. Add stop call here once that is
     // fixed.
     test::Reset();
     commissionableLargeBasic.callType = test::CallType::kStart;

@@ -52,7 +52,7 @@ using EchoFunct = void (*)(Messaging::ExchangeContext * ec, System::PacketBuffer
 class DLL_EXPORT EchoClient : public Messaging::ExchangeDelegate
 {
 public:
-    // TODO: Init function will take a Channel instead a SessionHandle, when Channel API is ready
+    // TODO [$61ef8970dc80f900093559d3]: Init function will take a Channel instead a SessionHandle, when Channel API is ready
     /**
      *  Initialize the EchoClient object. Within the lifetime
      *  of this instance, this method is invoked once after object

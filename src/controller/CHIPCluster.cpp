@@ -34,7 +34,7 @@ namespace Controller {
 CHIP_ERROR ClusterBase::Associate(Device * device, EndpointId endpoint)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
-    // TODO: Check if the device supports mCluster at the requested endpoint
+    // TODO [$61ef8970dc80f90009355901]: Check if the device supports mCluster at the requested endpoint
 
     mDevice   = device;
     mEndpoint = endpoint;

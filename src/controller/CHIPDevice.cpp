@@ -242,7 +242,7 @@ CHIP_ERROR Device::Persist()
         SerializedDevice serialized;
         ReturnErrorOnFailure(Serialize(serialized));
 
-        // TODO: no need to base-64 the serialized values AGAIN
+        // TODO [$61ef8970dc80f90009355902]: no need to base-64 the serialized values AGAIN
         PERSISTENT_KEY_OP(GetDeviceId(), kPairedDeviceKeyPrefix, key,
                           error = mStorageDelegate->SyncSetKeyValue(key, serialized.inner, sizeof(serialized.inner)));
         if (error != CHIP_NO_ERROR)

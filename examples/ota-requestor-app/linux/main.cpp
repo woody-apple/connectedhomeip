@@ -52,7 +52,7 @@ void OnConnected(void * context, OperationalDeviceProxy * operationalDeviceProxy
 void OnConnectionFailure(void * context, OperationalDeviceProxy * operationalDeviceProxy, CHIP_ERROR error);
 bool HandleOptions(const char * aProgram, OptionSet * aOptions, int aIdentifier, const char * aName, const char * aValue);
 
-// TODO: would be nicer to encapsulate these globals and the callbacks in some sort of class
+// TODO [$61ef8970dc80f9000935582a]: would be nicer to encapsulate these globals and the callbacks in some sort of class
 OperationalDeviceProxy gOperationalDeviceProxy;
 ExchangeContext * exchangeCtx = nullptr;
 BdxDownloader bdxDownloader;
@@ -80,7 +80,7 @@ OptionDef cmdLineOptionsDef[] = {
     { "providerFabricIndex", chip::ArgParser::kArgumentRequired, kOptionProviderFabricIndex },
     { "udpPort", chip::ArgParser::kArgumentRequired, kOptionUdpPort },
     { "discriminator", chip::ArgParser::kArgumentRequired, kOptionDiscriminator },
-    // TODO: This can be removed once OperationalDeviceProxy can resolve the IP Address from Node ID
+    // TODO [$61ef8970dc80f9000935582b]: This can be removed once OperationalDeviceProxy can resolve the IP Address from Node ID
     { "ipaddress", chip::ArgParser::kArgumentRequired, kOptionIPAddress },
     { "delayQuery", chip::ArgParser::kArgumentRequired, kOptionDelayQuery },
     {},

@@ -6,7 +6,7 @@
 // Import monotonic clock function for CHIP
 uint64_t get_clock_monotonic();
 
-// TODO: Remove!
+// TODO [$61ef8970dc80f900093559c5]: Remove!
 // This file is a temporary workaround until atomic integration has been solved
 
 static mbed_memory_order mem_order(int order)

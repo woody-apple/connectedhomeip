@@ -42,7 +42,7 @@ using namespace chip::Encoding;
 // Packets start with a 16-bit size
 constexpr size_t kPacketSizeBytes = 2;
 
-// TODO: Actual limit may be lower (spec issue #2119)
+// TODO [$61ef8970dc80f900093559fd]: Actual limit may be lower (spec issue #2119)
 constexpr uint16_t kMaxMessageSize = static_cast<uint16_t>(System::PacketBuffer::kMaxSizeWithoutReserve - kPacketSizeBytes);
 
 constexpr int kListenBacklogSize = 2;

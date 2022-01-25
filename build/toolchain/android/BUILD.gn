@@ -16,7 +16,7 @@
 import("android_toolchain.gni")
 
 android_clang_toolchain("android_arm") {
-  # TODO: Drop API level to 21 after getifaddrs issue fixed
+  # TODO [$61ef8970dc80f9000935580f]: Drop API level to 21 after getifaddrs issue fixed
   api_level = "24"
   toolchain_args = {
     current_cpu = "arm"
@@ -24,7 +24,7 @@ android_clang_toolchain("android_arm") {
 }
 
 android_clang_toolchain("android_arm64") {
-  # TODO: Drop API level to 21 after getifaddrs issue fixed
+  # TODO [$61ef8970dc80f90009355810]: Drop API level to 21 after getifaddrs issue fixed
   api_level = "24"
   toolchain_args = {
     current_cpu = "arm64"
@@ -32,7 +32,7 @@ android_clang_toolchain("android_arm64") {
 }
 
 android_clang_toolchain("android_x64") {
-  # TODO: Drop API level to 21 after getifaddrs issue fixed
+  # TODO [$61ef8970dc80f90009355811]: Drop API level to 21 after getifaddrs issue fixed
   api_level = "24"
   toolchain_args = {
     current_cpu = "x64"
@@ -40,7 +40,7 @@ android_clang_toolchain("android_x64") {
 }
 
 android_clang_toolchain("android_x86") {
-  # TODO: Drop API level to 21 after getifaddrs issue fixed
+  # TODO [$61ef8970dc80f90009355812]: Drop API level to 21 after getifaddrs issue fixed
   api_level = "24"
   toolchain_args = {
     current_cpu = "x86"

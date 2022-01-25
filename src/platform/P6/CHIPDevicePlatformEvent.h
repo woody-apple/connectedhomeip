@@ -45,7 +45,7 @@ enum
  */
 enum InternalPlatformSpecificEventTypes
 {
-    // TODO: maybe need remove this and handle BLEEnabledEvt direct
+    // TODO [$61ef8970dc80f900093559b4]: maybe need remove this and handle BLEEnabledEvt direct
     //      from BLEManagerImpl::BLEManagerCallback.
     kP6BLEEnabledEvt = kRange_InternalPlatformSpecific,
     kP6BLEDisabledEvt

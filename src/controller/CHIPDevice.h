@@ -333,7 +333,7 @@ public:
     CHIP_ERROR ComputePASEVerifier(uint32_t iterations, uint32_t setupPincode, const ByteSpan & salt, PASEVerifier & outVerifier,
                                    uint32_t & outPasscodeId);
 
-    // TODO: This is a workaround for OperationalDeviceProxy class to call OnNewConnection/OnConnectionExpired. Once
+    // TODO [$61ef8970dc80f90009355903]: This is a workaround for OperationalDeviceProxy class to call OnNewConnection/OnConnectionExpired. Once
     // https://github.com/project-chip/connectedhomeip/issues/10423 is complete, this function can be removed.
     void UpdateSession(bool connected);
 
@@ -392,7 +392,7 @@ public:
     // This two functions are pretty tricky, it is used to bridge the response, we need to implement interaction model delegate
     // on the app side instead of register callbacks here. The IM delegate can provide more infomation then callback and it is
     // type-safe.
-    // TODO: Implement interaction model delegate in the application.
+    // TODO [$61ef8970dc80f90009355904]: Implement interaction model delegate in the application.
     void AddIMResponseHandler(void * commandObj, Callback::Cancelable * onSuccessCallback,
                               Callback::Cancelable * onFailureCallback);
     void CancelIMResponseHandler(void * commandObj);
@@ -557,7 +557,7 @@ private:
     CASESession mCASESession;
     PersistentStorageDelegate * mStorageDelegate = nullptr;
 
-    // TODO: Offload Nonces and DAC/PAI into a new struct
+    // TODO [$61ef8970dc80f90009355905]: Offload Nonces and DAC/PAI into a new struct
     uint8_t mCSRNonce[kOpCSRNonceLength];
     uint8_t mAttestationNonce[kAttestationNonceLength];
 

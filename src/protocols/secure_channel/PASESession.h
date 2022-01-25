@@ -90,7 +90,7 @@ public:
 
     virtual ~PASESession();
 
-    // TODO: The SetPeerNodeId method should not be exposed; we should not need
+    // TODO [$61ef8970dc80f900093559e1]: The SetPeerNodeId method should not be exposed; we should not need
     // to associate a node ID with a PASE session.
     using PairingSession::SetPeerNodeId;
 
@@ -198,7 +198,7 @@ public:
      **/
     CHIP_ERROR FromSerializable(const PASESessionSerializable & output);
 
-    // TODO: remove Clear, we should create a new instance instead reset the old instance.
+    // TODO [$61ef8970dc80f900093559e2]: remove Clear, we should create a new instance instead reset the old instance.
     /** @brief This function zeroes out and resets the memory used by the object.
      **/
     void Clear();

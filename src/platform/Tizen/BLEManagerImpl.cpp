@@ -739,7 +739,7 @@ void BLEManagerImpl::HandlePlatformSpecificBLEEvent(const ChipDeviceEvent * apEv
 {
     ChipLogDetail(DeviceLayer, "HandlePlatformSpecificBLEEvent %d", apEvent->Type);
 
-    // TODO: Need to implement Tizen Platform Specific events: CHIPDevicePlatformEvent
+    // TODO [$61ef8970dc80f900093559b6]: Need to implement Tizen Platform Specific events: CHIPDevicePlatformEvent
 }
 
 void BLEManagerImpl::_OnPlatformEvent(const ChipDeviceEvent * event)

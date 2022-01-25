@@ -11,7 +11,7 @@ RUN mkdir /app
 
 WORKDIR /app
 
-# TODO: Use multi stage build for smaller image size.
+# TODO [$61ef8970dc80f90009355864]: Use multi stage build for smaller image size.
 
 RUN apt-get update \
   && apt-get install --no-install-recommends -y sudo git ca-certificates psmisc dhcpcd5 wpasupplicant wireless-tools \

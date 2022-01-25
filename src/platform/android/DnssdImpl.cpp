@@ -75,7 +75,7 @@ CHIP_ERROR ChipDnssdFinalizeServiceUpdate()
 CHIP_ERROR ChipDnssdBrowse(const char * type, DnssdServiceProtocol protocol, Inet::IPAddressType addressType,
                            Inet::InterfaceId interface, DnssdBrowseCallback callback, void * context)
 {
-    // TODO: Implement DNS-SD browse for Android
+    // TODO [$61ef8970dc80f900093559ba]: Implement DNS-SD browse for Android
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 

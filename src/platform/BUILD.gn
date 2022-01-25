@@ -67,10 +67,10 @@ if (chip_device_platform != "none") {
   if (chip_stack_lock_tracking == "auto") {
     if (chip_device_platform == "linux" || chip_device_platform == "tizen" ||
         chip_device_platform == "android") {
-      # TODO: should be fatal for development. Change once bugs are fixed
+      # TODO [$61ef8970dc80f9000935598e]: should be fatal for development. Change once bugs are fixed
       chip_stack_lock_tracking = "log"
     } else {
-      # TODO: may want to enable at least logging for embedded to find bugs
+      # TODO [$61ef8970dc80f9000935598f]: may want to enable at least logging for embedded to find bugs
       # this needs tuning depending on how many resources various platforms have
       # available (mainly flash size)
       chip_stack_lock_tracking = "none"

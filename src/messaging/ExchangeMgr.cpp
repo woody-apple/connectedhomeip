@@ -279,7 +279,7 @@ void ExchangeManager::OnMessageReceived(const PacketHeader & packetHeader, const
         // If rcvd msg is from initiator then this exchange is created as not Initiator.
         // If rcvd msg is not from initiator then this exchange is created as Initiator.
         // Note that if matchingUMH is not null then rcvd msg if from initiator.
-        // TODO: Figure out which channel to use for the received message
+        // TODO [$61ef8970dc80f90009355984]: Figure out which channel to use for the received message
         ExchangeContext * ec =
             mContextPool.CreateObject(this, payloadHeader.GetExchangeID(), session, !payloadHeader.IsInitiator(), delegate);
 

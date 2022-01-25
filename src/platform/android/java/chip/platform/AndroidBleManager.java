@@ -238,19 +238,19 @@ public class AndroidBleManager implements BleManager {
 
   @Override
   public int init() {
-    // TODO: add it when implementing _SetAdvertisingMode etc
+    // TODO [$61ef8970dc80f900093559bb]: add it when implementing _SetAdvertisingMode etc
     return 0;
   }
 
   @Override
   public long setFlag(long flag, boolean isSet) {
-    // TODO: add it when implementing _SetAdvertisingMode etc
+    // TODO [$61ef8970dc80f900093559bc]: add it when implementing _SetAdvertisingMode etc
     return 0;
   }
 
   @Override
   public boolean hasFlag(long flag) {
-    // TODO: add it when implementing _SetAdvertisingMode etc
+    // TODO [$61ef8970dc80f900093559bd]: add it when implementing _SetAdvertisingMode etc
     return false;
   }
 

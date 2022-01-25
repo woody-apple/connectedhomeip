@@ -57,7 +57,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath & 
  */
 void emberAfOnOffClusterInitCallback(EndpointId endpoint)
 {
-    // TODO: implement any additional Cluster Server init actions
+    // TODO [$61ef8970dc80f9000935581c]: implement any additional Cluster Server init actions
 }
 
 int main(int argc, char * argv[])

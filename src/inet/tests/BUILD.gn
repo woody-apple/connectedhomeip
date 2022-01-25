@@ -82,7 +82,7 @@ chip_test_suite("tests") {
   if (current_os != "mac" && current_os != "zephyr" &&
       chip_device_platform != "esp32" && current_cpu == "x64" &&
       chip_device_platform != "ameba") {
-    # TODO: This test does not seem executed
+    # TODO [$61ef8970dc80f90009355949]: This test does not seem executed
     sources += [ "TestLwIPDNS.cpp" ]
   }
 }

@@ -963,7 +963,7 @@ void BLEManagerImpl::ProcessEvtHdrMsg(QueuedEvt_t * pMsg)
         {
             BLEMGR_LOG("BLEMGR: BLE Process Application Message: CHIPOBLE_CHAR_CHANGE_EVT, CHIPOBLEPROFILE_CCCWrite");
 
-            // TODO: Add check to see if subscribing OR unsubscribing from char indications
+            // TODO [$61ef8970dc80f900093559bf]: Add check to see if subscribing OR unsubscribing from char indications
             uint8_t cccValue;
 
             CHIPoBLEProfile_GetParameter(CHIPOBLEPROFILE_CCCWrite, &cccValue, 1);

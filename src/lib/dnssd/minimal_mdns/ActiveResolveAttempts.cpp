@@ -107,7 +107,7 @@ void ActiveResolveAttempts::MarkPending(const PeerId & peerId)
 
     if ((entryToUse->peerId.GetNodeId() != kUndefinedNodeId) && (entryToUse->peerId != peerId))
     {
-        // TODO: node was evicted here, if/when resolution failures are
+        // TODO [$61ef8970dc80f9000935596b]: node was evicted here, if/when resolution failures are
         // supported this could be a place for error callbacks
         //
         // Note however that this is NOT an actual 'timeout' it is showing

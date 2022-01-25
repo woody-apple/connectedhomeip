@@ -51,7 +51,7 @@ public:
 
     bool operator==(const SessionHandle & that) const
     {
-        // TODO: Temporarily keep the old logic, check why only those two fields are used in comparison.
+        // TODO [$61ef8970dc80f900093559f4]: Temporarily keep the old logic, check why only those two fields are used in comparison.
         return mPeerNodeId == that.mPeerNodeId && mPeerSessionId == that.mPeerSessionId;
     }
 
@@ -85,7 +85,7 @@ private:
     NodeId mPeerNodeId;
     Optional<uint16_t> mLocalSessionId;
     Optional<uint16_t> mPeerSessionId;
-    // TODO: Re-evaluate the storing of Fabric ID in SessionHandle
+    // TODO [$61ef8970dc80f900093559f5]: Re-evaluate the storing of Fabric ID in SessionHandle
     //       The Fabric ID will not be available for PASE and group sessions. So need
     //       to identify an approach that'll allow looking up the corresponding information for
     //       such sessions.

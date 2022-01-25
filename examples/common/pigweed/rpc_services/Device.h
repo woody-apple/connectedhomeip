@@ -44,7 +44,7 @@ public:
 
     virtual pw::Status TriggerOta(ServerContext & ctx, const pw_protobuf_Empty & request, pw_protobuf_Empty & response)
     {
-        // TODO: auto err = DeviceLayer::SoftwareUpdateMgr().CheckNow();
+        // TODO [$61ef8970dc80f90009355819]: auto err = DeviceLayer::SoftwareUpdateMgr().CheckNow();
         return pw::Status::Unimplemented();
     }
 

@@ -202,7 +202,7 @@ enum class EventManagementStates
 
 struct LogStorageResources
 {
-    // TODO: Update CHIPCircularTLVBuffer with size_t for buffer size, then use ByteSpan
+    // TODO [$61ef8970dc80f90009355888]: Update CHIPCircularTLVBuffer with size_t for buffer size, then use ByteSpan
     uint8_t * mpBuffer =
         nullptr; // Buffer to be used as a storage at the particular priority level and shared with more important events.
                  // Must not be nullptr.  Must be large enough to accommodate the largest event emitted by the system.

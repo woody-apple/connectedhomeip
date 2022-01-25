@@ -23,7 +23,7 @@
 #include <platform/ConnectivityManager.h>
 
 // Include DeviceNetworkProvisioningDelegateImpl for WiFi provisioning.
-// TODO: Enable wifi network should be done by ConnectivityManager. (Or other platform neutral interfaces)
+// TODO [$61ef8970dc80f90009355973]: Enable wifi network should be done by ConnectivityManager. (Or other platform neutral interfaces)
 #if defined(CHIP_DEVICE_LAYER_TARGET)
 #define DEVICENETWORKPROVISIONING_HEADER <platform/CHIP_DEVICE_LAYER_TARGET/DeviceNetworkProvisioningDelegateImpl.h>
 #include DEVICENETWORKPROVISIONING_HEADER

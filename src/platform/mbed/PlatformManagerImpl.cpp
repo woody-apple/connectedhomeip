@@ -31,7 +31,7 @@ System::LayerSocketsLoop & SystemLayerSocketsLoop()
 }
 } // anonymous namespace
 
-// TODO: Event and timer processing is not efficient from a memory perspective.
+// TODO [$61ef8970dc80f900093559c4]: Event and timer processing is not efficient from a memory perspective.
 // Both occupy at least 24 bytes when only 4 bytes is required.
 // An optimized designed could use a separate circular buffer to store events
 // and register a single mbed event in the event queue to process all of them.

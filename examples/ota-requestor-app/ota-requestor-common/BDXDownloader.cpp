@@ -75,8 +75,8 @@ void BdxDownloader::HandleTransferSessionOutput(TransferSession::OutputEvent & e
     case TransferSession::OutputEventType::kBlockReceived: {
         ChipLogDetail(BDX, "Got block length %zu", event.blockdata.Length);
 
-        // TODO: something more elegant than appending to a local file
-        // TODO: while convenient, we should not do a synchronous block write in our example application - this is bad practice
+        // TODO [$61ef8970dc80f9000935582c]: something more elegant than appending to a local file
+        // TODO [$61ef8970dc80f9000935582d]: while convenient, we should not do a synchronous block write in our example application - this is bad practice
         std::ofstream otaFile(outFilePath, std::ifstream::out | std::ifstream::ate | std::ifstream::app);
         otaFile.write(reinterpret_cast<const char *>(event.blockdata.Data), static_cast<std::streamsize>(event.blockdata.Length));
 

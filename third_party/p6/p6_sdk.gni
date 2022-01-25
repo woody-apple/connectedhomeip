@@ -19,8 +19,8 @@ import("//build_overrides/mbedtls.gni")
 import("//build_overrides/p6.gni")
 import("p6_board.gni")
 
-# TODO: Don't hardcode config/toolchain
-# TODO: Convert to GN action?
+# TODO [$61ef8970dc80f900093559ff]: Don't hardcode config/toolchain
+# TODO [$61ef8970dc80f90009355a00]: Convert to GN action?
 if (is_debug) {
   debug_str = "Debug"
 } else {

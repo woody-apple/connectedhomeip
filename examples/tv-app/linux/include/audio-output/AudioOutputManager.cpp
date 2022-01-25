@@ -33,7 +33,7 @@ CHIP_ERROR AudioOutputManager::Init()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    // TODO: Store feature map once it is supported
+    // TODO [$61ef8970dc80f9000935583b]: Store feature map once it is supported
     map<string, bool> featureMap;
     featureMap["NU"] = true;
 
@@ -43,7 +43,7 @@ CHIP_ERROR AudioOutputManager::Init()
 CHIP_ERROR AudioOutputManager::proxyGetListOfAudioOutputInfo(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f9000935583c]: Insert code here
         int maximumVectorSize = 3;
         char name[]           = "exampleName";
 
@@ -61,11 +61,11 @@ CHIP_ERROR AudioOutputManager::proxyGetListOfAudioOutputInfo(chip::app::Attribut
 
 bool audioOutputClusterSelectOutput(uint8_t index)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935583d]: Insert code here
     return true;
 }
 bool audioOutputClusterRenameOutput(uint8_t index, const chip::CharSpan & name)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935583e]: Insert code here
     return true;
 }

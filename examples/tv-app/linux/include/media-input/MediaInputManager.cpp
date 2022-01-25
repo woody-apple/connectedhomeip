@@ -28,7 +28,7 @@ CHIP_ERROR MediaInputManager::Init()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    // TODO: Store feature map once it is supported
+    // TODO [$61ef8970dc80f9000935584b]: Store feature map once it is supported
     std::map<std::string, bool> featureMap;
     featureMap["NU"] = true;
     SuccessOrExit(err);
@@ -39,7 +39,7 @@ exit:
 CHIP_ERROR MediaInputManager::proxyGetInputList(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f9000935584c]: Insert code here
         int maximumVectorSize = 2;
         char description[]    = "exampleDescription";
         char name[]           = "exampleName";
@@ -60,21 +60,21 @@ CHIP_ERROR MediaInputManager::proxyGetInputList(chip::app::AttributeValueEncoder
 
 bool mediaInputClusterSelectInput(uint8_t input)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935584d]: Insert code here
     return true;
 }
 bool mediaInputClusterShowInputStatus()
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935584e]: Insert code here
     return true;
 }
 bool mediaInputClusterHideInputStatus()
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935584f]: Insert code here
     return true;
 }
 bool mediaInputClusterRenameInput(uint8_t input, std::string name)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355850]: Insert code here
     return true;
 }

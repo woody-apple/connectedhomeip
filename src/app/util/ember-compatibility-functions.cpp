@@ -182,7 +182,7 @@ uint8_t attributeData[kAttributeReadBufferSize];
 
 bool ServerClusterCommandExists(const ConcreteCommandPath & aCommandPath)
 {
-    // TODO: Currently, we are using cluster catalog from the ember library, this should be modified or replaced after several
+    // TODO [$61ef8970dc80f900093558d3]: Currently, we are using cluster catalog from the ember library, this should be modified or replaced after several
     // updates to Commands.
     return emberAfContainsServer(aCommandPath.mEndpointId, aCommandPath.mClusterId);
 }
@@ -196,7 +196,7 @@ CHIP_ERROR ReadSingleClusterData(const ConcreteAttributePath & aPath, TLV::TLVWr
     AttributeAccessInterface * attrOverride = findAttributeAccessOverride(aPath.mEndpointId, aPath.mClusterId);
     if (attrOverride != nullptr)
     {
-        // TODO: We should probably clone the writer and convert failures here
+        // TODO [$61ef8970dc80f900093558d4]: We should probably clone the writer and convert failures here
         // into status responses, unless our caller already does that.
         AttributeValueEncoder valueEncoder(apWriter);
         ReturnErrorOnFailure(attrOverride->Read(aPath, valueEncoder));
@@ -209,7 +209,7 @@ CHIP_ERROR ReadSingleClusterData(const ConcreteAttributePath & aPath, TLV::TLVWr
             }
             if (apWriter != nullptr)
             {
-                // TODO: Add DataVersion support
+                // TODO [$61ef8970dc80f900093558d5]: Add DataVersion support
                 ReturnErrorOnFailure(
                     apWriter->Put(chip::TLV::ContextTag(AttributeDataElement::kCsTag_DataVersion), kTemporaryDataVersion));
             }
@@ -233,7 +233,7 @@ CHIP_ERROR ReadSingleClusterData(const ConcreteAttributePath & aPath, TLV::TLVWr
         return apWriter->Put(chip::TLV::ContextTag(AttributeDataElement::kCsTag_Status), ToInteractionModelStatus(status));
     }
 
-    // TODO: ZCL_STRUCT_ATTRIBUTE_TYPE is not included in this switch case currently, should add support for structures.
+    // TODO [$61ef8970dc80f900093558d6]: ZCL_STRUCT_ATTRIBUTE_TYPE is not included in this switch case currently, should add support for structures.
     switch (BaseType(attributeType))
     {
     case ZCL_NO_DATA_ATTRIBUTE_TYPE: // No data
@@ -367,7 +367,7 @@ CHIP_ERROR ReadSingleClusterData(const ConcreteAttributePath & aPath, TLV::TLVWr
                              Protocols::InteractionModel::Status::UnsupportedRead);
     }
 
-    // TODO: Add DataVersion support
+    // TODO [$61ef8970dc80f900093558d7]: Add DataVersion support
     ReturnErrorOnFailure(apWriter->Put(chip::TLV::ContextTag(AttributeDataElement::kCsTag_DataVersion), kTemporaryDataVersion));
     return CHIP_NO_ERROR;
 }

@@ -159,7 +159,7 @@ private:
     {
         Optional<uint32_t> mrpRetryIntervalIdle, mrpRetryIntervalActive;
         params.GetMRPRetryIntervals(mrpRetryIntervalIdle, mrpRetryIntervalActive);
-        // TODO: Issue #5833 - MRP retry intervals should be updated on the poll period value change or device type change.
+        // TODO [$61ef8970dc80f9000935595c]: Issue #5833 - MRP retry intervals should be updated on the poll period value change or device type change.
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
         if (chip::DeviceLayer::ConnectivityMgr().GetThreadDeviceType() ==
             chip::DeviceLayer::ConnectivityManager::kThreadDeviceType_SleepyEndDevice)
@@ -459,7 +459,7 @@ CHIP_ERROR AdvertiserMinMdns::Advertise(const CommissionAdvertisingParameters & 
         mQueryResponderAllocatorCommissioner.Clear();
     }
 
-    // TODO: need to detect colisions here
+    // TODO [$61ef8970dc80f9000935595d]: need to detect colisions here
     char nameBuffer[64] = "";
     ReturnErrorOnFailure(GetCommissionableInstanceName(nameBuffer, sizeof(nameBuffer)));
 

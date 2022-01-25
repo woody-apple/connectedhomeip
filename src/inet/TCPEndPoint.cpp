@@ -325,7 +325,7 @@ CHIP_ERROR TCPEndPoint::GetInterfaceId(InterfaceId * retInterface)
 {
     VerifyOrReturnError(IsConnected(), CHIP_ERROR_INCORRECT_STATE);
 
-    // TODO: Does netif_get_by_index(mTCP->netif_idx) do the right thing?  I
+    // TODO [$61ef8970dc80f90009355945]: Does netif_get_by_index(mTCP->netif_idx) do the right thing?  I
     // can't quite tell whether LwIP supports a specific interface id for TCP at
     // all.  For now just claim no particular interface id.
     *retInterface = INET_NULL_INTERFACEID;
@@ -1443,7 +1443,7 @@ CHIP_ERROR TCPEndPoint::GetInterfaceId(InterfaceId * retInterface)
         }
         else
         {
-            // TODO: Is there still a meaningful interface id in this case?
+            // TODO [$61ef8970dc80f90009355946]: Is there still a meaningful interface id in this case?
             *retInterface = INET_NULL_INTERFACEID;
         }
         return CHIP_NO_ERROR;
@@ -1855,7 +1855,7 @@ CHIP_ERROR TCPEndPoint::BindSrcAddrFromIntf(IPAddressType addrType, InterfaceId 
             {
                 // Select an IPv6 address on the interface that is not
                 // a link local or a multicast address.
-                // TODO: Define a proper IPv6GlobalUnicast address checker.
+                // TODO [$61ef8970dc80f90009355947]: Define a proper IPv6GlobalUnicast address checker.
                 if (!curAddr.IsIPv4() && !curAddr.IsIPv6LinkLocal() && !curAddr.IsMulticast())
                 {
                     // Bind to the IPv6 address of the TargetInterface

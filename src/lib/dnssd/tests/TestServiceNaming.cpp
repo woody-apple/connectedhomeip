@@ -145,7 +145,7 @@ void TestMakeServiceNameSubtype(nlTestSuite * inSuite, void * inContext)
     filter.code = 3;
     NL_TEST_ASSERT(inSuite, MakeServiceSubtype(buffer, sizeof(buffer), filter) == CHIP_NO_ERROR);
     NL_TEST_ASSERT(inSuite, strcmp(buffer, "_T3") == 0);
-    // TODO: Add tests for longer device types once spec issue #3226 is closed.
+    // TODO [$61ef8970dc80f90009355972]: Add tests for longer device types once spec issue #3226 is closed.
 
     // Commisioning mode tests
     filter.type = DiscoveryFilterType::kCommissioningMode;

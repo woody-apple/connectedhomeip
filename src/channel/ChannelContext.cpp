@@ -98,7 +98,7 @@ bool ChannelContext::MatchTransportPreference(ChannelBuilder::TransportPreferenc
 
 bool ChannelContext::MatchCaseParameters()
 {
-    // TODO: not supported yet, should compare CASE parameters here, and return false if doesn't match
+    // TODO [$61ef8970dc80f900093558f8]: not supported yet, should compare CASE parameters here, and return false if doesn't match
     return true;
 }
 
@@ -174,7 +174,7 @@ void ChannelContext::EnterAddressResolve()
         }
     }
 
-    // TODO: call mDNS Scanner::SubscribeNode after PR #4459 is ready
+    // TODO [$61ef8970dc80f900093558f9]: call mDNS Scanner::SubscribeNode after PR #4459 is ready
     // Scanner::RegisterScannerDelegate(this)
     // Scanner::SubscribeNode(GetPrepareVars().mBuilder.GetPeerNodeId())
 
@@ -218,7 +218,7 @@ void ChannelContext::HandleNodeIdResolve(CHIP_ERROR error, uint64_t nodeId, cons
             return;
         }
 
-        // TODO: adjust peer address, secure session manager is not able to change peer address.
+        // TODO [$61ef8970dc80f900093558fa]: adjust peer address, secure session manager is not able to change peer address.
         return;
     }
     case ChannelState::kPreparing: {
@@ -259,7 +259,7 @@ void ChannelContext::EnterCasePairingState()
     auto & prepare              = GetPrepareVars();
     prepare.mCasePairingSession = Platform::New<CASESession>();
 
-    // TODO: currently only supports IP/UDP paring
+    // TODO [$61ef8970dc80f900093558fb]: currently only supports IP/UDP paring
     Transport::PeerAddress addr;
     addr.SetTransportType(Transport::Type::kUdp).SetIPAddress(prepare.mAddress);
 
@@ -317,7 +317,7 @@ void ChannelContext::OnSessionEstablished()
     case PrepareState::kCasePairing:
         ExitCasePairingState();
         GetPrepareVars().mState = PrepareState::kCasePairingDone;
-        // TODO: current CASE paring session API doesn't show how to derive a secure session
+        // TODO [$61ef8970dc80f900093558fc]: current CASE paring session API doesn't show how to derive a secure session
         return;
     default:
         return;
@@ -353,10 +353,10 @@ void ChannelContext::OnConnectionExpired(SessionHandle session)
 
 void ChannelContext::ExitReadyState()
 {
-    // TODO: close sesure session
+    // TODO [$61ef8970dc80f900093558fd]: close sesure session
     // Currently SecureSessionManager doesn't provide an interface to close a session
 
-    // TODO: call mDNS Scanner::UnubscribeNode after PR #4459 is ready
+    // TODO [$61ef8970dc80f900093558fe]: call mDNS Scanner::UnubscribeNode after PR #4459 is ready
     // Scanner::UnsubscribeNode(GetPrepareVars().mBuilder.GetPeerNodeId())
 }
 

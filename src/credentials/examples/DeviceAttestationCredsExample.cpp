@@ -27,7 +27,7 @@ namespace Examples {
 
 namespace {
 
-// TODO: This should be moved to a method of P256Keypair
+// TODO [$61ef8970dc80f90009355930]: This should be moved to a method of P256Keypair
 CHIP_ERROR LoadKeypairFromRaw(ByteSpan private_key, ByteSpan public_key, Crypto::P256Keypair & keypair)
 {
     Crypto::P256SerializedKeypair serialized_keypair;
@@ -144,7 +144,7 @@ CHIP_ERROR ExampleDACProvider::GetProductAttestationIntermediateCert(MutableByte
 
 CHIP_ERROR ExampleDACProvider::GetCertificationDeclaration(MutableByteSpan & out_cd_buffer)
 {
-    // TODO: We need a real example CD to be populated.
+    // TODO [$61ef8970dc80f90009355931]: We need a real example CD to be populated.
     constexpr uint8_t kCertificationDeclaration[128] = { 1 };
 
     return CopySpanToMutableSpan(ByteSpan{ kCertificationDeclaration }, out_cd_buffer);
@@ -152,7 +152,7 @@ CHIP_ERROR ExampleDACProvider::GetCertificationDeclaration(MutableByteSpan & out
 
 CHIP_ERROR ExampleDACProvider::GetFirmwareInformation(MutableByteSpan & out_firmware_info_buffer)
 {
-    // TODO: We need a real example FirmwareInformation to be populated.
+    // TODO [$61ef8970dc80f90009355932]: We need a real example FirmwareInformation to be populated.
     out_firmware_info_buffer.reduce_size(0);
 
     return CHIP_NO_ERROR;

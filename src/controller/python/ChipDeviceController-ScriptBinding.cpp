@@ -315,7 +315,7 @@ ChipError::StorageType pychip_DeviceController_ConnectIP(chip::Controller::Devic
     chip::RendezvousParameters params = chip::RendezvousParameters().SetSetupPINCode(setupPINCode);
 
     VerifyOrReturnError(chip::Inet::IPAddress::FromString(peerAddrStr, peerAddr), CHIP_ERROR_INVALID_ARGUMENT.AsInteger());
-    // TODO: IP rendezvous should use TCP connection.
+    // TODO [$61ef8970dc80f9000935591e]: IP rendezvous should use TCP connection.
     addr.SetTransportType(chip::Transport::Type::kUdp).SetIPAddress(peerAddr);
     params.SetPeerAddress(addr).SetDiscriminator(0);
     return devCtrl->PairDevice(nodeid, params).AsInteger();
@@ -569,7 +569,7 @@ uint64_t pychip_GetCommandSenderHandle(chip::Controller::Device * device)
 
 void pychip_Stack_SetLogFunct(LogMessageFunct logFunct)
 {
-    // TODO: determine if log redirection is supposed to be functioning in CHIP
+    // TODO [$61ef8970dc80f9000935591f]: determine if log redirection is supposed to be functioning in CHIP
     //
     // Background: original log baseline supported 'redirect logs to this
     // function' however CHIP does not currently provide this.

@@ -129,7 +129,7 @@ CHIP_ERROR CHIPPersistentStorageDelegateBridge::SyncSetKeyValue(const char * key
         }
     });
 
-    // TODO: ideally the error from the dispatch should be returned
+    // TODO [$61ef8970dc80f90009355940]: ideally the error from the dispatch should be returned
     // however we expect to replace the storage delegate with KVS so for now
     // we return no error (return used to be void due to async dispatch anyway)
 
@@ -150,7 +150,7 @@ CHIP_ERROR CHIPPersistentStorageDelegateBridge::SyncDeleteKeyValue(const char * 
         }
     });
 
-    // TODO: ideally the error from the dispatch should be returned
+    // TODO [$61ef8970dc80f90009355941]: ideally the error from the dispatch should be returned
     // however we expect to replace the storage delegate with KVS so for now
     // we return no error (return used to be void due to async dispatch anyway)
 

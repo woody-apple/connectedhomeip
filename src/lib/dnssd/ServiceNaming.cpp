@@ -121,7 +121,7 @@ CHIP_ERROR MakeServiceSubtype(char * buffer, size_t bufferLen, DiscoveryFilter s
         requiredSize = snprintf(buffer, bufferLen, "_V%" PRIu16, static_cast<uint16_t>(subtype.code));
         break;
     case DiscoveryFilterType::kDeviceType:
-        // TODO: Not totally clear the size required here: see spec issue #3226
+        // TODO [$61ef8970dc80f90009355968]: Not totally clear the size required here: see spec issue #3226
         requiredSize = snprintf(buffer, bufferLen, "_T%" PRIu16, static_cast<uint16_t>(subtype.code));
         break;
     case DiscoveryFilterType::kCommissioningMode:

@@ -190,7 +190,7 @@ private:
                 // Enforce interface equal-ness if the address is link-local, otherwise ignore interface
                 (a1.GetIPAddress().IsIPv6LinkLocal() ? a1.GetInterface() == a2.GetInterface() : true);
         case Transport::Type::kBle:
-            // TODO: complete BLE address comparation
+            // TODO [$61ef8970dc80f900093559fa]: complete BLE address comparation
             return true;
         }
 

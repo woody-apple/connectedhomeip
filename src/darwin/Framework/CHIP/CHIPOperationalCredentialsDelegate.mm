@@ -152,7 +152,7 @@ CHIP_ERROR CHIPOperationalCredentialsDelegate::GenerateKeys()
     };
 
     OSStatus status = SecItemAdd((__bridge CFDictionaryRef) addParams, NULL);
-    // TODO: Enable SecItemAdd for Darwin unit tests
+    // TODO [$61ef8970dc80f9000935593f]: Enable SecItemAdd for Darwin unit tests
     if (status != errSecSuccess && !isRunningTests()) {
         NSLog(@"Failed in storing key : %d", status);
         return CHIP_ERROR_INTERNAL;

@@ -70,7 +70,7 @@ void ExampleOTARequestor::ConnectToProvider()
                     " (" ChipLogFormatX64 ")",
                     ChipLogValueX64(mProviderNodeId), mProviderFabricIndex, ChipLogValueX64(providerFabric->GetFabricId()));
 
-    // TODO: uncomment and fill in after #7976 is fixed
+    // TODO [$61ef8970dc80f9000935582e]: uncomment and fill in after #7976 is fixed
     // mProviderDevice.Init(mConnectParams, mProviderNodeId, address, mProviderFabricIndex);
     // mProviderDevice.EstablishConnectivity();
 }

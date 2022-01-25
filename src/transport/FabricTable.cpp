@@ -326,7 +326,7 @@ CHIP_ERROR FabricInfo::GenerateDestinationID(const ByteSpan & ipk, const ByteSpa
     Encoding::LittleEndian::BufferWriter bbuf(destinationMessage, sizeof(destinationMessage));
 
     bbuf.Put(random.data(), random.size());
-    // TODO: In the current implementation this check is required because in some cases the
+    // TODO [$61ef8970dc80f900093559e9]: In the current implementation this check is required because in some cases the
     //       GenerateDestinationID() is called before mRootCert is initialized and GetRootPubkey() returns
     //       empty Span.
     if (!rootPubkeySpan.empty())

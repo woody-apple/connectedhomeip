@@ -417,7 +417,7 @@ bool emberAfDoorLockClusterSetHolidayScheduleCallback(app::CommandHandler * comm
     {
         holidayScheduleTable[holidayScheduleId].localStartTime = localStartTime;
         holidayScheduleTable[holidayScheduleId].localEndTime   = localEndTime;
-        // TODO: This cast may not be safe.  https://github.com/project-chip/connectedhomeip/issues/3578
+        // TODO [$61ef8970dc80f90009355891]: This cast may not be safe.  https://github.com/project-chip/connectedhomeip/issues/3578
         holidayScheduleTable[holidayScheduleId].operatingModeDuringHoliday =
             static_cast<EmberAfDoorLockOperatingMode>(operatingModeDuringHoliday);
         holidayScheduleTable[holidayScheduleId].inUse = true;

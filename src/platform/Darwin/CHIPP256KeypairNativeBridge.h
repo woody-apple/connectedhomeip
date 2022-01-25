@@ -26,7 +26,7 @@ namespace Crypto {
 // This class allows bridging a Darwin P256KeypairBase implementation to
 // the expected P256Keypair implementation in libChip.
 //
-// TODO: The Darwin layer is not able to directly extend P256Keypair for some reason.
+// TODO [$61ef8970dc80f90009355991]: The Darwin layer is not able to directly extend P256Keypair for some reason.
 // Remove this wrapper when that is figured out.
 class CHIPP256KeypairNativeBridge : public P256Keypair
 {

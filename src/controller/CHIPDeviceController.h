@@ -562,7 +562,7 @@ private:
 
     Credentials::CertificateType mCertificateTypeBeingRequested = Credentials::CertificateType::kUnknown;
 
-    /* TODO: BLE rendezvous and IP rendezvous should share the same procedure, so this is just a
+    /* TODO [$61ef8970dc80f90009355918]: BLE rendezvous and IP rendezvous should share the same procedure, so this is just a
        workaround-like flag and should be removed in the future.
        When using IP rendezvous, we need to disable network provisioning. In the future, network
        provisioning will no longer be a part of rendezvous procedure. */

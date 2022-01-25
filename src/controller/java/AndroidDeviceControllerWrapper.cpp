@@ -304,7 +304,7 @@ CHIP_ERROR AndroidDeviceControllerWrapper::InitializeOperationalCredentialsIssue
     chip::Crypto::P256SerializedKeypair serializedKey;
     uint16_t keySize = static_cast<uint16_t>(sizeof(serializedKey));
 
-    // TODO: Use Android keystore system instead of direct storage of private key and add specific errors to check if a specified
+    // TODO [$61ef8970dc80f9000935591c]: Use Android keystore system instead of direct storage of private key and add specific errors to check if a specified
     // item is not found in the keystore.
     if (SyncGetKeyValue(kOperationalCredentialsIssuerKeypairStorage, &serializedKey, keySize) != CHIP_NO_ERROR)
     {

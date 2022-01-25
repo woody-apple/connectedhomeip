@@ -33,13 +33,13 @@
 
 using namespace chip;
 
-// TODO: This is not ideal, but we're still sorting out how secure session
+// TODO [$61ef8970dc80f900093558d0]: This is not ideal, but we're still sorting out how secure session
 // managers end up working and whether they're singletons.  In the long term,
 // there will be some sane API that lets us send a message to a given node id.
 //
 // https://github.com/project-chip/connectedhomeip/issues/2566 tracks that API.
 namespace chip {
-// TODO: This is a placeholder delegate for exchange context created in Device::SendMessage()
+// TODO [$61ef8970dc80f900093558d1]: This is a placeholder delegate for exchange context created in Device::SendMessage()
 //       Delete this class when Device::SendMessage() is obsoleted.
 class DeviceExchangeDelegate : public Messaging::ExchangeDelegate
 {
@@ -103,7 +103,7 @@ EmberStatus chipSendUnicast(Messaging::ExchangeContext * exchange, EmberApsFrame
 
 EmberStatus chipSendUnicast(NodeId destination, EmberApsFrame * apsFrame, uint16_t messageLength, uint8_t * message)
 {
-    // TODO: temporary create a handle from node id, will be fix in PR 3602
+    // TODO [$61ef8970dc80f900093558d2]: temporary create a handle from node id, will be fix in PR 3602
     Messaging::ExchangeManager * exchangeMgr = ExchangeManager();
     if (exchangeMgr == nullptr)
     {

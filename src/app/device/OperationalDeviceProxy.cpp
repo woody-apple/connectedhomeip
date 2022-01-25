@@ -43,7 +43,7 @@ CHIP_ERROR OperationalDeviceProxy::Connect(Callback::Callback<OnOperationalDevic
         .storageDelegate = nullptr,
         .idAllocator     = mInitParams.idAllocator,
         .fabricsTable    = mInitParams.fabricsTable,
-        // TODO: Investigate where instantiation of this should reside
+        // TODO [$61ef8970dc80f900093558ae]: Investigate where instantiation of this should reside
         .imDelegate = chip::Platform::New<chip::Controller::DeviceControllerInteractionModelDelegate>(),
     };
 
@@ -120,7 +120,7 @@ void OperationalDeviceProxy::DequeueConnectionFailureCallbacks(CHIP_ERROR error,
 
 void OperationalDeviceProxy::OnNewConnection(SessionHandle session)
 {
-    // TODO: The delegate to ExchangeMgr and should demux and inform this class of connection changes
+    // TODO [$61ef8970dc80f900093558af]: The delegate to ExchangeMgr and should demux and inform this class of connection changes
     // If the secure session established is initiated by another device
     if (!mDevice.IsActive() || mDevice.IsSecureConnected())
     {

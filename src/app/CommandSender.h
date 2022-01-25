@@ -137,7 +137,7 @@ public:
         return FinishCommand(/* aEndDataStruct = */ false);
     }
 
-    // TODO: issue #6792 - the secure session parameter should be made non-optional and passed by reference.
+    // TODO [$61ef8970dc80f90009355882]: issue #6792 - the secure session parameter should be made non-optional and passed by reference.
     //
     // Sends a queued up command request to the target encapsulated by the secureSession handle.
     //

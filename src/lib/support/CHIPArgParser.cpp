@@ -50,7 +50,7 @@
 #include <lib/support/CHIPMemString.h>
 
 /*
- * TODO: Revisit these if and when fabric ID and node ID support has
+ * TODO [$61ef8970dc80f90009355974]: Revisit these if and when fabric ID and node ID support has
  *       been integrated into the stack.
  */
 #ifndef CHIP_ARG_PARSER_PARSE_FABRIC_ID

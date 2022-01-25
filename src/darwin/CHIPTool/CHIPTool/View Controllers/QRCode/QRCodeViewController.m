@@ -659,7 +659,7 @@
 
     _discriminatorLabel.text = [NSString stringWithFormat:@"%@", payload.discriminator];
     _setupPinCodeLabel.text = [NSString stringWithFormat:@"%@", payload.setUpPINCode];
-    // TODO: Only display vid and pid if present
+    // TODO [$61ef8970dc80f9000935593e]: Only display vid and pid if present
     _vendorID.text = [NSString stringWithFormat:@"%@", payload.vendorID];
     _productID.text = [NSString stringWithFormat:@"%@", payload.productID];
 }

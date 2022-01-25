@@ -236,9 +236,9 @@ void DispatchSingleClusterResponseCommand(const ConcreteCommandPath & aCommandPa
 
 /**
  *  Check whether the given cluster exists on the given endpoint and supports the given command.
- *  TODO: The implementation lives in ember-compatibility-functions.cpp, this should be replaced by IM command catalog look up
+ *  TODO [$61ef8970dc80f90009355889]: The implementation lives in ember-compatibility-functions.cpp, this should be replaced by IM command catalog look up
  * function after we have a cluster catalog in interaction model engine.
- *  TODO: The endpoint id on response command (client side command) is unclear, so we don't have a ClientClusterCommandExists
+ *  TODO [$61ef8970dc80f9000935588a]: The endpoint id on response command (client side command) is unclear, so we don't have a ClientClusterCommandExists
  * function. (Spec#3258)
  *
  *  @retval  True if the endpoint contains the server side of the given cluster and that cluster implements the given command, false
@@ -267,7 +267,7 @@ bool ServerClusterCommandExists(const ConcreteCommandPath & aCommandPath);
 CHIP_ERROR ReadSingleClusterData(const ConcreteAttributePath & aPath, TLV::TLVWriter * apWriter, bool * apDataExists);
 
 /**
- * TODO: Document.
+ * TODO [$61ef8970dc80f9000935588b]: Document.
  */
 CHIP_ERROR WriteSingleClusterData(ClusterInfo & aClusterInfo, TLV::TLVReader & aReader, WriteHandler * apWriteHandler);
 } // namespace app

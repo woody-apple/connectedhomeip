@@ -35,10 +35,10 @@ void runTvCommand(TvCommand command)
     switch (command)
     {
     case PowerToggle:
-        // TODO: Insert your code here to send power toggle command
+        // TODO [$61ef8970dc80f9000935583f]: Insert your code here to send power toggle command
         break;
     case MuteToggle:
-        // TODO: Insert your code here to send mute toggle command
+        // TODO [$61ef8970dc80f90009355840]: Insert your code here to send mute toggle command
         break;
 
     default:

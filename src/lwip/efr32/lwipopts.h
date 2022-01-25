@@ -65,7 +65,7 @@
 
 #define LWIP_HAVE_LOOPIF (0)
 
-// TODO: not sure why this is disabled
+// TODO [$61ef8970dc80f90009355976]: not sure why this is disabled
 #define LWIP_NETIF_LOOPBACK (0)
 
 #define MEMP_NUM_NETCONN (0)

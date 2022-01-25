@@ -39,12 +39,12 @@ public:
     PairingSession() {}
     virtual ~PairingSession() {}
 
-    // TODO: the session should know which peer we are trying to connect to at start
+    // TODO [$61ef8970dc80f900093559ec]: the session should know which peer we are trying to connect to at start
     // mPeerNodeId should be const and assigned at the construction, such that GetPeerNodeId will never return kUndefinedNodeId, and
     // SetPeerNodeId is not necessary.
     NodeId GetPeerNodeId() const { return mPeerNodeId; }
 
-    // TODO: the local key id should be allocateed at start
+    // TODO [$61ef8970dc80f900093559ed]: the local key id should be allocateed at start
     // mLocalSessionId should be const and assigned at the construction, such that GetLocalSessionId will always return a valid key
     // id , and SetLocalSessionId is not necessary.
     uint16_t GetLocalSessionId() const { return mLocalSessionId; }
@@ -57,7 +57,7 @@ public:
     }
     bool IsValidPeerSessionId() const { return mPeerSessionId.HasValue(); }
 
-    // TODO: decouple peer address into transport, such that pairing session do not need to handle peer address
+    // TODO [$61ef8970dc80f900093559ee]: decouple peer address into transport, such that pairing session do not need to handle peer address
     const Transport::PeerAddress & GetPeerAddress() const { return mPeerAddress; }
     Transport::PeerAddress & GetPeerAddress() { return mPeerAddress; }
 
@@ -144,7 +144,7 @@ protected:
         return err;
     }
 
-    // TODO: remove Clear, we should create a new instance instead reset the old instance.
+    // TODO [$61ef8970dc80f900093559ef]: remove Clear, we should create a new instance instead reset the old instance.
     void Clear()
     {
         mPeerNodeId  = kUndefinedNodeId;
@@ -156,12 +156,12 @@ protected:
 private:
     NodeId mPeerNodeId = kUndefinedNodeId;
 
-    // TODO: the local key id should be allocateed at start
+    // TODO [$61ef8970dc80f900093559f0]: the local key id should be allocateed at start
     // then we can remove kInvalidKeyId
     static constexpr uint16_t kInvalidKeyId = UINT16_MAX;
     uint16_t mLocalSessionId                = kInvalidKeyId;
 
-    // TODO: decouple peer address into transport, such that pairing session do not need to handle peer address
+    // TODO [$61ef8970dc80f900093559f1]: decouple peer address into transport, such that pairing session do not need to handle peer address
     Transport::PeerAddress mPeerAddress = Transport::PeerAddress::Uninitialized();
 
     Optional<uint16_t> mPeerSessionId;

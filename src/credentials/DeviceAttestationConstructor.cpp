@@ -56,7 +56,7 @@ CHIP_ERROR DeconstructAttestationElements(const ByteSpan & attestationElements, 
 
     CHIP_ERROR error = CHIP_NO_ERROR;
 
-    // TODO: per conversation with Tennessee, shold be two consecutive loops (rather than one big
+    // TODO [$61ef8970dc80f90009355929]: per conversation with Tennessee, shold be two consecutive loops (rather than one big
     // loop, since the contextTags come before the profileTags)
     while ((error = tlvReader.Next()) == CHIP_NO_ERROR)
     {
@@ -114,7 +114,7 @@ CHIP_ERROR DeconstructAttestationElements(const ByteSpan & attestationElements, 
             }
             else
             {
-                // TODO: do not check for this - map vendorId and profileNum to each Vendor Reserved entry
+                // TODO [$61ef8970dc80f9000935592a]: do not check for this - map vendorId and profileNum to each Vendor Reserved entry
                 // check that vendorId and profileNum match in every Vendor Reserved entry
                 VerifyOrReturnError(currentVendorId == vendorId && currentProfileNum == profileNum,
                                     CHIP_ERROR_IM_MALFORMED_COMMAND_DATA_ELEMENT);
@@ -141,7 +141,7 @@ CHIP_ERROR DeconstructAttestationElements(const ByteSpan & attestationElements, 
     return CHIP_NO_ERROR;
 }
 
-// TODO: have independent vendorId and profileNum entries map to each vendor Reserved entry
+// TODO [$61ef8970dc80f9000935592b]: have independent vendorId and profileNum entries map to each vendor Reserved entry
 // Have a class for vendor reserved data, discussed in:
 // https://github.com/project-chip/connectedhomeip/issues/9825
 CHIP_ERROR ConstructAttestationElements(const ByteSpan & certificationDeclaration, const ByteSpan & attestationNonce,

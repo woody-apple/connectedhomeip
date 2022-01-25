@@ -29,7 +29,7 @@ if (EXISTS boards/${BOARD}.conf)
   list(APPEND CONF_FILE boards/${BOARD}.conf)
 endif()
 
-# TODO: temporary fix to remove after solving static addressing problem on nrf5340
+# TODO [$61ef8970dc80f90009355832]: temporary fix to remove after solving static addressing problem on nrf5340
 if(${BOARD} STREQUAL "nrf5340dk_nrf5340_cpuapp")
     list(INSERT OVERLAY_CONFIG 0 ${CHIP_ROOT}/config/nrfconnect/app/overlay-bt_private_addresses.conf)
 endif()

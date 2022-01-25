@@ -278,11 +278,11 @@ static FabricInfo * retrieveCurrentFabric()
     return Server::GetInstance().GetFabricTable().FindFabricWithIndex(index);
 }
 
-// TODO: The code currently has two sources of truths for fabrics, the fabricInfo table + the attributes. There should only be one,
+// TODO [$61ef8970dc80f900093558a2]: The code currently has two sources of truths for fabrics, the fabricInfo table + the attributes. There should only be one,
 // the attributes list. Currently the attributes are not persisted so we are keeping the fabric table to have the
 // fabrics/admrins be persisted. Once attributes are persisted, there should only be one sorce of truth, the attributes list and
 // only that should be modifed to perosst/read/write fabrics.
-// TODO: Once attributes are persisted, implement reading/writing/manipulation fabrics around that and remove fabricTable
+// TODO [$61ef8970dc80f900093558a3]: Once attributes are persisted, implement reading/writing/manipulation fabrics around that and remove fabricTable
 // logic.
 class OpCredsFabricTableDelegate : public FabricTableDelegate
 {
@@ -380,7 +380,7 @@ exit:
             // retries to send the message and runs into issues.
             // We are hijacking the exchange delegate here (as no more messages should be received on this exchange),
             // and wait for it to close, before expiring the secure sessions for the fabric.
-            // TODO: https://github.com/project-chip/connectedhomeip/issues/9642
+            // TODO [$61ef8970dc80f900093558a4]: https://github.com/project-chip/connectedhomeip/issues/9642
             ec->SetDelegate(&gFabricCleanupExchangeDelegate);
         }
         else
@@ -642,7 +642,7 @@ bool emberAfOperationalCredentialsClusterAttestationRequestCallback(app::Command
         uint8_t certDeclBuf[512];
         MutableByteSpan certDeclSpan(certDeclBuf);
 
-        // TODO: retrieve vendor information to populate the fields below.
+        // TODO [$61ef8970dc80f900093558a5]: retrieve vendor information to populate the fields below.
         uint32_t timestamp = 0;
         ByteSpan firmwareInfo;
         ByteSpan * vendorReservedArray = nullptr;
@@ -651,7 +651,7 @@ bool emberAfOperationalCredentialsClusterAttestationRequestCallback(app::Command
         uint16_t profileNum            = 0;
 
         SuccessOrExit(err = dacProvider->GetCertificationDeclaration(certDeclSpan));
-        // TODO: Retrieve firmware Information
+        // TODO [$61ef8970dc80f900093558a6]: Retrieve firmware Information
 
         attestationElementsLen = certDeclSpan.size() + attestationNonce.size() + sizeof(uint64_t) * 8;
         VerifyOrExit(attestationElements.Alloc(attestationElementsLen), err = CHIP_ERROR_NO_MEMORY);
@@ -667,7 +667,7 @@ bool emberAfOperationalCredentialsClusterAttestationRequestCallback(app::Command
         uint8_t md[Crypto::kSHA256_Hash_Length];
         MutableByteSpan messageDigestSpan(md);
 
-        // TODO: Create an alternative way to retrieve the Attestation Challenge without this huge amount of calls.
+        // TODO [$61ef8970dc80f900093558a7]: Create an alternative way to retrieve the Attestation Challenge without this huge amount of calls.
         // Retrieve attestation challenge
         ByteSpan attestationChallenge = commandObj->GetExchangeContext()
                                             ->GetExchangeMgr()

@@ -399,7 +399,7 @@ CHIP_ERROR ThreadStackManagerImpl::_SetThreadPollingConfig(const ConnectivityMan
 
 bool ThreadStackManagerImpl::_HaveMeshConnectivity()
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559a7]: Remove Weave legacy APIs
     // For a leader with a child, the child is considered to have mesh connectivity
     // and the leader is not, which is a very confusing definition.
     // This API is Weave legacy and should be removed.
@@ -415,19 +415,19 @@ void ThreadStackManagerImpl::_OnMessageLayerActivityChanged(bool messageLayerIsA
 
 CHIP_ERROR ThreadStackManagerImpl::_GetAndLogThreadStatsCounters()
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559a8]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
 CHIP_ERROR ThreadStackManagerImpl::_GetAndLogThreadTopologyMinimal()
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559a9]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
 CHIP_ERROR ThreadStackManagerImpl::_GetAndLogThreadTopologyFull()
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559aa]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
@@ -447,19 +447,19 @@ CHIP_ERROR ThreadStackManagerImpl::_GetPrimary802154MACAddress(uint8_t * buf)
 
 CHIP_ERROR ThreadStackManagerImpl::_GetExternalIPv6Address(chip::Inet::IPAddress & addr)
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559ab]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
 CHIP_ERROR ThreadStackManagerImpl::_GetPollPeriod(uint32_t & buf)
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559ac]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 
 CHIP_ERROR ThreadStackManagerImpl::_JoinerStart()
 {
-    // TODO: Remove Weave legacy APIs
+    // TODO [$61ef8970dc80f900093559ad]: Remove Weave legacy APIs
     return CHIP_ERROR_NOT_IMPLEMENTED;
 }
 

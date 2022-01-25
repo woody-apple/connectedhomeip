@@ -43,7 +43,7 @@ void LightingManager::SetCallbacks(LightingCallback_fn aActionInitiated_CB, Ligh
 
 bool LightingManager::InitiateAction(Action_t aAction)
 {
-    // TODO: this function is called InitiateAction because we want to implement some features such as ramping up here.
+    // TODO [$61ef8970dc80f9000935581b]: this function is called InitiateAction because we want to implement some features such as ramping up here.
     bool action_initiated = false;
     State_t new_state;
 

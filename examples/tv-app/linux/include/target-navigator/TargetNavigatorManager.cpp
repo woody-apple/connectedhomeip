@@ -40,7 +40,7 @@ exit:
 CHIP_ERROR TargetNavigatorManager::proxyGetTargetInfoList(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f9000935585c]: Insert code here
         int maximumVectorSize = 2;
         char name[]           = "exampleName";
 
@@ -57,7 +57,7 @@ CHIP_ERROR TargetNavigatorManager::proxyGetTargetInfoList(chip::app::AttributeVa
 
 TargetNavigatorResponse targetNavigatorClusterNavigateTarget(uint8_t target, std::string data)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f9000935585d]: Insert code here
     TargetNavigatorResponse response;
     const char * testData = "data response";
     response.data         = (uint8_t *) testData;

@@ -91,12 +91,12 @@ static void stepHandler(CommandId commandId, uint8_t stepMode, uint8_t stepSize,
             if (state->increasing)
             {
                 ChipLogProgress(Zcl, "Volume UP");
-                // TODO: Insert your code here to send volume up command
+                // TODO [$61ef8970dc80f90009355848]: Insert your code here to send volume up command
             }
             else
             {
                 ChipLogProgress(Zcl, "Volume DOWN");
-                // TODO: Insert your code here to send volume down command
+                // TODO [$61ef8970dc80f90009355849]: Insert your code here to send volume down command
             }
         }
         status             = emberAfWriteServerAttribute(endpoint, ZCL_LEVEL_CONTROL_CLUSTER_ID, ZCL_CURRENT_LEVEL_ATTRIBUTE_ID,

@@ -581,7 +581,7 @@ void BLEManagerImpl::DriveBLEState(void)
     // Stop the CHIPoBLE GATT service if needed.
     if (mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kGATTServiceStarted))
     {
-        // TODO: Not supported
+        // TODO [$61ef8970dc80f9000935599e]: Not supported
     }
 
 exit:
@@ -830,7 +830,7 @@ exit:
     if (err != CHIP_NO_ERROR)
     {
         ChipLogError(DeviceLayer, "HandleTXCharCCCDWrite() failed: %s", ErrorStr(err));
-        // TODO: fail connection???
+        // TODO [$61ef8970dc80f9000935599f]: fail connection???
     }
 
     return;

@@ -85,7 +85,7 @@ struct DiscoveredNodeData
     uint16_t vendorId;
     uint16_t productId;
     uint8_t commissioningMode;
-    // TODO: possibly 32-bit - see spec issue #3226
+    // TODO [$61ef8970dc80f90009355964]: possibly 32-bit - see spec issue #3226
     uint16_t deviceType;
     char deviceName[kMaxDeviceNameLen + 1];
     uint8_t rotatingId[kMaxRotatingIdLen];

@@ -502,7 +502,7 @@ class DeviceMgrCmd(Cmd):
         currently, only connect using setupPinCode is supported.
         -qr option will connect to the first device with a matching long discriminator.
 
-        TODO: Add more methods to connect to device (like cert for auth, and IP
+        TODO [$61ef8970dc80f90009355920]: Add more methods to connect to device (like cert for auth, and IP
               for connection)
         """
 

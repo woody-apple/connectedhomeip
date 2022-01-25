@@ -852,7 +852,7 @@ bool emberAfPluginScenesServerParseAddScene(
 
         ClusterId clusterId = fieldSet.clusterId;
 
-        // TODO: We need to encode scene field sets in TLV.
+        // TODO [$61ef8970dc80f900093558a9]: We need to encode scene field sets in TLV.
         // https://github.com/project-chip/connectedhomeip/issues/10334
         switch (clusterId)
         {

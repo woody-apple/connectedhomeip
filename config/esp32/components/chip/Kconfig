@@ -103,7 +103,7 @@ menu "CHIP Core"
             help
                 Matter spec is based on IPv6 communication only. Enabling this option may save some flash/ram.
 
-        # TODO: add log level selection
+        # TODO [$61ef8970dc80f90009355813]: add log level selection
 
     endmenu # "General Options"
 

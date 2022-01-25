@@ -33,7 +33,7 @@ executable("chip-bridge-app") {
 
   cflags = [ "-Wconversion" ]
 
-  # TODO: the definition of DYNAMIC_ENDPOINT_COUNT needs find a common home!
+  # TODO [$61ef8970dc80f90009355816]: the definition of DYNAMIC_ENDPOINT_COUNT needs find a common home!
   cflags += [ "-DDYNAMIC_ENDPOINT_COUNT=16" ]
 
   include_dirs = [ "include" ]

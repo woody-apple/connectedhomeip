@@ -23,12 +23,12 @@ limitations under the License.
     <define>TV_CHANNEL_CLUSTER</define>
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
-    <!-- TODO: Add feature map once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558f4]: Add feature map once it is supported -->
     <description>This cluster provides an interface for controlling the current TV Channel on a device.</description>
     <attribute side="server" code="0x0000" define="TV_CHANNEL_LIST" type="ARRAY" entryType="TvChannelInfo" length="254" writable="false" optional="false">tv channel list</attribute>
-    <!-- TODO: Covert this to stuct one it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558f5]: Covert this to stuct one it is supported -->
     <attribute side="server" code="0x0001" define="TV_CHANNEL_LINEUP" type="OCTET_STRING" length="32" writable="false" optional="false">tv channel lineup</attribute>
-    <!-- TODO: Covert this to stuct one it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558f6]: Covert this to stuct one it is supported -->
     <attribute side="server" code="0x0002" define="TV_CHANNEL_CURRENT_CHANNEL" type="OCTET_STRING" length="32" writable="false" optional="false">current tv channel</attribute>
 
     <command source="client" code="0x00" name="ChangeChannel" optional="false">

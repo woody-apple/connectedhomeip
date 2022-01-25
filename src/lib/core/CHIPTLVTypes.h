@@ -51,7 +51,7 @@ enum TLVType
     kTLVType_List      = 0x17
 };
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355955]: Move to private namespace
 enum class TLVElementType : int8_t
 {
     // IMPORTANT: All values here except NotSpecified must have no bits in
@@ -98,7 +98,7 @@ inline bool operator>=(const T & lhs, TLVElementType rhs)
     return lhs >= static_cast<int8_t>(rhs);
 }
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355956]: Move to private namespace
 enum TLVFieldSize
 {
     kTLVFieldSize_0Byte = -1,
@@ -108,7 +108,7 @@ enum TLVFieldSize
     kTLVFieldSize_8Byte = 3
 };
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355957]: Move to private namespace
 enum
 {
     kTLVTypeMask     = 0x1F,
@@ -191,7 +191,7 @@ inline bool TLVTypeIsByteString(TLVElementType type)
     return type >= TLVElementType::ByteString_1ByteLength && type <= TLVElementType::ByteString_8ByteLength;
 }
 
-// TODO: move to private namespace
+// TODO [$61ef8970dc80f90009355958]: move to private namespace
 inline TLVFieldSize GetTLVFieldSize(TLVElementType type)
 {
     if (TLVTypeHasValue(type))
@@ -199,7 +199,7 @@ inline TLVFieldSize GetTLVFieldSize(TLVElementType type)
     return kTLVFieldSize_0Byte;
 }
 
-// TODO: move to private namespace
+// TODO [$61ef8970dc80f90009355959]: move to private namespace
 inline uint8_t TLVFieldSizeToBytes(TLVFieldSize fieldSize)
 {
     // We would like to assert fieldSize < 7, but that gives us fatal

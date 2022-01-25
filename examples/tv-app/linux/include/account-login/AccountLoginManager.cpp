@@ -29,7 +29,7 @@ using namespace std;
 
 bool AccountLoginManager::isUserLoggedIn(string requestTempAccountIdentifier, string requestSetupPin)
 {
-    // TODO: Fix hardcoding length of strings
+    // TODO [$61ef8970dc80f90009355835]: Fix hardcoding length of strings
     requestTempAccountIdentifier = requestTempAccountIdentifier.substr(0, 4);
     requestSetupPin              = requestSetupPin.substr(0, 10);
     for (auto it = accounts.cbegin(); it != accounts.cend(); ++it)
@@ -56,14 +56,14 @@ bool AccountLoginManager::isUserLoggedIn(string requestTempAccountIdentifier, st
 
 void AccountLoginManager::setTempAccountIdentifierForPin(string tempAccountIdentifier, string setupPin)
 {
-    // TODO: Fix hardcoding length of strings
+    // TODO [$61ef8970dc80f90009355836]: Fix hardcoding length of strings
     string tempId    = tempAccountIdentifier.substr(0, 4);
     accounts[tempId] = setupPin;
 }
 
 string AccountLoginManager::proxySetupPinRequest(string requestTempAccountIdentifier, chip::EndpointId endpoint)
 {
-    // TODO: Insert your code here to send temp account identifier request
+    // TODO [$61ef8970dc80f90009355837]: Insert your code here to send temp account identifier request
     return "tempPin123";
 }
 

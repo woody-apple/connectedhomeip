@@ -404,7 +404,7 @@ void emberAfRetrieveAttributeAndCraftResponse(EndpointId endpoint, ClusterId clu
 #else  //(BIGENDIAN_CPU)
         memmove(&(appResponseData[appResponseLength]), data, dataLen);
 #endif //(BIGENDIAN_CPU)
-       // TODO: How do we know this does not overflow?
+       // TODO [$61ef8970dc80f900093558cf]: How do we know this does not overflow?
         appResponseLength = static_cast<uint16_t>(appResponseLength + dataLen);
     }
 

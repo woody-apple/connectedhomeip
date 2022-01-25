@@ -37,7 +37,7 @@ namespace DeviceLayer {
 
 using namespace ::chip::DeviceLayer::Internal;
 
-// TODO: Define a Singleton instance of CHIP Group Key Store here
+// TODO [$61ef8970dc80f900093559c9]: Define a Singleton instance of CHIP Group Key Store here
 
 /** Singleton instance of the ConfigurationManager implementation object.
  */
@@ -52,7 +52,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     err = Internal::GenericConfigurationManagerImpl<ConfigurationManagerImpl>::Init();
     SuccessOrExit(err);
 
-    // TODO: Initialize the global GroupKeyStore object here
+    // TODO [$61ef8970dc80f900093559ca]: Initialize the global GroupKeyStore object here
 
     // If the fail-safe was armed when the device last shutdown, initiate a factory reset.
     if (GetFailSafeArmed(failSafeArmed) == CHIP_NO_ERROR && failSafeArmed)
@@ -68,7 +68,7 @@ exit:
 
 bool ConfigurationManagerImpl::CanFactoryReset()
 {
-    // TODO: query the application to determine if factory reset is allowed.
+    // TODO [$61ef8970dc80f900093559cb]: query the application to determine if factory reset is allowed.
     return true;
 }
 

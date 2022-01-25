@@ -159,7 +159,7 @@ CHIP_ERROR GetQRCode(std::string & aQRCode, chip::RendezvousInformationFlags aRe
         return err;
     }
 
-    // TODO: Usage of STL will significantly increase the image size, this should be changed to more efficient method for
+    // TODO [$61ef8970dc80f900093558b8]: Usage of STL will significantly increase the image size, this should be changed to more efficient method for
     // generating payload
     err = chip::QRCodeSetupPayloadGenerator(payload).payloadBase38Representation(aQRCode);
     if (err != CHIP_NO_ERROR)

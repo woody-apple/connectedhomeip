@@ -37,7 +37,7 @@ bool IsCurrentInterfaceUsable(T & iterator)
         return false;
     }
 
-    // TODO: need a better way to ignore local loopback interfaces/addresses
+    // TODO [$61ef8970dc80f90009355963]: need a better way to ignore local loopback interfaces/addresses
     // We do not want to listen on local loopback even though they are up and
     // support multicast
     //

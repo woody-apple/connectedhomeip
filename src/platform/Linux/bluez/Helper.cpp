@@ -851,7 +851,7 @@ static void UpdateConnectionTable(BluezDevice1 * apDevice, BluezEndpoint & aEndp
     {
         ChipLogDetail(DeviceLayer, "Bluez disconnected");
         BLEManagerImpl::CHIPoBluez_ConnectionClosed(connection);
-        // TODO: the connection object should be released after BLEManagerImpl finishes cleaning up its resources
+        // TODO [$61ef8970dc80f900093559ae]: the connection object should be released after BLEManagerImpl finishes cleaning up its resources
         // after the disconnection. Releasing it here doesn't cause any issues, but it's error-prone.
         BluezOTConnectionDestroy(connection);
         g_hash_table_remove(aEndpoint.mpConnMap, objectPath);
@@ -907,7 +907,7 @@ static void BluezHandleNewDevice(BluezDevice1 * device, BluezEndpoint * apEndpoi
     // We need to handle device connection both this function and BluezSignalInterfacePropertiesChanged
     // When a device is connected for first time, this function will be triggerred.
     // The future connections for the same device will trigger ``Connect'' property change.
-    // TODO: Factor common code in the two function.
+    // TODO [$61ef8970dc80f900093559af]: Factor common code in the two function.
     BluezConnection * conn;
     VerifyOrExit(bluez_device1_get_connected(device), ChipLogError(DeviceLayer, "FAIL: device is not connected"));
 
@@ -932,7 +932,7 @@ exit:
 
 static void BluezSignalOnObjectAdded(GDBusObjectManager * aManager, GDBusObject * aObject, BluezEndpoint * endpoint)
 {
-    // TODO: right now we do not handle addition/removal of adapters
+    // TODO [$61ef8970dc80f900093559b0]: right now we do not handle addition/removal of adapters
     // Primary focus here is to handle addition of a device
     BluezDevice1 * device = bluez_object_get_device1(BLUEZ_OBJECT(aObject));
     if (device == nullptr)
@@ -950,7 +950,7 @@ static void BluezSignalOnObjectAdded(GDBusObjectManager * aManager, GDBusObject 
 
 static void BluezSignalOnObjectRemoved(GDBusObjectManager * aManager, GDBusObject * aObject, gpointer apClosure)
 {
-    // TODO: for Device1, lookup connection, and call otPlatTobleHandleDisconnected
+    // TODO [$61ef8970dc80f900093559b1]: for Device1, lookup connection, and call otPlatTobleHandleDisconnected
     // for Adapter1: unclear, crash if this pertains to our adapter? at least null out the endpoint->mpAdapter.
     // for Characteristic1, or GattService -- handle here via calling otPlatTobleHandleDisconnected, or ignore.
 }

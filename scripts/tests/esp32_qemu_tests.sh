@@ -61,7 +61,7 @@ run_suite() {
 SUITES=(
 )
 
-# TODO: libAppTests depends on MessagingTestHelpers, which depends on
+# TODO [$61ef8970dc80f90009355873]: libAppTests depends on MessagingTestHelpers, which depends on
 # NetworkTestHelpers.  That sort of depends on InetTestHelpers or
 # equivalent (to provide gSystemLayer, gInet, InitNetwork(),
 # ShutdownNetwork()) but there's only a POSIX implementation of that
@@ -78,13 +78,13 @@ run_suite libRetransmitTests.a
 run_suite libSystemLayerTests.a
 run_suite libChipCryptoTests.a "-lChipCertTestVectors"
 
-# TODO: Transport layer tests do not link:
+# TODO [$61ef8970dc80f90009355874]: Transport layer tests do not link:
 #    - getpid undefined
 #    - ArgParser for IPAddresses are not linked in
 #    - std::__throw_bad_alloc() linker errors
 # run_suite libRawTransportTests.a "-lNetworkTestHelpers -lInetTestHelpers"
 
-# TODO: Transport layer tests do not link:
+# TODO [$61ef8970dc80f90009355875]: Transport layer tests do not link:
 #    - getpid undefined
 #    - ArgParser for IPAddresses are not linked in
 #    - std::__throw_bad_alloc() linker errors

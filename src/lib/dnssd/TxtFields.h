@@ -101,7 +101,7 @@ uint16_t GetProduct(const ByteSpan & value);
 uint16_t GetVendor(const ByteSpan & value);
 uint16_t GetLongDiscriminator(const ByteSpan & value);
 uint8_t GetCommissioningMode(const ByteSpan & value);
-// TODO: possibly 32-bit? see spec issue #3226
+// TODO [$61ef8970dc80f9000935596a]: possibly 32-bit? see spec issue #3226
 uint16_t GetDeviceType(const ByteSpan & value);
 void GetDeviceName(const ByteSpan & value, char * name);
 void GetRotatingDeviceId(const ByteSpan & value, uint8_t * rotatingId, size_t * len);

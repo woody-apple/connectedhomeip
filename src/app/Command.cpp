@@ -209,7 +209,7 @@ void Command::Abort()
         // exchange, and we don't want the OnExchangeClosing notification in
         // that case.  Null out the delegate to avoid that.
         //
-        // TODO: This makes all sorts of assumptions about what the delegate is
+        // TODO [$61ef8970dc80f9000935587d]: This makes all sorts of assumptions about what the delegate is
         // (notice the "might" above!) that might not hold in practice.  We
         // really need a better solution here....
         mpExchangeCtx->SetDelegate(nullptr);

@@ -154,7 +154,7 @@ class AndroidBuilder(Builder):
     def _build(self):
         if self.board.IsIde():
             # App compilation IDE
-            # TODO: Android Gradle with module and -PbuildDir= will caused issue, remove -PbuildDir=
+            # TODO [$61ef8970dc80f90009355866]: Android Gradle with module and -PbuildDir= will caused issue, remove -PbuildDir=
             self._Execute([
                 '%s/src/android/%s/gradlew' % (self.root,
                                                self.app.AppName()), '-p',
@@ -181,7 +181,7 @@ class AndroidBuilder(Builder):
             self._Execute(['mkdir', '-p', jnilibs_dir],
                           title='Prepare Native libs ' + self.identifier)
 
-            # TODO: Runtime dependencies should be computed by the build system rather than hardcoded
+            # TODO [$61ef8970dc80f90009355867]: Runtime dependencies should be computed by the build system rather than hardcoded
             # GN supports getting these dependencies like:
             #   gn desc out/android-x64-chip_tool/ //src/controller/java runtime_deps
             #   gn desc out/android-x64-chip_tool/ //src/setup_payload/java runtime_deps

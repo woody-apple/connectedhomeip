@@ -27,7 +27,7 @@
 
 #define ChipDie() abort()
 
-// TODO:(#756) Add FabricState support
+// TODO [$61ef8970dc80f90009355992]:(#756) Add FabricState support
 #define CHIP_CONFIG_ENABLE_FABRIC_STATE 0
 
 #define CHIP_CONFIG_TIME_ENABLE_CLIENT 1

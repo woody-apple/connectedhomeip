@@ -103,7 +103,7 @@ CHIP_ERROR Engine::BuildSingleReportDataAttributeDataList(ReportData::Builder & 
     aReportDataBuilder.Checkpoint(backup);
     AttributeDataList::Builder attributeDataList = aReportDataBuilder.CreateAttributeDataListBuilder();
     SuccessOrExit(err = aReportDataBuilder.GetError());
-    // TODO: Need to handle multiple chunk of message
+    // TODO [$61ef8970dc80f900093558b4]: Need to handle multiple chunk of message
     for (auto clusterInfo = apReadHandler->GetAttributeClusterInfolist(); clusterInfo != nullptr; clusterInfo = clusterInfo->mpNext)
     {
         if (apReadHandler->IsInitialReport())
@@ -280,8 +280,8 @@ CHIP_ERROR Engine::BuildAndSendSingleReportData(ReadHandler * apReadHandler)
     err = BuildSingleReportDataEventList(reportDataBuilder, apReadHandler);
     SuccessOrExit(err);
 
-    // TODO: Add mechanism to set mSuppressResponse to handle status reports for multiple reports
-    // TODO: Add more chunk message support, currently mMoreChunkedMessages is always false.
+    // TODO [$61ef8970dc80f900093558b5]: Add mechanism to set mSuppressResponse to handle status reports for multiple reports
+    // TODO [$61ef8970dc80f900093558b6]: Add more chunk message support, currently mMoreChunkedMessages is always false.
     if (mMoreChunkedMessages)
     {
         reportDataBuilder.MoreChunkedMessages(mMoreChunkedMessages);

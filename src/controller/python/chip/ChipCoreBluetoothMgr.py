@@ -557,5 +557,5 @@ class CoreBluetoothManager(ChipBleBase):
         return True
 
     def updateCharacteristic(self, bytes, svcId, charId):
-        # TODO: implement this for Peripheral support.
+        # TODO [$61ef8970dc80f90009355921]: implement this for Peripheral support.
         return False

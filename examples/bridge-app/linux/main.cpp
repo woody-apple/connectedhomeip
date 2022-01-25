@@ -200,12 +200,12 @@ void EncodeFixedLabel(const char * label, const char * value, uint8_t * buffer, 
     uint16_t listCount = 1;
     _LabelStruct labelStruct;
 
-    // TODO: This size is obviously wrong.  See
+    // TODO [$61ef8970dc80f90009355817]: This size is obviously wrong.  See
     // https://github.com/project-chip/connectedhomeip/issues/10743
     labelStruct.label = CharSpan(label, kFixedLabelElementsOctetStringSize);
 
     strncpy(zclOctetStrBuf, value, sizeof(zclOctetStrBuf));
-    // TODO: This size is obviously wrong.  See
+    // TODO [$61ef8970dc80f90009355818]: This size is obviously wrong.  See
     // https://github.com/project-chip/connectedhomeip/issues/10743
     labelStruct.value = CharSpan(&zclOctetStrBuf[0], sizeof(zclOctetStrBuf));
 

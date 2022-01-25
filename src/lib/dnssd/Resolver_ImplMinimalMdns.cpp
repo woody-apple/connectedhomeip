@@ -171,7 +171,7 @@ void PacketDataReporter::OnCommissionableNodeSrvRecord(SerializedQNameIterator n
 
 void PacketDataReporter::OnOperationalIPAddress(const chip::Inet::IPAddress & addr)
 {
-    // TODO: should validate that the IP address we receive belongs to the
+    // TODO [$61ef8970dc80f90009355965]: should validate that the IP address we receive belongs to the
     // server associated with the SRV record.
     //
     // This code assumes that all entries in the mDNS packet relate to the
@@ -228,7 +228,7 @@ void PacketDataReporter::OnResource(ResourceType type, const ResourceData & data
         else if (mDiscoveryType == DiscoveryType::kOperational)
         {
             // Ensure this is our record.
-            // TODO: Fix this comparison which is too loose.
+            // TODO [$61ef8970dc80f90009355966]: Fix this comparison which is too loose.
             if (HasQNamePart(data.GetName(), kOperationalServiceName))
             {
                 OnOperationalSrvRecord(data.GetName(), srv);
@@ -236,7 +236,7 @@ void PacketDataReporter::OnResource(ResourceType type, const ResourceData & data
         }
         else if (mDiscoveryType == DiscoveryType::kCommissionableNode || mDiscoveryType == DiscoveryType::kCommissionerNode)
         {
-            // TODO: Fix this comparison which is too loose.
+            // TODO [$61ef8970dc80f90009355967]: Fix this comparison which is too loose.
             if (HasQNamePart(data.GetName(), kCommissionableServiceName) || HasQNamePart(data.GetName(), kCommissionerServiceName))
             {
                 OnCommissionableNodeSrvRecord(data.GetName(), srv);

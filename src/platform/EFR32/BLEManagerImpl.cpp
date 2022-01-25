@@ -819,7 +819,7 @@ void BLEManagerImpl::UpdateMtu(volatile sl_bt_msg_t * evt)
         // via explicit cast; we have to disable the warning around the
         // assignment.
         //
-        // TODO: https://github.com/project-chip/connectedhomeip/issues/2569
+        // TODO [$61ef8970dc80f90009355994]: https://github.com/project-chip/connectedhomeip/issues/2569
         // tracks making this safe with a check or explaining why no check
         // is needed.
 #pragma GCC diagnostic push

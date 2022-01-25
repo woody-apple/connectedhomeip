@@ -246,7 +246,7 @@ private:
 
 // Once attribute store has persistence implemented, FabricTable shoud be backed using
 // attribute store so no need for this Delegate API anymore
-// TODO: Reimplement FabricTable to only have one backing store.
+// TODO [$61ef8970dc80f900093559ea]: Reimplement FabricTable to only have one backing store.
 class DLL_EXPORT FabricTableDelegate
 {
 public:
@@ -381,7 +381,7 @@ private:
     FabricInfo mStates[CHIP_CONFIG_MAX_DEVICE_ADMINS];
     PersistentStorageDelegate * mStorage = nullptr;
 
-    // TODO: Fabric table should be backed by a single backing store (attribute store), remove delegate callbacks #6419
+    // TODO [$61ef8970dc80f900093559eb]: Fabric table should be backed by a single backing store (attribute store), remove delegate callbacks #6419
     FabricTableDelegate * mDelegate = nullptr;
 
     FabricIndex mNextAvailableFabricIndex = kMinValidFabricIndex;

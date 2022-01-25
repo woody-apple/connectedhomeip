@@ -35,13 +35,13 @@
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
 // Include DeviceNetworkProvisioningDelegateImpl for WiFi provisioning.
-// TODO: Enable wifi network should be done by ConnectivityManager. (Or other platform neutral interfaces)
+// TODO [$61ef8970dc80f9000935589a]: Enable wifi network should be done by ConnectivityManager. (Or other platform neutral interfaces)
 #if defined(CHIP_DEVICE_LAYER_TARGET)
 #define DEVICENETWORKPROVISIONING_HEADER <platform/CHIP_DEVICE_LAYER_TARGET/DeviceNetworkProvisioningDelegateImpl.h>
 #include DEVICENETWORKPROVISIONING_HEADER
 #endif
 
-// TODO: Configuration should move to build-time configuration
+// TODO [$61ef8970dc80f9000935589b]: Configuration should move to build-time configuration
 #ifndef CHIP_CLUSTER_NETWORK_COMMISSIONING_MAX_NETWORKS
 #define CHIP_CLUSTER_NETWORK_COMMISSIONING_MAX_NETWORKS 4
 #endif // CHIP_CLUSTER_NETWORK_COMMISSIONING_MAX_NETWORKS
@@ -142,7 +142,7 @@ EmberAfNetworkCommissioningError OnAddThreadNetworkCommandCallbackInternal(app::
     }
 
 exit:
-    // TODO: We should encode response command here.
+    // TODO [$61ef8970dc80f9000935589c]: We should encode response command here.
 
     ChipLogDetail(Zcl, "AddThreadNetwork: %" PRIu8, err);
     return err;
@@ -199,7 +199,7 @@ EmberAfNetworkCommissioningError OnAddWiFiNetworkCommandCallbackInternal(app::Co
 
     ChipLogDetail(Zcl, "WiFi provisioning data: SSID: %.*s", static_cast<int>(ssid.size()), ssid.data());
 exit:
-    // TODO: We should encode response command here.
+    // TODO [$61ef8970dc80f9000935589d]: We should encode response command here.
 
     ChipLogDetail(Zcl, "AddWiFiNetwork: %" PRIu8, err);
     return err;
@@ -217,7 +217,7 @@ CHIP_ERROR DoEnableNetwork(NetworkInfo * network)
     {
     case NetworkType::kThread:
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-// TODO: On linux, we are using Reset() instead of Detach() to disable thread network, which is not expected.
+// TODO [$61ef8970dc80f9000935589e]: On linux, we are using Reset() instead of Detach() to disable thread network, which is not expected.
 // Upstream issue: https://github.com/openthread/ot-br-posix/issues/755
 #if !CHIP_DEVICE_LAYER_TARGET_LINUX
         ReturnErrorOnFailure(DeviceLayer::ThreadStackMgr().SetThreadEnabled(false));
@@ -231,7 +231,7 @@ CHIP_ERROR DoEnableNetwork(NetworkInfo * network)
     case NetworkType::kWiFi:
 #if defined(CHIP_DEVICE_LAYER_TARGET)
     {
-        // TODO: Currently, DeviceNetworkProvisioningDelegateImpl assumes that ssid and credentials are null terminated strings,
+        // TODO [$61ef8970dc80f9000935589f]: Currently, DeviceNetworkProvisioningDelegateImpl assumes that ssid and credentials are null terminated strings,
         // which is not correct, this should be changed once we have better method for commissioning wifi networks.
         DeviceLayer::DeviceNetworkProvisioningDelegateImpl deviceDelegate;
         ReturnErrorOnFailure(deviceDelegate.ProvisionWiFi(reinterpret_cast<const char *>(network->mData.mWiFi.mSSID),
@@ -264,14 +264,14 @@ EmberAfNetworkCommissioningError OnEnableNetworkCommandCallbackInternal(app::Com
             sNetworks[networkSeq].mNetworkType != NetworkType::kUndefined &&
             memcmp(sNetworks[networkSeq].mNetworkID, networkID.data(), networkID.size()) == 0)
         {
-            // TODO: Currently, we cannot figure out the detailed error from network provisioning on DeviceLayer, we should
+            // TODO [$61ef8970dc80f900093558a0]: Currently, we cannot figure out the detailed error from network provisioning on DeviceLayer, we should
             // implement this in device layer.
             VerifyOrExit(DoEnableNetwork(&sNetworks[networkSeq]) == CHIP_NO_ERROR,
                          err = EMBER_ZCL_NETWORK_COMMISSIONING_ERROR_UNKNOWN_ERROR);
             ExitNow(err = EMBER_ZCL_NETWORK_COMMISSIONING_ERROR_SUCCESS);
         }
     }
-    // TODO: We should encode response command here.
+    // TODO [$61ef8970dc80f900093558a1]: We should encode response command here.
 exit:
     if (err == EMBER_ZCL_NETWORK_COMMISSIONING_ERROR_SUCCESS)
     {

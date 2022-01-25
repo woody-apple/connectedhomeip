@@ -100,7 +100,7 @@ CHIP_ERROR ResponseSender::Respond(uint32_t messageId, const QueryData & query, 
         {
             // According to https://tools.ietf.org/html/rfc6762#section-6  we should multicast at most 1/sec
             //
-            // TODO: the 'last sent' value does NOT track the interface we used to send, so this may cause
+            // TODO [$61ef8970dc80f9000935596d]: the 'last sent' value does NOT track the interface we used to send, so this may cause
             //       broadcasts on one interface to throttle broadcasts on another interface.
             constexpr uint64_t kOneSecondMs = 1000;
             responseFilter.SetIncludeOnlyMulticastBeforeMS(kTimeNowMs - kOneSecondMs);

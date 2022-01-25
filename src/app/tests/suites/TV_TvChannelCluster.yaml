@@ -40,7 +40,7 @@ tests:
                       affiliateCallSign: 13,
                   },
               ]
-    # TODO: Enable the test once struct response is supported
+    # TODO [$61ef8970dc80f900093558c3]: Enable the test once struct response is supported
     # - label: "Change Channel Command"
     #   command: "ChangeChannel"
     #   arguments:

@@ -62,7 +62,7 @@ enum class AttestationVerificationResult : uint16_t
 
     kNotImplemented = 0xFFFFU,
 
-    // TODO: Add more attestation verification errors
+    // TODO [$61ef8970dc80f9000935592c]: Add more attestation verification errors
 };
 
 enum CertificateType : uint8_t
@@ -101,8 +101,8 @@ public:
                                  const ByteSpan & attestationSignatureBuffer, const ByteSpan & paiCertDerBuffer,
                                  const ByteSpan & dacCertDerBuffer, const ByteSpan & attestationNonce) = 0;
 
-    // TODO: Validate Certification Declaration
-    // TODO: Validate Firmware Information
+    // TODO [$61ef8970dc80f9000935592d]: Validate Certification Declaration
+    // TODO [$61ef8970dc80f9000935592e]: Validate Firmware Information
 
 protected:
     CHIP_ERROR ValidateAttestationSignature(const chip::Crypto::P256PublicKey & pubkey, const ByteSpan & attestationElements,

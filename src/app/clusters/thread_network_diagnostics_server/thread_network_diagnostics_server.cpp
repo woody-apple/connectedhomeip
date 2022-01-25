@@ -65,7 +65,7 @@ CHIP_ERROR ThreadDiagosticsAttrAccess::Read(const ConcreteAttributePath & aPath,
     // not implemented, clear the error so we fall back to the standard read
     // path.
     //
-    // TODO: This is probably broken in practice.  The standard read path is not
+    // TODO [$61ef8970dc80f900093558ab]: This is probably broken in practice.  The standard read path is not
     // going to produce useful values for these things.  We need to either have
     // fallbacks in the connectivity manager that encode some sort of default
     // values or error out on reads we can't actually handle.

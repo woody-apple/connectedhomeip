@@ -30,7 +30,7 @@ CHIP_ERROR KeypadInputManager::Init()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    // TODO: Store feature map once it is supported
+    // TODO [$61ef8970dc80f90009355846]: Store feature map once it is supported
     map<string, bool> featureMap;
     featureMap["NV"] = true;
     featureMap["LK"] = true;
@@ -43,6 +43,6 @@ exit:
 
 EmberAfKeypadInputStatus keypadInputClusterSendKey(EmberAfKeypadInputCecKeyCode keyCode)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355847]: Insert code here
     return EMBER_ZCL_KEYPAD_INPUT_STATUS_SUCCESS;
 }

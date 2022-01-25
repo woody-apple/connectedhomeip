@@ -48,7 +48,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     err = Internal::GenericConfigurationManagerImpl<ConfigurationManagerImpl>::Init();
     SuccessOrExit(err);
 
-    // TODO: initialize NVM component
+    // TODO [$61ef8970dc80f9000935598c]: initialize NVM component
 
     // If the fail-safe was armed when the device last shutdown, initiate a factory reset.
     if (GetFailSafeArmed(failSafeArmed) == CHIP_NO_ERROR && failSafeArmed)
@@ -69,7 +69,7 @@ CHIP_ERROR ConfigurationManagerImpl::GetPrimaryWiFiMACAddress(uint8_t * buf)
 
 bool ConfigurationManagerImpl::CanFactoryReset()
 {
-    // TODO: query the application to determine if factory reset is allowed.
+    // TODO [$61ef8970dc80f9000935598d]: query the application to determine if factory reset is allowed.
     return true;
 }
 

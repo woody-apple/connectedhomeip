@@ -85,7 +85,7 @@ using namespace chip::app::Clusters::IasZone;
 
 #define DEFAULT_ENROLLMENT_METHOD EMBER_ZCL_IAS_ZONE_ENROLLMENT_MODE_REQUEST
 
-// TODO: Need to figure out what needs to happen wrt HAL tokens here, but for
+// TODO [$61ef8970dc80f90009355896]: Need to figure out what needs to happen wrt HAL tokens here, but for
 // now define ESZP_HOST to disable it.  See
 // https://github.com/project-chip/connectedhomeip/issues/3275
 #define EZSP_HOST
@@ -158,7 +158,7 @@ static int16_t copyToBuffer(IasZoneStatusQueue * ring, const IasZoneStatusQueueE
 static int16_t popFromBuffer(IasZoneStatusQueue * ring, IasZoneStatusQueueEntry * entry);
 #endif
 
-// TODO: https://github.com/project-chip/connectedhomeip/issues/3276 needs to be
+// TODO [$61ef8970dc80f90009355897]: https://github.com/project-chip/connectedhomeip/issues/3276 needs to be
 // fixed to implement this for real.
 EmberNetworkStatus emberAfNetworkState(void)
 {

@@ -27,7 +27,7 @@
 
 #define ChipDie() abort()
 
-// TODO:(#756) Add FabricState support
+// TODO [$61ef8970dc80f900093559b9]:(#756) Add FabricState support
 #define CHIP_CONFIG_ENABLE_FABRIC_STATE 0
 
 using CHIP_CONFIG_PERSISTED_STORAGE_KEY_TYPE = const char *;

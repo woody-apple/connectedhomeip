@@ -95,7 +95,7 @@ public class NsdManagerServiceResolver implements ServiceResolver {
                     + serviceInfo.getServiceName()
                     + "' to "
                     + serviceInfo.getHost());
-            // TODO: Find out if DNS-SD results for Android should contain interface ID
+            // TODO [$61ef8970dc80f900093559be]: Find out if DNS-SD results for Android should contain interface ID
             chipMdnsCallback.handleServiceResolve(
                 instanceName,
                 serviceType,

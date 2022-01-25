@@ -54,7 +54,7 @@ private:
 
 /** Implements a transport using BLE.
  *
- *  TODO: BLE transport currently only allow one BLE connection, neet to clearify if we should support multiple BLE connections.
+ *  TODO [$61ef8970dc80f900093559fb]: BLE transport currently only allow one BLE connection, neet to clearify if we should support multiple BLE connections.
  */
 class DLL_EXPORT BLEBase : public Base, public Ble::BleLayerDelegate
 {

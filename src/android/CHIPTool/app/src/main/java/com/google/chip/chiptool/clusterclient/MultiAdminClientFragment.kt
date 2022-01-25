@@ -47,7 +47,7 @@ class MultiAdminClientFragment : Fragment() {
 
   override fun onStart() {
     super.onStart()
-    // TODO: use the discriminator and setupPinCode that was used to commission the device
+    // TODO [$61ef8970dc80f90009355879]: use the discriminator and setupPinCode that was used to commission the device
     val testDiscriminator = "3840"
     val testSetupPinCode = 20202021L
     discriminatorEd.setText(testDiscriminator)

@@ -156,7 +156,7 @@ public:
     Callback(T call, void * context) : mContext(context), mCall(call) { Cancelable(); }
 
     /**
-     * TODO: type-safety? It'd be nice if Cancelables that aren't Callbacks returned null
+     * TODO [$61ef8970dc80f9000935594c]: type-safety? It'd be nice if Cancelables that aren't Callbacks returned null
      *    here.  https://github.com/project-chip/connectedhomeip/issues/1350
      */
     static Callback * FromCancelable(Cancelable * ca) { return static_cast<Callback *>(ca); }

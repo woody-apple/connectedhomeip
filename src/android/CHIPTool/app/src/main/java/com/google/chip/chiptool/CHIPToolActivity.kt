@@ -146,7 +146,7 @@ class CHIPToolActivity :
 
     if (requestCode == REQUEST_CODE_COMMISSIONING) {
       // Simply ignore the commissioning result.
-      // TODO: tracking commissioned devices.
+      // TODO [$61ef8970dc80f90009355878]: tracking commissioned devices.
     }
   }
 

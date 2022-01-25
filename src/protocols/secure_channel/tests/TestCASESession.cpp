@@ -85,7 +85,7 @@ class TestCASESessionIPK : public CASESession
 protected:
     ByteSpan * GetIPKList() const override
     {
-        // TODO: Remove this list. Replace it with an actual method to retrieve an IPK list (e.g. from a Crypto Store API)
+        // TODO [$61ef8970dc80f900093559e3]: Remove this list. Replace it with an actual method to retrieve an IPK list (e.g. from a Crypto Store API)
         static uint8_t sIPKList[][kIPKSize] = {
             { 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D, 0x1D,
               0x1D }, /* Corresponds to the FabricID for the Node01_01 Test Vector */

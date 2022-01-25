@@ -133,7 +133,7 @@ public:
      */
     static CHIP_ERROR ParseSigma1(TLV::ContiguousBufferTLVReader & tlvReader, ByteSpan & initiatorRandom,
                                   uint16_t & initiatorSessionId, ByteSpan & destinationId, ByteSpan & initiatorEphPubKey,
-                                  // TODO: MRP param parsing
+                                  // TODO [$61ef8970dc80f900093559dd]: MRP param parsing
                                   bool & resumptionRequested, ByteSpan & resumptionId, ByteSpan & initiatorResumeMIC);
 
     /**
@@ -186,7 +186,7 @@ public:
 
     FabricIndex GetFabricIndex() const { return mFabricInfo != nullptr ? mFabricInfo->GetFabricIndex() : kUndefinedFabricIndex; }
 
-    // TODO: remove Clear, we should create a new instance instead reset the old instance.
+    // TODO [$61ef8970dc80f900093559de]: remove Clear, we should create a new instance instead reset the old instance.
     /** @brief This function zeroes out and resets the memory used by the object.
      **/
     void Clear();
@@ -247,7 +247,7 @@ private:
 
     void CloseExchange();
 
-    // TODO: Remove this and replace with system method to retrieve current time
+    // TODO [$61ef8970dc80f900093559df]: Remove this and replace with system method to retrieve current time
     CHIP_ERROR SetEffectiveTime(void);
 
     CHIP_ERROR ValidateReceivedMessage(Messaging::ExchangeContext * ec, const PayloadHeader & payloadHeader,
@@ -286,7 +286,7 @@ protected:
 
     virtual ByteSpan * GetIPKList() const
     {
-        // TODO: Remove this list. Replace it with an actual method to retrieve an IPK list (e.g. from a Crypto Store API)
+        // TODO [$61ef8970dc80f900093559e0]: Remove this list. Replace it with an actual method to retrieve an IPK list (e.g. from a Crypto Store API)
         static uint8_t sIPKList[][kIPKSize] = {
             { 0 }, /* Corresponds to the FabricID for the Commissioning Example. All zeros. */
         };

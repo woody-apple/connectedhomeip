@@ -117,7 +117,7 @@ CHIP_ERROR ExchangeContext::SendMessage(Protocols::Id protocolId, uint8_t msgTyp
         // Only one 'response expected' message can be outstanding at a time.
         if (IsResponseExpected())
         {
-            // TODO: add a test for this case.
+            // TODO [$61ef8970dc80f90009355981]: add a test for this case.
             return CHIP_ERROR_INCORRECT_STATE;
         }
 
@@ -297,7 +297,7 @@ bool ExchangeContext::MatchExchange(SessionHandle session, const PacketHeader & 
         // AND The Session ID associated with the incoming message matches the Session ID associated with the exchange.
         && (mSession.HasValue() && mSession.Value().MatchIncomingSession(session))
 
-        // TODO: This check should be already implied by the equality of session check,
+        // TODO [$61ef8970dc80f90009355982]: This check should be already implied by the equality of session check,
         // It should be removed after we have implemented the temporary node id for PASE and CASE sessions
         && (IsEncryptionRequired() == packetHeader.IsEncrypted())
 

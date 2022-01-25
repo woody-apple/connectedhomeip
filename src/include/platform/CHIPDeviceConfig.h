@@ -396,7 +396,7 @@
  * functions are within a CHIP network. Device providing unrelated to CHIP functionalities
  * should not start advertising automatically after power-up.
  *
- * TODO: Default value should be changed to 0, after all platforms will implement enabling
+ * TODO [$61ef8970dc80f90009355942]: Default value should be changed to 0, after all platforms will implement enabling
  *       advertisement in their own way.
  */
 #ifndef CHIP_DEVICE_CONFIG_CHIPOBLE_ENABLE_ADVERTISING_AUTOSTART

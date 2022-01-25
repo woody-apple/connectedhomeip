@@ -79,7 +79,7 @@ CHIP_ERROR SessionManager::Init(System::Layer * systemLayer, TransportMgrBase * 
     mTransportMgr          = transportMgr;
     mMessageCounterManager = messageCounterManager;
 
-    // TODO: Handle error from mGlobalEncryptedMessageCounter! Unit tests currently crash if you do!
+    // TODO [$61ef8970dc80f900093559f6]: Handle error from mGlobalEncryptedMessageCounter! Unit tests currently crash if you do!
     (void) mGlobalEncryptedMessageCounter.Init();
     mGlobalUnencryptedMessageCounter.Init();
 
@@ -405,7 +405,7 @@ void SessionManager::SecureMessageDispatch(const PacketHeader & packetHeader, co
     // Verify message counter
     if (packetHeader.IsSecureSessionControlMsg())
     {
-        // TODO: control message counter is not implemented yet
+        // TODO [$61ef8970dc80f900093559f7]: control message counter is not implemented yet
     }
     else
     {
@@ -464,14 +464,14 @@ void SessionManager::SecureMessageDispatch(const PacketHeader & packetHeader, co
 
     if (packetHeader.IsSecureSessionControlMsg())
     {
-        // TODO: control message counter is not implemented yet
+        // TODO [$61ef8970dc80f900093559f8]: control message counter is not implemented yet
     }
     else
     {
         state->GetSessionMessageCounter().GetPeerMessageCounter().Commit(packetHeader.GetMessageCounter());
     }
 
-    // TODO: once mDNS address resolution is available reconsider if this is required
+    // TODO [$61ef8970dc80f900093559f9]: once mDNS address resolution is available reconsider if this is required
     // This updates the peer address once a packet is received from a new address
     // and serves as a way to auto-detect peer changing IPs.
     if (state->GetPeerAddress() != peerAddress)

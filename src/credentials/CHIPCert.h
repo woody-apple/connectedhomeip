@@ -611,7 +611,7 @@ CHIP_ERROR ConvertX509CertToChipCert(const ByteSpan x509Cert, MutableByteSpan & 
  **/
 CHIP_ERROR ConvertChipCertToX509Cert(const ByteSpan chipCert, MutableByteSpan & x509Cert);
 
-// TODO: Add support for Authentication Tag Attribute
+// TODO [$61ef8970dc80f90009355927]: Add support for Authentication Tag Attribute
 struct X509CertRequestParams
 {
     int64_t SerialNumber;

@@ -56,7 +56,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     err = Internal::GenericConfigurationManagerImpl<ConfigurationManagerImpl>::Init();
     SuccessOrExit(err);
 
-    // TODO: Initialize the global GroupKeyStore object here
+    // TODO [$61ef8970dc80f900093559b7]: Initialize the global GroupKeyStore object here
 #if CHIP_DEVICE_CONFIG_ENABLE_FACTORY_PROVISIONING
     {
         FactoryProvisioning factoryProv;

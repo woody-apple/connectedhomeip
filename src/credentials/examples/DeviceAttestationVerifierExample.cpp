@@ -203,7 +203,7 @@ AttestationVerificationResult ExampleDACVerifier::VerifyAttestationInformation(c
     ByteSpan attestationNonceSpan;
     uint32_t timestampDeconstructed;
     ByteSpan firmwareInfoSpan;
-    // TODO: refactor once final vendor-specific data tags is handled.
+    // TODO [$61ef8970dc80f90009355933]: refactor once final vendor-specific data tags is handled.
     ByteSpan vendorReservedDeconstructed[2];
     size_t vendorReservedDeconstructedSize = ArraySize(vendorReservedDeconstructed);
     uint16_t vendorIdDeconstructed;

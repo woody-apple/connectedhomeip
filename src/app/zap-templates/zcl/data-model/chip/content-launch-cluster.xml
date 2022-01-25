@@ -23,7 +23,7 @@ limitations under the License.
     <define>CONTENT_LAUNCH_CLUSTER</define>
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
-    <!-- TODO: Add feature map once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e0]: Add feature map once it is supported -->
     <description>This cluster provides an interface for launching content on a media player device such as a TV or Speaker.</description>
 
     <attribute side="server" code="0x0000" define="CONTENT_LAUNCHER_ACCEPTS_HEADER" type="ARRAY" entryType="OCTET_STRING" length="254" writable="false" optional="false">accepts header list</attribute>
@@ -33,14 +33,14 @@ limitations under the License.
       <description>Upon receipt, this SHALL launch the specified content with optional search criteria.</description>
       <arg name="autoPlay" type="BOOLEAN"/>
       <arg name="data" type="CHAR_STRING"/>
-      <!-- TODO: Update argument ContentSearch it is supported -->
+      <!-- TODO [$61ef8970dc80f900093558e1]: Update argument ContentSearch it is supported -->
     </command>
 
     <command source="client" code="0x01" name="LaunchURL" optional="false">
       <description>Upon receipt, this SHALL launch content from the specified URL.</description>
       <arg name="contentURL" type="CHAR_STRING"/>
       <arg name="displayString" type="CHAR_STRING"/>
-      <!-- TODO: Update argument BrandingInformation it is supported -->
+      <!-- TODO [$61ef8970dc80f900093558e2]: Update argument BrandingInformation it is supported -->
     </command>
 
     <command source="server" code="0x00" name="LaunchContentResponse" optional="false" disableDefaultResponse="true">
@@ -71,9 +71,9 @@ limitations under the License.
 
   <struct name="ContentLaunchDimension">
     <cluster code="0x050a"/>
-    <!-- TODO: Convert to double once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e3]: Convert to double once it is supported -->
     <item name="width" type="CHAR_STRING"/>
-    <!-- TODO: Convert to double once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e4]: Convert to double once it is supported -->
     <item name="height" type="CHAR_STRING"/>
     <item name="metric" type="ContentLaunchMetricType"/>
   </struct>
@@ -82,22 +82,22 @@ limitations under the License.
     <cluster code="0x050a"/>
     <item name="imageUrl" type="CHAR_STRING"/>
     <item name="color" type="CHAR_STRING"/>
-    <!-- TODO: Convert to struct ContentLaunchDimension once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e5]: Convert to struct ContentLaunchDimension once is supported -->
     <item name="size" type="INT8U"/>
   </struct>
 
   <struct name="ContentLaunchBrandingInformation">
     <cluster code="0x050a"/>
     <item name="providerName" type="CHAR_STRING"/>
-    <!-- TODO: Convert to struct ContentLaunchStyleInformation once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e6]: Convert to struct ContentLaunchStyleInformation once is supported -->
     <item name="background" type="INT8U"/>
-    <!-- TODO: Convert to struct ContentLaunchStyleInformation once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e7]: Convert to struct ContentLaunchStyleInformation once is supported -->
     <item name="logo" type="INT8U"/>
-    <!-- TODO: Convert to struct ContentLaunchStyleInformation once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e8]: Convert to struct ContentLaunchStyleInformation once is supported -->
     <item name="progressBar" type="INT8U"/>
-    <!-- TODO: Convert to struct ContentLaunchStyleInformation once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558e9]: Convert to struct ContentLaunchStyleInformation once is supported -->
     <item name="splash" type="INT8U"/>
-    <!-- TODO: Convert to struct ContentLaunchStyleInformation once is supported -->
+    <!-- TODO [$61ef8970dc80f900093558ea]: Convert to struct ContentLaunchStyleInformation once is supported -->
     <item name="waterMark" type="INT8U"/>
   </struct>
 

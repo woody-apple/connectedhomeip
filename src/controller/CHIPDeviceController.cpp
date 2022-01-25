@@ -709,7 +709,7 @@ CHIP_ERROR DeviceCommissioner::PairDevice(NodeId remoteDeviceId, RendezvousParam
     err = InitializePairedDeviceList();
     SuccessOrExit(err);
 
-    // TODO: We need to specify the peer address for BLE transport in bindings.
+    // TODO [$61ef8970dc80f90009355906]: We need to specify the peer address for BLE transport in bindings.
     if (params.GetPeerAddress().GetTransportType() == Transport::Type::kBle ||
         params.GetPeerAddress().GetTransportType() == Transport::Type::kUndefined)
     {
@@ -836,7 +836,7 @@ CHIP_ERROR DeviceCommissioner::StopPairing(NodeId remoteDeviceId)
 
 CHIP_ERROR DeviceCommissioner::UnpairDevice(NodeId remoteDeviceId)
 {
-    // TODO: Send unpairing message to the remote device.
+    // TODO [$61ef8970dc80f90009355907]: Send unpairing message to the remote device.
 
     VerifyOrReturnError(mState == State::Initialized, CHIP_ERROR_INCORRECT_STATE);
 
@@ -931,7 +931,7 @@ void DeviceCommissioner::RendezvousCleanup(CHIP_ERROR status)
 {
     FreeRendezvousSession();
 
-    // TODO: make mStorageDelegate mandatory once all controller applications implement the interface.
+    // TODO [$61ef8970dc80f90009355908]: make mStorageDelegate mandatory once all controller applications implement the interface.
     if (mDeviceBeingPaired != kNumMaxActiveDevices && mStorageDelegate != nullptr)
     {
         // Let's release the device that's being paired.
@@ -968,7 +968,7 @@ void DeviceCommissioner::OnSessionEstablished()
 
     Device * device = &mActiveDevices[mDeviceBeingPaired];
 
-    // TODO: the session should know which peer we are trying to connect to when started
+    // TODO [$61ef8970dc80f90009355909]: the session should know which peer we are trying to connect to when started
     mPairingSession.SetPeerNodeId(device->GetDeviceId());
 
     CHIP_ERROR err = mSystemState->SessionMgr()->NewPairing(
@@ -983,7 +983,7 @@ void DeviceCommissioner::OnSessionEstablished()
 
     ChipLogDetail(Controller, "Remote device completed SPAKE2+ handshake");
 
-    // TODO: Add code to receive OpCSR from the device, and process the signing request
+    // TODO [$61ef8970dc80f9000935590a]: Add code to receive OpCSR from the device, and process the signing request
     // For IP rendezvous, this is sent as part of the state machine.
 #if CONFIG_USE_CLUSTERS_FOR_IP_COMMISSIONING
     bool usingLegacyFlowWithImmediateStart = !mIsIPRendezvous;
@@ -1030,7 +1030,7 @@ void DeviceCommissioner::OnCertificateChainFailureResponse(void * context, uint8
     DeviceCommissioner * commissioner = reinterpret_cast<DeviceCommissioner *>(context);
     commissioner->mCertificateChainResponseCallback.Cancel();
     commissioner->mOnCertificateChainFailureCallback.Cancel();
-    // TODO: Map error status to correct error code
+    // TODO [$61ef8970dc80f9000935590b]: Map error status to correct error code
     commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
 }
 
@@ -1046,7 +1046,7 @@ void DeviceCommissioner::OnCertificateChainResponse(void * context, ByteSpan cer
     {
         // Handle error, and notify session failure to the commissioner application.
         ChipLogError(Controller, "Failed to process the certificate chain request");
-        // TODO: Map error status to correct error code
+        // TODO [$61ef8970dc80f9000935590c]: Map error status to correct error code
         commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
     }
 }
@@ -1115,7 +1115,7 @@ void DeviceCommissioner::OnAttestationFailureResponse(void * context, uint8_t st
     DeviceCommissioner * commissioner = reinterpret_cast<DeviceCommissioner *>(context);
     commissioner->mAttestationResponseCallback.Cancel();
     commissioner->mOnAttestationFailureCallback.Cancel();
-    // TODO: Map error status to correct error code
+    // TODO [$61ef8970dc80f9000935590d]: Map error status to correct error code
     commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
 }
 
@@ -1171,8 +1171,8 @@ CHIP_ERROR DeviceCommissioner::ValidateAttestationInfo(const ByteSpan & attestat
 
     ChipLogProgress(Controller, "Successfully validated 'Attestation Information' command received from the device.");
 
-    // TODO: Validate Certification Declaration
-    // TODO: Validate Firmware Information
+    // TODO [$61ef8970dc80f9000935590e]: Validate Certification Declaration
+    // TODO [$61ef8970dc80f9000935590f]: Validate Firmware Information
 
     return CHIP_NO_ERROR;
 }
@@ -1183,7 +1183,7 @@ void DeviceCommissioner::HandleAttestationResult(CHIP_ERROR err)
     {
         // Here we assume the Attestation Information validation always succeeds.
         // Spec mandates that commissioning shall continue despite attestation fails (in some cases).
-        // TODO: Handle failure scenarios where commissioning may progress regardless.
+        // TODO [$61ef8970dc80f90009355910]: Handle failure scenarios where commissioning may progress regardless.
         ChipLogError(Controller, "Failed to validate the Attestation Information");
     }
 
@@ -1224,7 +1224,7 @@ void DeviceCommissioner::OnCSRFailureResponse(void * context, uint8_t status)
     DeviceCommissioner * commissioner = static_cast<DeviceCommissioner *>(context);
     commissioner->mOpCSRResponseCallback.Cancel();
     commissioner->mOnCSRFailureCallback.Cancel();
-    // TODO: Map error status to correct error code
+    // TODO [$61ef8970dc80f90009355911]: Map error status to correct error code
     commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
 }
 
@@ -1241,7 +1241,7 @@ void DeviceCommissioner::OnOperationalCertificateSigningRequest(void * context, 
     {
         // Handle error, and notify session failure to the commissioner application.
         ChipLogError(Controller, "Failed to process the certificate signing request");
-        // TODO: Map error status to correct error code
+        // TODO [$61ef8970dc80f90009355912]: Map error status to correct error code
         commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
     }
 }
@@ -1371,7 +1371,7 @@ void DeviceCommissioner::OnAddNOCFailureResponse(void * context, uint8_t status)
     DeviceCommissioner * commissioner = static_cast<DeviceCommissioner *>(context);
     commissioner->mOpCSRResponseCallback.Cancel();
     commissioner->mOnCertFailureCallback.Cancel();
-    // TODO: Map error status to correct error code
+    // TODO [$61ef8970dc80f90009355913]: Map error status to correct error code
     commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
 }
 
@@ -1459,7 +1459,7 @@ void DeviceCommissioner::OnRootCertFailureResponse(void * context, uint8_t statu
     DeviceCommissioner * commissioner = static_cast<DeviceCommissioner *>(context);
     commissioner->mRootCertResponseCallback.Cancel();
     commissioner->mOnRootCertFailureCallback.Cancel();
-    // TODO: Map error status to correct error code
+    // TODO [$61ef8970dc80f90009355914]: Map error status to correct error code
     commissioner->OnSessionEstablishmentError(CHIP_ERROR_INTERNAL);
 }
 
@@ -1826,7 +1826,7 @@ void DeviceCommissioner::AdvanceCommissioningStage(CHIP_ERROR err)
         ChipLogProgress(Controller, "Arming failsafe");
         // TODO(cecille): Find a way to enumerate the clusters here.
         GeneralCommissioningCluster genCom;
-        // TODO: should get the endpoint information from the descriptor cluster.
+        // TODO [$61ef8970dc80f90009355915]: should get the endpoint information from the descriptor cluster.
         genCom.Associate(device, 0);
         // TODO(cecille): Make this a parameter
         uint16_t commissioningExpirySeconds = 60;
@@ -1899,13 +1899,13 @@ void DeviceCommissioner::AdvanceCommissioningStage(CHIP_ERROR err)
         }
     }
     break;
-    // TODO: Right now, these stages are not implemented as a separate stage because they are no-ops.
+    // TODO [$61ef8970dc80f90009355916]: Right now, these stages are not implemented as a separate stage because they are no-ops.
     // Once these are implemented through the clusters, these should be moved into their separate stages and the callbacks
     // should advance the commissioning stage.
     case CommissioningStage::kConfigACL:
     case CommissioningStage::kNetworkSetup:
     case CommissioningStage::kScanNetworks:
-        // TODO: Implement
+        // TODO [$61ef8970dc80f90009355917]: Implement
         break;
     case CommissioningStage::kNetworkEnable: {
         ChipLogProgress(Controller, "Enabling Network");

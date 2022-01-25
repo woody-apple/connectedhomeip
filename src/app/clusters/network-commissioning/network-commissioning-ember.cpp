@@ -81,7 +81,7 @@ bool emberAfNetworkCommissioningClusterEnableNetworkCallback(app::CommandHandler
     return true;
 }
 
-// TODO: The following commands needed to be implemented.
+// TODO [$61ef8970dc80f90009355899]: The following commands needed to be implemented.
 // These commands are not implemented thus not handled yet, return false so ember will return a error.
 
 bool emberAfNetworkCommissioningClusterDisableNetworkCallback(app::CommandHandler * commandObj,

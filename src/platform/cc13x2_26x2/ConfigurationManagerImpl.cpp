@@ -76,7 +76,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
 
 bool ConfigurationManagerImpl::CanFactoryReset()
 {
-    // TODO: query the application to determine if factory reset is allowed.
+    // TODO [$61ef8970dc80f900093559c1]: query the application to determine if factory reset is allowed.
     return true;
 }
 

@@ -68,7 +68,7 @@ protected:
     pthread_mutex_t mStateLock;
 
     //
-    // TODO: This variable is very similar to mMainLoopIsStarted, track the
+    // TODO [$61ef8970dc80f90009355944]: This variable is very similar to mMainLoopIsStarted, track the
     // cleanup and consolidation in this issue:
     //
     bool mEventQueueHasStopped = false;

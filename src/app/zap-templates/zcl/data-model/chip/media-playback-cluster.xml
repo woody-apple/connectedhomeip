@@ -23,7 +23,7 @@ limitations under the License.
     <define>MEDIA_PLAYBACK_CLUSTER</define>
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
-    <!-- TODO: Add feature map once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558ee]: Add feature map once it is supported -->
     <description>This cluster provides an interface for controlling Media Playback (PLAY, PAUSE, etc) on a media device such as a TV or Speaker.</description>
 
     <attribute side="server" code="0x0000" define="MEDIA_PLAYBACK_STATE" type="ENUM8" min="0x00" max="0x02" writable="false" default="0x00" optional="true">playback state</attribute>
@@ -31,7 +31,7 @@ limitations under the License.
     <attribute side="server" code="0x0002" define="MEDIA_PLAYBACK_DURATION" type="INT64U" min="0x00"  writable="false" optional="true">duration</attribute>
     <attribute side="server" code="0x0003" define="MEDIA_PLAYBACK_PLAYBACK_POSITION_UPDATED_AT" type="INT64U" min="0x00"  writable="false" optional="true">position updated at</attribute>
     <attribute side="server" code="0x0004" define="MEDIA_PLAYBACK_PLAYBACK_POSITION" type="INT64U" min="0x00"  writable="false" optional="true">position</attribute>
-    <!-- TODO: Convert to single once it is supported -->
+    <!-- TODO [$61ef8970dc80f900093558ef]: Convert to single once it is supported -->
     <attribute side="server" code="0x0005" define="MEDIA_PLAYBACK_PLAYBACK_SPEED" type="INT64U" min="0x00"  writable="false" optional="true">playback speed</attribute>
     <attribute side="server" code="0x0006" define="MEDIA_PLAYBACK_PLAYBACK_SEEK_RANGE_END" type="INT64U" min="0x00"  writable="false" optional="true">seek range end</attribute>
     <attribute side="server" code="0x0007" define="MEDIA_PLAYBACK_PLAYBACK_SEEK_RANGE_START" type="INT64U" min="0x00"  writable="false" optional="true">seek range start</attribute>

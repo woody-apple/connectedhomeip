@@ -48,7 +48,7 @@ enum
 
 } // unnamed namespace
 
-// TODO: Define a Singleton instance of CHIP Group Key Store here (#1266)
+// TODO [$61ef8970dc80f90009355997]: Define a Singleton instance of CHIP Group Key Store here (#1266)
 
 /** Singleton instance of the ConfigurationManager implementation object for the ESP32.
  */
@@ -93,7 +93,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     err = Internal::GenericConfigurationManagerImpl<ConfigurationManagerImpl>::Init();
     SuccessOrExit(err);
 
-    // TODO: Initialize the global GroupKeyStore object here (#1266)
+    // TODO [$61ef8970dc80f90009355998]: Initialize the global GroupKeyStore object here (#1266)
 
 #if CHIP_DEVICE_CONFIG_ENABLE_FACTORY_PROVISIONING
 
@@ -174,7 +174,7 @@ CHIP_ERROR ConfigurationManagerImpl::MapConfigError(esp_err_t error)
 
 bool ConfigurationManagerImpl::CanFactoryReset()
 {
-    // TODO: query the application to determine if factory reset is allowed.
+    // TODO [$61ef8970dc80f90009355999]: query the application to determine if factory reset is allowed.
     return true;
 }
 

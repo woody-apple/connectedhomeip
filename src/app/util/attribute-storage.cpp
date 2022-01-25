@@ -999,11 +999,11 @@ bool emberAfEndpointEnableDisable(EndpointId endpoint, bool enable)
             }
         }
 
-        // TODO: We should notify about the fact that all the attributes for
+        // TODO [$61ef8970dc80f900093558cd]: We should notify about the fact that all the attributes for
         // this endpoint have appeared/disappeared, but the reporting engine has
         // no way to do that right now.
 
-        // TODO: Once endpoints are in parts lists other than that of endpoint
+        // TODO [$61ef8970dc80f900093558ce]: Once endpoints are in parts lists other than that of endpoint
         // 0, something more complicated might need to happen here.
 
         MatterReportingAttributeChangeCallback(/* EndpointId = */ 0, app::Clusters::Descriptor::Id,

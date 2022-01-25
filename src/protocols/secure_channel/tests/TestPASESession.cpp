@@ -402,7 +402,7 @@ int TestSecurePairing_Teardown(void * inContext)
     return (err == CHIP_NO_ERROR) ? SUCCESS : FAILURE;
 }
 
-// TODO: TestPASESession is currently disabled due to lacking convenient way of creating exchange context
+// TODO [$61ef8970dc80f900093559e4]: TestPASESession is currently disabled due to lacking convenient way of creating exchange context
 
 /**
  *  Main

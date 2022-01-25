@@ -222,7 +222,7 @@ void CheckResendApplicationMessage(nlTestSuite * inSuite, void * inContext)
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     MockAppDelegate mockSender;
-    // TODO: temporarily create a SessionHandle from node id, will be fix in PR 3602
+    // TODO [$61ef8970dc80f90009355989]: temporarily create a SessionHandle from node id, will be fix in PR 3602
     ExchangeContext * exchange = ctx.NewExchangeToAlice(&mockSender);
     NL_TEST_ASSERT(inSuite, exchange != nullptr);
 
@@ -287,7 +287,7 @@ void CheckCloseExchangeAndResendApplicationMessage(nlTestSuite * inSuite, void *
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     MockAppDelegate mockSender;
-    // TODO: temporarily create a SessionHandle from node id, will be fixed in PR 3602
+    // TODO [$61ef8970dc80f9000935598a]: temporarily create a SessionHandle from node id, will be fixed in PR 3602
     ExchangeContext * exchange = ctx.NewExchangeToAlice(&mockSender);
     NL_TEST_ASSERT(inSuite, exchange != nullptr);
 
@@ -1379,7 +1379,7 @@ void CheckLostStandaloneAck(nlTestSuite * inSuite, void * inContext)
 }
 
 /**
- * TODO: A test that we should have but can't write with the existing
+ * TODO [$61ef8970dc80f9000935598b]: A test that we should have but can't write with the existing
  * infrastructure we have:
  *
  * 1. A sends message 1 to B

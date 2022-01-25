@@ -472,7 +472,7 @@ void TestCommandInteraction::TestCommandHandlerWithProcessReceivedNotExistComman
     GenerateReceivedCommand(apSuite, apContext, commandDatabuf, false /*aNeedCommandData*/, 0xDE /* endpoint */,
                             0xADBE /* cluster */, 0xEF /* command */);
 
-    // TODO: Need to find a way to get the response instead of only check if a function on key path is called.
+    // TODO [$61ef8970dc80f900093558ba]: Need to find a way to get the response instead of only check if a function on key path is called.
     // We should not reach CommandDispatch if requested command does not exist.
     chip::isCommandDispatched = false;
     err                       = commandHandler.ProcessCommandMessage(std::move(commandDatabuf), Command::CommandRoleId::HandlerId);

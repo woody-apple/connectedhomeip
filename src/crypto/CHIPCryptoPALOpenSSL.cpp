@@ -169,7 +169,7 @@ CHIP_ERROR AES_CCM_encrypt(const uint8_t * plaintext, size_t plaintext_length, c
     VerifyOrExit(tag != nullptr, error = CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrExit(_isValidTagLength(tag_length), error = CHIP_ERROR_INVALID_ARGUMENT);
 
-    // TODO: Remove suport for AES-256 since not in 1.0
+    // TODO [$61ef8970dc80f90009355935]: Remove suport for AES-256 since not in 1.0
     // Determine crypto type by key length
     type = (key_length == kAES_CCM128_Key_Length) ? EVP_aes_128_ccm() : EVP_aes_256_ccm();
 
@@ -278,7 +278,7 @@ CHIP_ERROR AES_CCM_decrypt(const uint8_t * ciphertext, size_t ciphertext_length,
     VerifyOrExit(iv != nullptr, error = CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrExit(iv_length > 0, error = CHIP_ERROR_INVALID_ARGUMENT);
 
-    // TODO: Remove suport for AES-256 since not in 1.0
+    // TODO [$61ef8970dc80f90009355936]: Remove suport for AES-256 since not in 1.0
     // Determine crypto type by key length
     type = (key_length == kAES_CCM128_Key_Length) ? EVP_aes_128_ccm() : EVP_aes_256_ccm();
 
@@ -1135,7 +1135,7 @@ CHIP_ERROR P256Keypair::NewCertificateSigningRequest(uint8_t * out_csr, size_t &
     result = X509_REQ_set_pubkey(x509_req, evp_pkey);
     VerifyOrExit(result == 1, error = CHIP_ERROR_INTERNAL);
 
-    // TODO: mbedTLS CSR parser fails if the subject name is not set (or if empty).
+    // TODO [$61ef8970dc80f90009355937]: mbedTLS CSR parser fails if the subject name is not set (or if empty).
     //       CHIP Spec doesn't specify the subject name that can be used.
     //       Figure out the correct value and update this code.
     result = X509_NAME_add_entry_by_txt(subject, "O", MBSTRING_ASC, Uint8::from_const_char("CSR"), -1, -1, 0);
@@ -1686,7 +1686,7 @@ CHIP_ERROR ValidateCertificateChain(const uint8_t * rootCertificate, size_t root
     status = X509_STORE_CTX_init(verifyCtx, store, x509LeafCertificate, NULL);
     VerifyOrExit(status == 1, err = CHIP_ERROR_INTERNAL);
 
-    // TODO: If any specific error occurs here, it should be flagged accordingly
+    // TODO [$61ef8970dc80f90009355938]: If any specific error occurs here, it should be flagged accordingly
     status = X509_verify_cert(verifyCtx);
     VerifyOrExit(status == 1, err = CHIP_ERROR_CERT_NOT_TRUSTED);
 

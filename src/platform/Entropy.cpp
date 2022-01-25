@@ -27,7 +27,7 @@
 #include <lib/support/CodeUtils.h>
 
 // Temporary includes for TemporaryAuditRandomPerformance()
-// TODO: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
+// TODO [$61ef8970dc80f900093559a0]: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
 #include <lib/support/BytesToHex.h>
 
 namespace chip {
@@ -35,7 +35,7 @@ namespace chip {
 namespace {
 
 // Audit random number generator proper initialization with prints.
-// TODO: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
+// TODO [$61ef8970dc80f900093559a1]: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
 void TemporaryAuditRandomNumberGenerator()
 {
     uint8_t buf1[16] = { 0 };
@@ -80,7 +80,7 @@ CHIP_ERROR InitEntropy()
     ReturnErrorOnFailure(Crypto::DRBG_get_bytes((uint8_t *) &seed, sizeof(seed)));
     srand(seed);
 
-    // TODO: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
+    // TODO [$61ef8970dc80f900093559a2]: remove once https://github.com/project-chip/connectedhomeip/issues/10454 is done.
     TemporaryAuditRandomNumberGenerator();
     return CHIP_NO_ERROR;
 }

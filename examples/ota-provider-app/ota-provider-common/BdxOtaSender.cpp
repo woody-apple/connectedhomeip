@@ -95,7 +95,7 @@ void BdxOtaSender::HandleTransferSessionOutput(TransferSession::OutputEvent & ev
         uint16_t blockSize   = mTransfer.GetTransferBlockSize();
         uint16_t bytesToRead = blockSize;
 
-        // TODO: This should be a utility function in TransferSession
+        // TODO [$61ef8970dc80f90009355826]: This should be a utility function in TransferSession
         if (mTransfer.GetTransferLength() > 0 && mNumBytesSent + blockSize > mTransfer.GetTransferLength())
         {
             // cast should be safe because of condition above
@@ -105,7 +105,7 @@ void BdxOtaSender::HandleTransferSessionOutput(TransferSession::OutputEvent & ev
         chip::System::PacketBufferHandle blockBuf = chip::System::PacketBufferHandle::New(bytesToRead);
         if (blockBuf.IsNull())
         {
-            // TODO: AbortTransfer() needs to support GeneralStatusCode failures as well as BDX specific errors.
+            // TODO [$61ef8970dc80f90009355827]: AbortTransfer() needs to support GeneralStatusCode failures as well as BDX specific errors.
             mTransfer.AbortTransfer(StatusCode::kUnknown);
             return;
         }

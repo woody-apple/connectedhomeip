@@ -46,7 +46,7 @@ using chip::ArgParser::PrintArgError;
 using chip::bdx::TransferControlFlags;
 using chip::Messaging::ExchangeManager;
 
-// TODO: this should probably be done dynamically
+// TODO [$61ef8970dc80f90009355825]: this should probably be done dynamically
 constexpr chip::EndpointId kOtaProviderEndpoint = 0;
 
 constexpr uint16_t kOptionFilepath             = 'f';

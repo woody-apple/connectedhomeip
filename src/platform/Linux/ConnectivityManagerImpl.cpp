@@ -989,7 +989,7 @@ CHIP_ERROR ConnectivityManagerImpl::ProvisionWiFiNetwork(const char * ssid, cons
             }
 
             // Run dhclient for IP on WiFi.
-            // TODO: The wifi can be managed by networkmanager on linux so we don't have to care about this.
+            // TODO [$61ef8970dc80f900093559a6]: The wifi can be managed by networkmanager on linux so we don't have to care about this.
             char cmdBuffer[128];
             sprintf(cmdBuffer, CHIP_DEVICE_CONFIG_LINUX_DHCPC_CMD, sWiFiIfName);
             int dhclientSystemRet = system(cmdBuffer);

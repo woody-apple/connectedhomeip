@@ -225,7 +225,7 @@ CHIP_ERROR CommissioningWindowManager::OpenEnhancedCommissioningWindow(uint16_t 
                                                                        uint16_t passcodeID)
 {
 #if CONFIG_NETWORK_LAYER_BLE
-    // TODO: Don't use BLE for commissioning additional fabrics on a device
+    // TODO [$61ef8970dc80f900093558b7]: Don't use BLE for commissioning additional fabrics on a device
     SetBLE(true);
 #else
     SetBLE(false);

@@ -41,7 +41,7 @@ static const uint8_t sTagSizes[] = { 0, 1, 2, 4, 2, 4, 6, 8 };
 
 void TLVReader::Init(const uint8_t * data, size_t dataLen)
 {
-    // TODO: Maybe we can just make mMaxLen and mLenRead size_t instead?
+    // TODO [$61ef8970dc80f9000935594e]: Maybe we can just make mMaxLen and mLenRead size_t instead?
     uint32_t actualDataLen = dataLen > UINT32_MAX ? UINT32_MAX : static_cast<uint32_t>(dataLen);
     mBackingStore          = nullptr;
     mReadPoint             = data;

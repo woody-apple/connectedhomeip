@@ -131,9 +131,9 @@ CHIP_ERROR AddCommonTxtElements(const BaseAdvertisingParams<Derived> & params, c
     Optional<uint32_t> mrpRetryIntervalIdle, mrpRetryIntervalActive;
     params.GetMRPRetryIntervals(mrpRetryIntervalIdle, mrpRetryIntervalActive);
 
-    // TODO: Issue #5833 - MRP retry intervals should be updated on the poll period value
+    // TODO [$61ef8970dc80f9000935595f]: Issue #5833 - MRP retry intervals should be updated on the poll period value
     // change or device type change.
-    // TODO: Is this really the best place to set these? Seems like it should be passed
+    // TODO [$61ef8970dc80f90009355960]: Is this really the best place to set these? Seems like it should be passed
     // in with the correct values and set one level up from here.
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     if (chip::DeviceLayer::ConnectivityMgr().GetThreadDeviceType() ==
@@ -398,7 +398,7 @@ CHIP_ERROR DiscoveryImplPlatform::Advertise(const OperationalAdvertisingParamete
     size_t subTypeSize = 0;
 
     mOperationalAdvertisingParams = params;
-    // TODO: There may be multilple device/fabric ids after multi-admin.
+    // TODO [$61ef8970dc80f90009355961]: There may be multilple device/fabric ids after multi-admin.
 
     char mrpRetryIntervalIdleBuf[kTxtRetryIntervalIdleMaxLength + 1];
     char mrpRetryIntervalActiveBuf[kTxtRetryIntervalActiveMaxLength + 1];

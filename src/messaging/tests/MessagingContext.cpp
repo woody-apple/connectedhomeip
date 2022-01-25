@@ -55,13 +55,13 @@ CHIP_ERROR MessagingContext::Shutdown()
 
 SessionHandle MessagingContext::GetSessionBobToAlice()
 {
-    // TODO: temporarily create a SessionHandle from node id, will be fixed in PR 3602
+    // TODO [$61ef8970dc80f90009355985]: temporarily create a SessionHandle from node id, will be fixed in PR 3602
     return SessionHandle(GetAliceNodeId(), GetBobKeyId(), GetAliceKeyId(), GetFabricIndex());
 }
 
 SessionHandle MessagingContext::GetSessionAliceToBob()
 {
-    // TODO: temporarily create a SessionHandle from node id, will be fixed in PR 3602
+    // TODO [$61ef8970dc80f90009355986]: temporarily create a SessionHandle from node id, will be fixed in PR 3602
     return SessionHandle(GetBobNodeId(), GetAliceKeyId(), GetBobKeyId(), mDestFabricIndex);
 }
 
@@ -77,13 +77,13 @@ Messaging::ExchangeContext * MessagingContext::NewUnauthenticatedExchangeToBob(M
 
 Messaging::ExchangeContext * MessagingContext::NewExchangeToAlice(Messaging::ExchangeDelegate * delegate)
 {
-    // TODO: temprary create a SessionHandle from node id, will be fix in PR 3602
+    // TODO [$61ef8970dc80f90009355987]: temprary create a SessionHandle from node id, will be fix in PR 3602
     return mExchangeManager.NewContext(GetSessionBobToAlice(), delegate);
 }
 
 Messaging::ExchangeContext * MessagingContext::NewExchangeToBob(Messaging::ExchangeDelegate * delegate)
 {
-    // TODO: temprary create a SessionHandle from node id, will be fix in PR 3602
+    // TODO [$61ef8970dc80f90009355988]: temprary create a SessionHandle from node id, will be fix in PR 3602
     return mExchangeManager.NewContext(GetSessionAliceToBob(), delegate);
 }
 

@@ -568,7 +568,7 @@ void BLEManagerImpl::DriveBLEState(void)
     // Stop the CHIPoBLE GATT service if needed.
     if (mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_Enabled && mFlags.Has(Flags::kGATTServiceStarted))
     {
-        // TODO: what to do about existing connections??
+        // TODO [$61ef8970dc80f9000935599a]: what to do about existing connections??
 
         err = MapBLEError(esp_ble_gatts_stop_service(mServiceAttrHandle));
         if (err != CHIP_NO_ERROR)
@@ -965,7 +965,7 @@ void BLEManagerImpl::HandleGATTCommEvent(esp_gatts_cb_event_t event, esp_gatt_if
             // via explicit cast; we have to disable the warning around the
             // assignment.
             //
-            // TODO: https://github.com/project-chip/connectedhomeip/issues/2569
+            // TODO [$61ef8970dc80f9000935599b]: https://github.com/project-chip/connectedhomeip/issues/2569
             // tracks making this safe with a check or explaining why no check
             // is needed.
 #pragma GCC diagnostic push
@@ -1020,7 +1020,7 @@ exit:
         {
             esp_ble_gatts_send_response(mAppIf, param->write.conn_id, param->write.trans_id, ESP_GATT_INTERNAL_ERROR, NULL);
         }
-        // TODO: fail connection???
+        // TODO [$61ef8970dc80f9000935599c]: fail connection???
     }
 }
 
@@ -1114,7 +1114,7 @@ exit:
         {
             esp_ble_gatts_send_response(mAppIf, param->write.conn_id, param->write.trans_id, ESP_GATT_INTERNAL_ERROR, NULL);
         }
-        // TODO: fail connection???
+        // TODO [$61ef8970dc80f9000935599d]: fail connection???
     }
 }
 

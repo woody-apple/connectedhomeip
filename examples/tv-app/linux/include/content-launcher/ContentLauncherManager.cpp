@@ -40,7 +40,7 @@ CHIP_ERROR ContentLauncherManager::Init()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
 
-    // TODO: Store feature map once it is supported
+    // TODO [$61ef8970dc80f90009355841]: Store feature map once it is supported
     map<string, bool> featureMap;
     featureMap["CS"] = true;
     featureMap["UP"] = true;
@@ -54,7 +54,7 @@ exit:
 CHIP_ERROR ContentLauncherManager::proxyGetAcceptsHeader(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f90009355842]: Insert code here
         char headerExample[]  = "exampleHeader";
         int maximumVectorSize = 1;
 
@@ -69,7 +69,7 @@ CHIP_ERROR ContentLauncherManager::proxyGetAcceptsHeader(chip::app::AttributeVal
 CHIP_ERROR ContentLauncherManager::proxyGetSupportedStreamingTypes(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f90009355843]: Insert code here
         ReturnErrorOnFailure(encoder.Encode(EMBER_ZCL_CONTENT_LAUNCH_STREAMING_TYPE_DASH));
         ReturnErrorOnFailure(encoder.Encode(EMBER_ZCL_CONTENT_LAUNCH_STREAMING_TYPE_HLS));
         return CHIP_NO_ERROR;
@@ -79,7 +79,7 @@ CHIP_ERROR ContentLauncherManager::proxyGetSupportedStreamingTypes(chip::app::At
 ContentLaunchResponse ContentLauncherManager::proxyLaunchContentRequest(list<ContentLaunchParamater> parameterList, bool autoplay,
                                                                         string data)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355844]: Insert code here
     ContentLaunchResponse response;
     response.data   = "Example data";
     response.status = EMBER_ZCL_CONTENT_LAUNCH_STATUS_SUCCESS;
@@ -88,7 +88,7 @@ ContentLaunchResponse ContentLauncherManager::proxyLaunchContentRequest(list<Con
 ContentLaunchResponse ContentLauncherManager::proxyLaunchUrlRequest(string contentUrl, string displayString,
                                                                     ContentLaunchBrandingInformation brandingInformation)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355845]: Insert code here
     ContentLaunchResponse response;
     response.data   = "Example data";
     response.status = EMBER_ZCL_CONTENT_LAUNCH_STATUS_SUCCESS;

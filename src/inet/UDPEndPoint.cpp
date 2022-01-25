@@ -137,7 +137,7 @@ CHIP_ERROR UDPEndPoint::BindImpl(IPAddressType addrType, const IPAddress & addr,
 #if LWIP_VERSION_MAJOR > 1 || LWIP_VERSION_MINOR >= 5
         ip_addr_t ipAddr = addr.ToLwIPAddr();
 
-        // TODO: IPAddress ANY has only one constant state, however addrType
+        // TODO [$61ef8970dc80f90009355948]: IPAddress ANY has only one constant state, however addrType
         // has separate IPV4 and IPV6 'any' settings. This tries to correct
         // for this as LWIP default if IPv4 is compiled in is to consider
         // 'any == any_v4'

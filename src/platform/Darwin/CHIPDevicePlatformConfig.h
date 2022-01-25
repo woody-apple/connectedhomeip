@@ -82,5 +82,5 @@
 #define CHIP_DEVICE_CONFIG_ENABLE_THREAD_TELEMETRY 0
 #define CHIP_DEVICE_CONFIG_ENABLE_THREAD_TELEMETRY_FULL 0
 
-// TODO: CHIP has redesigned the crypto interface, pending on the final version of CHIP HASH APIs
+// TODO [$61ef8970dc80f90009355990]: CHIP has redesigned the crypto interface, pending on the final version of CHIP HASH APIs
 #define CHIP_DEVICE_CONFIG_LOG_PROVISIONING_HASH 0

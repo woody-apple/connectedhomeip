@@ -13,7 +13,7 @@ namespace Controller {
  * Used for make current OnSuccessCallback & OnFailureCallback works when interaction model landed, it will be removed
  * after #6308 is landed.
  *
- * TODO:(#8967) Implementation of CommandSender::Callback should be removed after switching to ClusterObjects.
+ * TODO [$61ef8970dc80f90009355919]:(#8967) Implementation of CommandSender::Callback should be removed after switching to ClusterObjects.
  */
 class DeviceControllerInteractionModelDelegate : public chip::app::InteractionModelDelegate,
                                                  public chip::app::CommandSender::Callback,
@@ -39,7 +39,7 @@ public:
 
     CHIP_ERROR ReadDone(app::ReadClient * apReadClient) override;
 
-    // TODO: FreeAttributePathParam and AllocateAttributePathParam are used by CHIPDevice.cpp for getting a long-live attribute path
+    // TODO [$61ef8970dc80f9000935591a]: FreeAttributePathParam and AllocateAttributePathParam are used by CHIPDevice.cpp for getting a long-live attribute path
     // object.
     void FreeAttributePathParam(uint64_t applicationId)
     {
@@ -52,7 +52,7 @@ public:
         }
     }
 
-    // TODO: We only support allocating one path, should support multiple path later.
+    // TODO [$61ef8970dc80f9000935591b]: We only support allocating one path, should support multiple path later.
     app::AttributePathParams * AllocateAttributePathParam(size_t n, uint64_t applicationId)
     {
         if (n > 1)

@@ -409,8 +409,8 @@ exit:
             pbuf_free(pbuf);
         }
 
-        // TODO: log packet reception error
-        // TODO: deliver CHIP platform event signaling loss of inbound packet.
+        // TODO [$61ef8970dc80f900093559b2]: log packet reception error
+        // TODO [$61ef8970dc80f900093559b3]: deliver CHIP platform event signaling loss of inbound packet.
     }
 }
 

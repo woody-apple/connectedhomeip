@@ -32,7 +32,7 @@ struct AttributePathParams
     };
 
     //
-    // TODO: (Issue #10596) Need to ensure that we do not encode the NodeId over the wire
+    // TODO [$61ef8970dc80f9000935587c]: (Issue #10596) Need to ensure that we do not encode the NodeId over the wire
     // if it is either not 'set', or is set to a value that matches accessing fabric
     // on which the interaction is undertaken.
     //

@@ -36,15 +36,15 @@ tests:
               - name: "applicationId"
                 value: "appId"
 
-      # TODO: Enable this once struct as response type is supported
+      # TODO [$61ef8970dc80f900093558c0]: Enable this once struct as response type is supported
       # response:
       #     values:
       #         - name: "status"
       #           value: 0
       #         - name: "data"
       #           value: "data"
-    # TODO: Read attribute catalog vendor id and Read attribute catalog vendor id
-    # TODO: shoudl be one test, but currently struct as attribute is not supported
+    # TODO [$61ef8970dc80f900093558c1]: Read attribute catalog vendor id and Read attribute catalog vendor id
+    # TODO [$61ef8970dc80f900093558c2]: shoudl be one test, but currently struct as attribute is not supported
     - label: "Read attribute catalog vendor id"
       command: "readAttribute"
       attribute: "catalog vendor id"

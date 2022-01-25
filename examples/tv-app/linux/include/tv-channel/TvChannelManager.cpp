@@ -33,7 +33,7 @@ using namespace chip;
 CHIP_ERROR TvChannelManager::Init()
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
-    // TODO: Store feature map once it is supported
+    // TODO [$61ef8970dc80f9000935585e]: Store feature map once it is supported
     std::map<std::string, bool> featureMap;
     featureMap["CL"] = true;
     featureMap["LI"] = true;
@@ -46,7 +46,7 @@ exit:
 CHIP_ERROR TvChannelManager::proxyGetTvChannelList(chip::app::AttributeValueEncoder & aEncoder)
 {
     return aEncoder.EncodeList([](const chip::app::TagBoundEncoder & encoder) -> CHIP_ERROR {
-        // TODO: Insert code here
+        // TODO [$61ef8970dc80f9000935585f]: Insert code here
         int maximumVectorSize    = 2;
         char affiliateCallSign[] = "exampleASign";
         char callSign[]          = "exampleCSign";
@@ -68,17 +68,17 @@ CHIP_ERROR TvChannelManager::proxyGetTvChannelList(chip::app::AttributeValueEnco
 
 TvChannelInfo tvChannelClusterChangeChannel(std::string match)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355860]: Insert code here
     TvChannelInfo channel = {};
     return channel;
 }
 bool tvChannelClusterChangeChannelByNumber(uint16_t majorNumber, uint16_t minorNumber)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355861]: Insert code here
     return true;
 }
 bool tvChannelClusterSkipChannel(uint16_t count)
 {
-    // TODO: Insert code here
+    // TODO [$61ef8970dc80f90009355862]: Insert code here
     return true;
 }

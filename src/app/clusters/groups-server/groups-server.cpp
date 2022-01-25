@@ -252,7 +252,7 @@ bool emberAfGroupsClusterGetGroupMembershipCallback(app::CommandHandler * comman
 
     // When Group Count is zero, respond with a list of all active groups.
     // Otherwise, respond with a list of matches.
-    // TODO: https://github.com/project-chip/connectedhomeip/issues/10335
+    // TODO [$61ef8970dc80f90009355895]: https://github.com/project-chip/connectedhomeip/issues/10335
     if (groupCount == 0)
     {
         for (i = 0; i < EMBER_BINDING_TABLE_SIZE; i++)

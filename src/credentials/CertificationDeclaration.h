@@ -36,7 +36,7 @@ namespace Credentials {
 static constexpr uint32_t kMaxProductIdsCountPerCD = 100;
 static constexpr uint32_t kCertificateIdLength     = 19;
 
-// TODO: share code with EstimateTLVStructOverhead to estimate TLV structure size.
+// TODO [$61ef8970dc80f90009355928]: share code with EstimateTLVStructOverhead to estimate TLV structure size.
 static constexpr uint32_t kCertificationElements_TLVEncodedMaxLength = (1 + 1) + // Length of header and end of outer TLV structure.
     (3 + kCertificateIdLength) +                                                 // Encoded length of CertificateId string.
     (1 + sizeof(uint16_t)) * kMaxProductIdsCountPerCD + 3 + // Max encoding length of an array of 100 uint16_t elements.

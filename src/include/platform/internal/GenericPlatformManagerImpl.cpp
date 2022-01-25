@@ -255,7 +255,7 @@ void GenericPlatformManagerImpl<ImplClass>::_DispatchEvent(const ChipDeviceEvent
         break;
     }
 
-    // TODO: make this configurable
+    // TODO [$61ef8970dc80f90009355943]: make this configurable
 #if CHIP_PROGRESS_LOGGING
     uint32_t delta = static_cast<uint32_t>((System::SystemClock().GetMonotonicMicroseconds() - startUS) / 1000);
     if (delta > 100)

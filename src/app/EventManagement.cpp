@@ -317,7 +317,7 @@ CHIP_ERROR EventManagement::ConstructEvent(EventLoadOutContext * apContext, Even
     err              = eventPathBuilder.GetError();
     SuccessOrExit(err);
 
-    // TODO: Revisit NodeId since the the encoding spec and the IM seem to disagree on how this stuff works
+    // TODO [$61ef8970dc80f90009355883]: Revisit NodeId since the the encoding spec and the IM seem to disagree on how this stuff works
     eventPathBuilder.NodeId(apOptions->mpEventSchema->mNodeId)
         .EndpointId(apOptions->mpEventSchema->mEndpointId)
         .ClusterId(apOptions->mpEventSchema->mClusterId)
@@ -328,7 +328,7 @@ CHIP_ERROR EventManagement::ConstructEvent(EventLoadOutContext * apContext, Even
 
     eventDataElementBuilder.PriorityLevel(static_cast<uint8_t>(apContext->mPriority));
 
-    // TODO: need to add utc and systen system check here
+    // TODO [$61ef8970dc80f90009355884]: need to add utc and systen system check here
     deltatime = apOptions->mTimestamp.mValue - apContext->mCurrentSystemTime.mValue;
     eventDataElementBuilder.DeltaSystemTimestamp(deltatime);
     err = eventDataElementBuilder.GetError();
@@ -436,7 +436,7 @@ CHIP_ERROR EventManagement::CopyAndAdjustDeltaTime(const TLVReader & aReader, si
     CopyAndAdjustDeltaTimeContext * ctx = static_cast<CopyAndAdjustDeltaTimeContext *>(apContext);
     TLVReader reader(aReader);
 
-    // TODO: Add UTC timestamp support
+    // TODO [$61ef8970dc80f90009355885]: Add UTC timestamp support
     if (aReader.GetTag() == TLV::ContextTag(EventDataElement::kCsTag_DeltaSystemTimestamp))
     {
         if (ctx->mpContext->mFirst) // First event gets a timestamp, subsequent ones get a delta T
@@ -695,7 +695,7 @@ CHIP_ERROR EventManagement::CopyEventsSince(const TLVReader & aReader, size_t aD
 CHIP_ERROR EventManagement::FetchEventsSince(TLVWriter & aWriter, ClusterInfo * apClusterInfolist, PriorityLevel aPriority,
                                              EventNumber & aEventNumber, size_t & aEventCount)
 {
-    // TODO: Add particular set of event Paths in FetchEventsSince so that we can filter the interested paths
+    // TODO [$61ef8970dc80f90009355886]: Add particular set of event Paths in FetchEventsSince so that we can filter the interested paths
     CHIP_ERROR err     = CHIP_NO_ERROR;
     const bool recurse = false;
     TLVReader reader;
@@ -823,7 +823,7 @@ CHIP_ERROR EventManagement::EvictEvent(CHIPCircularTLVBuffer & apBuffer, void * 
 
 CHIP_ERROR EventManagement::ScheduleFlushIfNeeded(EventOptions::Type aUrgent)
 {
-    // TODO: Implement ScheduleFlushIfNeeded
+    // TODO [$61ef8970dc80f90009355887]: Implement ScheduleFlushIfNeeded
     return CHIP_NO_ERROR;
 }
 

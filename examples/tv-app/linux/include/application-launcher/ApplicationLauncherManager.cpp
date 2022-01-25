@@ -45,12 +45,12 @@ CHIP_ERROR ApplicationLauncherManager::proxyGetApplicationList(chip::app::Attrib
 
 ApplicationLauncherResponse applicationLauncherClusterLaunchApp(ApplicationLauncherApp application, std::string data)
 {
-    // TODO: Insert your code
+    // TODO [$61ef8970dc80f90009355839]: Insert your code
     ApplicationLauncherResponse response;
     const char * testData = "data";
     response.data         = (uint8_t *) testData;
     response.status       = EMBER_ZCL_APPLICATION_LAUNCHER_STATUS_SUCCESS;
-    // TODO: Update once storing a structure attribute is supported
+    // TODO [$61ef8970dc80f9000935583a]: Update once storing a structure attribute is supported
     // emberAfWriteServerAttribute(endpoint, ZCL_APPLICATION_LAUNCH_CLUSTER_ID, ZCL_APPLICATION_LAUNCHER_CURRENT_APP_APPLICATION_ID,
     //                             (uint8_t *) &application, ZCL_STRUCT_ATTRIBUTE_TYPE);
 

@@ -136,7 +136,7 @@ CHIP_ERROR PacketHeader::Decode(const uint8_t * const data, uint16_t size, uint1
     CHIP_ERROR err = CHIP_NO_ERROR;
     LittleEndian::Reader reader(data, size);
     int version;
-    // TODO: De-uint16-ify everything related to this library
+    // TODO [$61ef8970dc80f900093559fc]: De-uint16-ify everything related to this library
     uint16_t octets_read;
 
     uint8_t msgFlags;

@@ -1102,7 +1102,7 @@ void BLEManagerImpl::HandleWriteEvent(blekw_msg_t * msg)
         sInstance.HandleTXCharCCCDWrite(msg);
     }
 
-    /* TODO: do we need to send the status also for CCCD_WRITTEN? */
+    /* TODO [$61ef8970dc80f900093559c6]: do we need to send the status also for CCCD_WRITTEN? */
     if (msg->type != BLE_KW_MSG_ATT_CCCD_WRITTEN)
     {
         bleResult_t res = GattServer_SendAttributeWrittenStatus(att_wr_data->device_id, att_wr_data->handle, status);
@@ -1129,7 +1129,7 @@ void BLEManagerImpl::HandleTXCharCCCDWrite(blekw_msg_t * msg)
     VerifyOrExit(bleConnState != NULL, err = CHIP_ERROR_NO_MEMORY);
 
     /* Determine if the client is enabling or disabling indications.
-     * TODO: Check the indications corresponding bit
+     * TODO [$61ef8970dc80f900093559c7]: Check the indications corresponding bit
      */
     indicationsEnabled = (*data);
 

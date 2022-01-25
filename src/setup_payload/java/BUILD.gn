@@ -48,6 +48,6 @@ android_library("java") {
 
   javac_flags = [ "-Xlint:deprecation" ]
 
-  # TODO: add classpath support (we likely need to add something like
+  # TODO [$61ef8970dc80f900093559e7]: add classpath support (we likely need to add something like
   #  ..../platforms/android-21/android.jar to access BLE items)
 }

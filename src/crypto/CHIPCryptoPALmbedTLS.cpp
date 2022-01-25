@@ -790,7 +790,7 @@ CHIP_ERROR P256Keypair::NewCertificateSigningRequest(uint8_t * out_csr, size_t &
 
     mbedtls_x509write_csr_set_md_alg(&csr, MBEDTLS_MD_SHA256);
 
-    // TODO: mbedTLS CSR parser fails if the subject name is not set (or if empty).
+    // TODO [$61ef8970dc80f90009355939]: mbedTLS CSR parser fails if the subject name is not set (or if empty).
     //       CHIP Spec doesn't specify the subject name that can be used.
     //       Figure out the correct value and update this code.
     result = mbedtls_x509write_csr_set_subject_name(&csr, "O=CSR");
@@ -816,7 +816,7 @@ CHIP_ERROR P256Keypair::NewCertificateSigningRequest(uint8_t * out_csr, size_t &
 exit:
     mbedtls_x509write_csr_free(&csr);
 
-    // TODO: Figure-out why the next 2 lines are OK. Valgrind complains or crash occurs if either is deleted.
+    // TODO [$61ef8970dc80f9000935593a]: Figure-out why the next 2 lines are OK. Valgrind complains or crash occurs if either is deleted.
     // Oddly, the following `mbedtls_ecp_keypair_init` is needed to avoid a double-free
     // with the following pk_free, which is needed.
     mbedtls_ecp_keypair_init(mbedtls_pk_ec(pk));
@@ -829,7 +829,7 @@ exit:
 CHIP_ERROR VerifyCertificateSigningRequest(const uint8_t * csr_buf, size_t csr_length, P256PublicKey & pubkey)
 {
 #if defined(MBEDTLS_X509_CSR_PARSE_C)
-    // TODO: For some embedded targets, mbedTLS library doesn't have mbedtls_x509_csr_parse_der, and mbedtls_x509_csr_parse_free.
+    // TODO [$61ef8970dc80f9000935593b]: For some embedded targets, mbedTLS library doesn't have mbedtls_x509_csr_parse_der, and mbedtls_x509_csr_parse_free.
     //       Taking a step back, embedded targets likely will not process CSR requests. Adding this action item to reevaluate
     //       this if there's a need for this processing for embedded targets.
     CHIP_ERROR error   = CHIP_NO_ERROR;
@@ -1247,7 +1247,7 @@ CHIP_ERROR ValidateCertificateChain(const uint8_t * rootCertificate, size_t root
     result = mbedtls_x509_crt_parse(&root_cert, Uint8::to_const_uchar(rootCertificate), rootCertificateLen);
     VerifyOrExit(result == 0, error = CHIP_ERROR_INTERNAL);
 
-    // TODO: If any specific error occurs here, it should be flagged accordingly, such as specific chain element errors
+    // TODO [$61ef8970dc80f9000935593c]: If any specific error occurs here, it should be flagged accordingly, such as specific chain element errors
     /* Verify the chain against the root */
     result = mbedtls_x509_crt_verify(&cert_chain, &root_cert, NULL, NULL, &flags, NULL, NULL);
     VerifyOrExit(result == 0 && flags == 0, error = CHIP_ERROR_CERT_NOT_TRUSTED);

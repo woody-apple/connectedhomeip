@@ -140,7 +140,7 @@
 #define WDM_PUBLISHER_MAX_NOTIFIES_IN_FLIGHT 2
 #endif // WDM_PUBLISHER_MAX_NOTIFIES_IN_FLIGHT
 
-/* TODO:
+/* TODO [$61ef8970dc80f900093559c8]:
  * https://github.com/CHIP-Specifications/connectedhomeip-spec/issues/2534
  * https://app.slack.com/client/TUK3ZT5EX/G014G30SVV0/thread/G014G30SVV0-1626166816.177800
  */

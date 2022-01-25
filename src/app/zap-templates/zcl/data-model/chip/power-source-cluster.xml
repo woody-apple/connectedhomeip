@@ -24,7 +24,7 @@ limitations under the License.
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
     <description>This cluster is used to describe the configuration and capabilities of a physical power source that provides power to the Node.</description>
-    <!-- TODO: Add feature map once it is supported 
+    <!-- TODO [$61ef8970dc80f900093558f1]: Add feature map once it is supported 
     <tag name="WIRED" description="A wired power source"/>
     <tag name="BAT" description="A battery powered source"/>
     <tag name="RECHG" description="A rechargeable battery power source"/>
@@ -63,7 +63,7 @@ limitations under the License.
     <attribute side="server" code="0x001D" define="POWER_SOURCE_BAT_CHARGING_CURRENT" type="INT32U" min="0x00000000" max="0xFFFFFFFF" writable="false" optional="true">BatteryChargingCurrent</attribute>
     <attribute side="server" code="0x001E" define="POWER_SOURCE_ACTIVE_BAT_CHARGE_FAULTS" type="ARRAY" entryType="ENUM8" length="16" writable="false" optional="true">ActiveBatteryChargeFaults</attribute>
 
-    <!-- TODO: Do events work?
+    <!-- TODO [$61ef8970dc80f900093558f2]: Do events work?
     <event code="0x0000" name="WiredFaultChange" priority="info" side="server">
       <description>The WiredFaultChange Event SHALL indicate a change in the set of wired faults currently detected by the Node on this wired power source.</description>
       <field id="1" name="WiredFaultChangeType" type="WiredFaultChangeType"/>

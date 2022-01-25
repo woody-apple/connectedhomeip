@@ -251,7 +251,7 @@ void ProcessCommand(streamer_t * stream, char * destination)
     err = SendMessage(stream);
     SuccessOrExit(err);
 
-    // TODO:#5496: Use condition_varible to suspend the current thread and wake it up when response arrive.
+    // TODO [$61ef8970dc80f90009355833]:#5496: Use condition_varible to suspend the current thread and wake it up when response arrive.
     sleep(2);
 
 #if INET_CONFIG_ENABLE_TCP_ENDPOINT

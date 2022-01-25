@@ -92,7 +92,7 @@ bool Difference(Snapshot & result, Snapshot & after, Snapshot & before)
 
     for (i = 0; i < kNumEntries; i++)
     {
-        // TODO: These casts can be bogus.  https://github.com/project-chip/connectedhomeip/issues/2949
+        // TODO [$61ef8970dc80f900093559e8]: These casts can be bogus.  https://github.com/project-chip/connectedhomeip/issues/2949
         result.mResourcesInUse[i] = static_cast<count_t>(after.mResourcesInUse[i] - before.mResourcesInUse[i]);
         result.mHighWatermarks[i] = static_cast<count_t>(after.mHighWatermarks[i] - before.mHighWatermarks[i]);
 

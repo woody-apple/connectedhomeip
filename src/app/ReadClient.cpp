@@ -116,7 +116,7 @@ void ReadClient::MoveToState(const ClientState aTargetState)
 
 CHIP_ERROR ReadClient::SendReadRequest(ReadPrepareParams & aReadPrepareParams)
 {
-    // TODO: SendRequest parameter is too long, need to have the structure to represent it
+    // TODO [$61ef8970dc80f9000935588c]: SendRequest parameter is too long, need to have the structure to represent it
     CHIP_ERROR err = CHIP_NO_ERROR;
     System::PacketBufferHandle msgBuf;
     ChipLogDetail(DataManagement, "%s: Client[%u] [%5.5s]", __func__,
@@ -436,7 +436,7 @@ CHIP_ERROR ReadClient::ProcessReportData(System::PacketBufferHandle && aPayload)
 
     if (!suppressResponse)
     {
-        // TODO: Add status report support and correspond handler in ReadHandler, particular for situation when there
+        // TODO [$61ef8970dc80f9000935588d]: Add status report support and correspond handler in ReadHandler, particular for situation when there
         // are multiple reports
     }
 
@@ -568,7 +568,7 @@ void ReadClient::OnLivenessTimeoutCallback(System::Layer * apSystemLayer, void *
 
     ChipLogError(DataManagement, "Subscription Liveness timeout with peer node 0x%" PRIx64 ", shutting down ", client->mPeerNodeId);
     client->mpExchangeCtx = nullptr;
-    // TODO: add a more specific error here for liveness timeout failure to distinguish between other classes of timeouts (i.e
+    // TODO [$61ef8970dc80f9000935588e]: add a more specific error here for liveness timeout failure to distinguish between other classes of timeouts (i.e
     // response timeouts).
     client->ShutdownInternal(CHIP_ERROR_TIMEOUT);
 }

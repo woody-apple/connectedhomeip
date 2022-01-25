@@ -101,7 +101,7 @@ void CheckExchangeChannels(nlTestSuite * inSuite, void * inContext)
     return;
 
 #if 0
-    // TODO: complete test when CASESession is completed
+    // TODO [$61ef8970dc80f900093558ff]: complete test when CASESession is completed
     // wait for channel establishment
     ctx.DriveIOUntil(1000, [&] { return channelHandle.GetState() == ChannelState::kReady; });
     NL_TEST_ASSERT(inSuite, channelHandle.GetState() == ChannelState::kReady);

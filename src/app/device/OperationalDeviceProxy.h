@@ -38,7 +38,7 @@ struct OperationalDeviceProxyInitParams
 
 class OperationalDeviceProxy;
 
-// TODO: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
+// TODO [$61ef8970dc80f900093558b0]: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
 // class. When that happens, the type of the last param for this callback may change as the registrar of this
 // callback would need to be able to associate the peer device with the cluster command being setn.
 typedef void (*OnOperationalDeviceConnected)(void * context, OperationalDeviceProxy * operationalDeviceProxy);
@@ -104,7 +104,7 @@ public:
      *
      * @param[in] address  Address of the device in which the secure session is established for
      */
-    // TODO: After a requested CHIP node ID has been successfully resolved, call this to update
+    // TODO [$61ef8970dc80f900093558b1]: After a requested CHIP node ID has been successfully resolved, call this to update
     CHIP_ERROR UpdateAddress(const Transport::PeerAddress & address);
 
     /**
@@ -142,7 +142,7 @@ private:
     Callback::CallbackDeque mConnectionSuccess;
     Callback::CallbackDeque mConnectionFailure;
 
-    // TODO: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
+    // TODO [$61ef8970dc80f900093558b2]: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
     // class. When that happens, this class will no longer act as a wrapper to the `Device` class. This class
     // should not need to hold a Device class object.
     Controller::Device mDevice;
@@ -159,7 +159,7 @@ private:
     /**
      * ----- Wrapper callbacks for Device class -----
      */
-    // TODO: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
+    // TODO [$61ef8970dc80f900093558b3]: https://github.com/project-chip/connectedhomeip/issues/10423 will provide a refactor of the `Device`
     // class. When that happens, these callbacks are no longer needed. They are currently being used to forward
     // callbacks from the `Device` class to the users of the `OperationalDeviceProxy` class. Once the
     // `OperationalDeviceProxy` class is no longer a wrapper to the `Device` class, the former will no longer

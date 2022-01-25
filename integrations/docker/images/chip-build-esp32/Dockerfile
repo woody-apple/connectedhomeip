@@ -13,7 +13,7 @@ RUN set -x \
     && git clone --depth 1 --recursive -b v4.3 https://github.com/espressif/esp-idf.git /tmp/esp-idf \
     && : # last line
 
-# TODO: Remove this patch once https://github.com/espressif/esp-idf/pull/7632 is available
+# TODO [$61ef8970dc80f90009355865]: Remove this patch once https://github.com/espressif/esp-idf/pull/7632 is available
 COPY 0001-esp_crt_bundle-remove-EC-ACC-certificate.patch /tmp/esp-idf/0001-esp_crt_bundle-remove-EC-ACC-certificate.patch
 
 WORKDIR /tmp/esp-idf

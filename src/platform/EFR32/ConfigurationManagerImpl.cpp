@@ -47,7 +47,7 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     err = Internal::GenericConfigurationManagerImpl<ConfigurationManagerImpl>::Init();
     SuccessOrExit(err);
 
-    // TODO: Initialize the global GroupKeyStore object here (#1626)
+    // TODO [$61ef8970dc80f90009355995]: Initialize the global GroupKeyStore object here (#1626)
 
     // If the fail-safe was armed when the device last shutdown, initiate a factory reset.
     if (GetFailSafeArmed(failSafeArmed) == CHIP_NO_ERROR && failSafeArmed)
@@ -63,7 +63,7 @@ exit:
 
 bool ConfigurationManagerImpl::CanFactoryReset()
 {
-    // TODO: query the application to determine if factory reset is allowed.
+    // TODO [$61ef8970dc80f90009355996]: query the application to determine if factory reset is allowed.
     return true;
 }
 

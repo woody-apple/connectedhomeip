@@ -31,7 +31,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                # TODO: Enables "-crosscompile" and "-vscode" images
+                # TODO [$61ef8970dc80f9000935580d]: Enables "-crosscompile" and "-vscode" images
                 img: ["", "-android", "-cirque", "-efr32", "-esp32", "-esp32-qemu", "-infineon", "-k32w", "-mbed-os", "-nrf-platform", "-telink", "-tizen"]
         steps:
             - name: Checkout

@@ -26,7 +26,7 @@ tests:
               - name: "status"
                 value: 1
 
-    # TODO: Support chars validation
+    # TODO [$61ef8970dc80f900093558bd]: Support chars validation
     - label: "Read attribute vendor name"
       disabled: true
       command: "readAttribute"
@@ -40,7 +40,7 @@ tests:
       response:
           value: 1
 
-    # TODO: Support chars validation
+    # TODO [$61ef8970dc80f900093558be]: Support chars validation
     - label: "Read attribute name"
       disabled: true
       command: "readAttribute"
@@ -54,7 +54,7 @@ tests:
       response:
           value: 1
 
-    # TODO: Support chars validation
+    # TODO [$61ef8970dc80f900093558bf]: Support chars validation
     - label: "Read attribute id"
       disabled: true
       command: "readAttribute"

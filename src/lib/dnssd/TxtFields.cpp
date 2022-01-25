@@ -145,7 +145,7 @@ uint8_t GetCommissioningMode(const ByteSpan & value)
     return MakeU8FromAsciiDecimal(value);
 }
 
-// TODO: possibly 32-bit? see spec issue #3226
+// TODO [$61ef8970dc80f90009355969]: possibly 32-bit? see spec issue #3226
 uint16_t GetDeviceType(const ByteSpan & value)
 {
     return MakeU16FromAsciiDecimal(value);

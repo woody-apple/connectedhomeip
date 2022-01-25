@@ -102,7 +102,7 @@ EmberAfStatus OTAProviderExample::HandleQueryImage(chip::app::CommandHandler * c
                                                    const chip::Span<const char> & location, bool requestorCanConsent,
                                                    const chip::ByteSpan & metadataForProvider)
 {
-    // TODO: add confiuration for returning BUSY status
+    // TODO [$61ef8970dc80f90009355828]: add confiuration for returning BUSY status
 
     EmberAfOTAQueryStatus queryStatus = EMBER_ZCL_OTA_QUERY_STATUS_NOT_AVAILABLE;
     uint32_t newSoftwareVersion       = softwareVersion + 1; // This implementation will always indicate that an update is available
@@ -175,7 +175,7 @@ EmberAfStatus OTAProviderExample::HandleQueryImage(chip::app::CommandHandler * c
 EmberAfStatus OTAProviderExample::HandleApplyUpdateRequest(chip::app::CommandHandler * commandObj,
                                                            const chip::ByteSpan & updateToken, uint32_t newVersion)
 {
-    // TODO: handle multiple transfers by tracking updateTokens
+    // TODO [$61ef8970dc80f90009355829]: handle multiple transfers by tracking updateTokens
 
     EmberAfOTAApplyUpdateAction updateAction = EMBER_ZCL_OTA_APPLY_UPDATE_ACTION_PROCEED; // For now, just allow any update request
     char tokenBuf[kUpdateTokenStrLen]        = { 0 };

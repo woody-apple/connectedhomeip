@@ -44,7 +44,7 @@ static constexpr uint32_t kUndefinedMessageIndex = UINT32_MAX;
  *     last used. Inactive connections can expire.
  *   - CryptoContext contains the encryption context of a connection
  *
- * TODO: to add any message ACK information
+ * TODO [$61ef8970dc80f900093559f2]: to add any message ACK information
  */
 class SecureSession
 {
@@ -68,7 +68,7 @@ public:
     uint16_t GetPeerSessionId() const { return mPeerSessionId; }
     void SetPeerSessionId(uint16_t id) { mPeerSessionId = id; }
 
-    // TODO: Rename KeyID to SessionID
+    // TODO [$61ef8970dc80f900093559f3]: Rename KeyID to SessionID
     uint16_t GetLocalSessionId() const { return mLocalSessionId; }
     void SetLocalSessionId(uint16_t id) { mLocalSessionId = id; }
 

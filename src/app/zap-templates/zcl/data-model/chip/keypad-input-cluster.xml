@@ -23,7 +23,7 @@ limitations under the License.
     <define>KEYPAD_INPUT_CLUSTER</define>
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
-    <!-- TODO: Add feature map once it is available -->
+    <!-- TODO [$61ef8970dc80f900093558ec]: Add feature map once it is available -->
     <description>This cluster provides an interface for controlling a device like a TV using action commands such as UP, DOWN, and SELECT.</description>
 
     <command source="client" code="0x00" name="SendKey" optional="false">

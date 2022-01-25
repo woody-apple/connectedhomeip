@@ -14,7 +14,7 @@
 
 name: Window Covering [TC-WNCV-3.1] UpOrOpen Verification with server as DUT
 
-# TODO: WindowCovering tests TC-WNCV-3.1 finalize featuremap conditional dependencies
+# TODO [$61ef8970dc80f900093558c4]: WindowCovering tests TC-WNCV-3.1 finalize featuremap conditional dependencies
 
 config:
     cluster: "Window Covering"

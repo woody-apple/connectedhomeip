@@ -59,10 +59,10 @@
 #define MEMP_NUM_TCP_PCB 0
 #endif // INET_CONFIG_ENABLE_TCP_ENDPOINT
 
-// TODO: verify count
+// TODO [$61ef8970dc80f9000935597d]: verify count
 #define MEMP_NUM_UDP_PCB (7)
 
-// TODO: not sure why this is disabled
+// TODO [$61ef8970dc80f9000935597e]: not sure why this is disabled
 #define LWIP_HAVE_LOOPIF (0)
 #define LWIP_NETIF_LOOPBACK (0)
 
@@ -123,7 +123,7 @@
 #define DEFAULT_UDP_RECVMBOX_SIZE 6
 #define DEFAULT_TCP_RECVMBOX_SIZE 6
 
-// TODO: make LWIP_DEBUG conditional on build type
+// TODO [$61ef8970dc80f9000935597f]: make LWIP_DEBUG conditional on build type
 
 #ifndef LWIP_DEBUG
 #define LWIP_DEBUG 0

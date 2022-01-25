@@ -37,7 +37,7 @@ class CC13X2_26X2Config
 public:
     struct Key;
 
-    // TODO: Define a proper system ID in upstream driver
+    // TODO [$61ef8970dc80f900093559c0]: Define a proper system ID in upstream driver
     static constexpr uint16_t kNvinf_sysid_chip = (13);
 
     static const uint16_t kCC13X2_26X2ChipConfig_Sysid   = kNvinf_sysid_chip;

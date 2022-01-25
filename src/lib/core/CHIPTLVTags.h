@@ -39,11 +39,11 @@ enum TLVCommonProfiles
      */
     kProfileIdNotSpecified = 0xFFFFFFFF,
 
-    // TODO: Replace with chip::Profiles::kCHIPProfile_Common
+    // TODO [$61ef8970dc80f9000935594f]: Replace with chip::Profiles::kCHIPProfile_Common
     kCommonProfileId = 0
 };
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355950]: Move to private namespace
 enum TLVTagFields
 {
     kProfileIdMask    = 0xFFFFFFFF00000000ULL,
@@ -55,7 +55,7 @@ enum TLVTagFields
     kContextTagMaxNum = UINT8_MAX
 };
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355951]: Move to private namespace
 enum class TLVTagControl : uint8_t
 {
     // IMPORTANT: All values here must have no bits in common with specified
@@ -76,7 +76,7 @@ inline uint8_t operator>>(TLVTagControl lhs, const T & rhs)
     return static_cast<uint8_t>(static_cast<uint8_t>(lhs) >> rhs);
 }
 
-// TODO: Move to private namespace
+// TODO [$61ef8970dc80f90009355952]: Move to private namespace
 enum
 {
     kTLVTagControlMask  = 0xE0,
@@ -138,7 +138,7 @@ enum
      */
     AnonymousTag = kSpecialTagMarker | 0x00000000FFFFFFFFULL,
 
-    // TODO: Move to private namespace
+    // TODO [$61ef8970dc80f90009355953]: Move to private namespace
     UnknownImplicitTag = kSpecialTagMarker | 0x00000000FFFFFFFEULL
 };
 
@@ -213,7 +213,7 @@ inline bool IsContextTag(Tag tag)
     return (tag & kProfileIdMask) == kSpecialTagMarker && TagNumFromTag(tag) <= kContextTagMaxNum;
 }
 
-// TODO: move to private namespace
+// TODO [$61ef8970dc80f90009355954]: move to private namespace
 inline bool IsSpecialTag(Tag tag)
 {
     return (tag & kProfileIdMask) == kSpecialTagMarker;

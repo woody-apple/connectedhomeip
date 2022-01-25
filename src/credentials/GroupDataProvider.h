@@ -118,7 +118,7 @@ public:
     };
 
     // Iterator for the Group Key Sets related under a given Fabric.
-    // TODO: Refactor to allow trial decryption and encryption directly, rather than accessing raw keys.
+    // TODO [$61ef8970dc80f9000935592f]: Refactor to allow trial decryption and encryption directly, rather than accessing raw keys.
     class KeySetIterator
     {
     public:

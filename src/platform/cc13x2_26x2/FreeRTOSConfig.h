@@ -98,7 +98,7 @@
 #define configQUEUE_REGISTRY_SIZE 0
 
 /* Minimum FreeRTOS tick periods of idle before invoking Power policy */
-/* TODO: find way to reduce this; FreeRTOS requires it to be 2 or more */
+/* TODO [$61ef8970dc80f900093559c2]: find way to reduce this; FreeRTOS requires it to be 2 or more */
 #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP 2
 
 /* Software timer definitions. */

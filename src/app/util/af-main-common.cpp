@@ -312,7 +312,7 @@ static EmberStatus send(const MessageSendDestination & destination, EmberApsFram
         // We consider "in progress" signed messages as being sent successfully.
         // The stack will send the message after signing.
         status = EMBER_SUCCESS;
-        // TODO: Can we actually hit this case in CHIP, or can this whole block
+        // TODO [$61ef8970dc80f900093558c7]: Can we actually hit this case in CHIP, or can this whole block
         // go away?
         // emAfSetCryptoOperationInProgress();
     }
@@ -394,7 +394,7 @@ EmberStatus emberAfSendMulticastToBindings(EmberApsFrame * apsFrame, uint16_t me
     return status;
 }
 
-// TODO: Figure out whether we need emberAfSendBroadcastWithCallback at all.
+// TODO [$61ef8970dc80f900093558c8]: Figure out whether we need emberAfSendBroadcastWithCallback at all.
 // EmberStatus emberAfSendBroadcastWithCallback(EmberNodeId destination, EmberApsFrame * apsFrame, uint16_t messageLength,
 //                                             uint8_t * message, EmberAfMessageSentFunction callback)
 //{
@@ -405,7 +405,7 @@ EmberStatus emberAfSendMulticastToBindings(EmberApsFrame * apsFrame, uint16_t me
 //                callback);
 //}
 
-// TODO: Figure out whether we need emberAfSendBroadcastWithAliasWithCallback at all.
+// TODO [$61ef8970dc80f900093558c9]: Figure out whether we need emberAfSendBroadcastWithAliasWithCallback at all.
 // EmberStatus emberAfSendBroadcastWithAliasWithCallback(EmberNodeId destination, EmberApsFrame * apsFrame, uint16_t messageLength,
 //                                                      uint8_t * message, EmberNodeId alias, uint8_t sequence,
 //                                                      EmberAfMessageSentFunction callback)
@@ -417,7 +417,7 @@ EmberStatus emberAfSendMulticastToBindings(EmberApsFrame * apsFrame, uint16_t me
 //                callback);
 //}
 
-// TODO: Figure out whether we need emberAfSendBroadcast at all.
+// TODO [$61ef8970dc80f900093558ca]: Figure out whether we need emberAfSendBroadcast at all.
 // EmberStatus emberAfSendBroadcast(EmberNodeId destination, EmberApsFrame * apsFrame, uint16_t messageLength, uint8_t * message)
 //{
 //    return emberAfSendBroadcastWithCallback(destination, apsFrame, messageLength, message, NULL);
@@ -434,7 +434,7 @@ EmberStatus emberAfSendUnicastWithCallback(const MessageSendDestination & destin
         // cluster in the binding is not used because bindings can be used to send
         // messages with any cluster id, not just the one set in the binding.
         EmberBindingTableEntry binding;
-        // TODO: This cast should go away once
+        // TODO [$61ef8970dc80f900093558cb]: This cast should go away once
         // https://github.com/project-chip/connectedhomeip/issues/3584 is fixed.
         EmberStatus status = emberGetBinding(destination.GetBindingIndex(), &binding);
         if (status != EMBER_SUCCESS)
@@ -615,7 +615,7 @@ void emAfFragmentationMessageSentHandler(const MessageSendDestination & destinat
 EmberStatus emAfSend(const MessageSendDestination & destination, EmberApsFrame * apsFrame, uint16_t messageLength,
                      uint8_t * message, uint8_t * messageTag, EmberNodeId alias, uint8_t sequence)
 {
-    // TODO: There's an impedance mismatch here in a few ways:
+    // TODO [$61ef8970dc80f900093558cc]: There's an impedance mismatch here in a few ways:
     // 1) The caller expects to get a messageTag out that will identify this
     // message somewhat uniquely.  Right now we just ignore that and claim an
     // invalid tag, which means message-sent callbacks don't get called.

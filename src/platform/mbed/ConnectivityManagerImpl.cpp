@@ -123,7 +123,7 @@ CHIP_ERROR ConnectivityManagerImpl::_Init()
         mWifiInterface   = net_if->wifiInterface();
         mWiFiStationMode = kWiFiStationMode_Enabled;
 
-        // TODO: Add to user documentation that add_event_listener must be used
+        // TODO [$61ef8970dc80f900093559c3]: Add to user documentation that add_event_listener must be used
         // To add more listener to the interface
         mWifiInterface->add_event_listener([this](nsapi_event_t event, intptr_t data) {
             PlatformMgrImpl().mQueue.call([this, event, data] {

@@ -181,9 +181,9 @@ static uint8_t setUser(uint16_t userId, uint8_t userStatus, uint8_t userType, co
     if (validCodeLength && userId < userTableSize)
     {
         EmberAfPluginDoorLockServerUser * user = &userTable[userId];
-        // TODO: Need to check validity.  https://github.com/project-chip/connectedhomeip/issues/3579
+        // TODO [$61ef8970dc80f90009355892]: Need to check validity.  https://github.com/project-chip/connectedhomeip/issues/3579
         user->status = static_cast<EmberAfDoorLockUserStatus>(userStatus);
-        // TODO: Need to check validity.  https://github.com/project-chip/connectedhomeip/issues/3580
+        // TODO [$61ef8970dc80f90009355893]: Need to check validity.  https://github.com/project-chip/connectedhomeip/issues/3580
         user->type = static_cast<EmberAfDoorLockUserType>(userType);
         // Our length checks above make this cast safe.
         user->code.rfid[0] = static_cast<uint8_t>(code.size());
@@ -261,7 +261,7 @@ bool emberAfDoorLockClusterSetUserTypeCallback(app::CommandHandler * commandObj,
     auto & userType = commandData.userType;
 
     CHIP_ERROR err = CHIP_NO_ERROR;
-    // TODO: Need to validate userType.  https://github.com/project-chip/connectedhomeip/issues/3580
+    // TODO [$61ef8970dc80f90009355894]: Need to validate userType.  https://github.com/project-chip/connectedhomeip/issues/3580
     uint8_t status = (emAfPluginDoorLockServerSetPinUserType(userId, static_cast<EmberAfDoorLockUserType>(userType))
                           ? 0x00   // success (per 7.3.2.17.21)
                           : 0x01); // failure (per 7.3.2.17.21)

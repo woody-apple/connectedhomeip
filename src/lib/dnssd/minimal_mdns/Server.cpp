@@ -250,7 +250,7 @@ CHIP_ERROR ServerBase::BroadcastSend(chip::System::PacketBufferHandle && data, u
         /// LWIP does not like having a pbuf sent over serparate interfaces, hence we create a copy
         /// for sending via `CloneData`
         ///
-        /// TODO: this wastes one copy of the data and that could be optimized away
+        /// TODO [$61ef8970dc80f9000935596e]: this wastes one copy of the data and that could be optimized away
         if (info->addressType == chip::Inet::IPAddressType::kIPv6)
         {
             err = info->udp->SendTo(mIpv6BroadcastAddress, port, data.CloneData(), info->udp->GetBoundInterface());
@@ -303,7 +303,7 @@ CHIP_ERROR ServerBase::BroadcastSend(chip::System::PacketBufferHandle && data, u
         /// LWIP does not like having a pbuf sent over serparate interfaces, hence we create a copy
         /// for sending via `CloneData`
         ///
-        /// TODO: this wastes one copy of the data and that could be optimized away
+        /// TODO [$61ef8970dc80f9000935596f]: this wastes one copy of the data and that could be optimized away
         if (info->addressType == chip::Inet::IPAddressType::kIPv6)
         {
             err = info->udp->SendTo(mIpv6BroadcastAddress, port, data.CloneData(), info->udp->GetBoundInterface());

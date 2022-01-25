@@ -136,15 +136,15 @@ exit:
 
         // The Path is the path in the request if there are any error occurred before we dispatch the command to clusters.
         // Currently, it could be failed to decode Path or failed to find cluster / command on desired endpoint.
-        // TODO: The behavior when receiving a malformed message is not clear in the Spec. (Spec#3259)
-        // TODO: The error code should be updated after #7072 added error codes required by IM.
+        // TODO [$61ef8970dc80f9000935587e]: The behavior when receiving a malformed message is not clear in the Spec. (Spec#3259)
+        // TODO [$61ef8970dc80f9000935587f]: The error code should be updated after #7072 added error codes required by IM.
         if (err == CHIP_ERROR_INVALID_PROFILE_ID)
         {
             ChipLogDetail(DataManagement, "No Cluster " ChipLogFormatMEI " on Endpoint 0x%" PRIx16, ChipLogValueMEI(clusterId),
                           endpointId);
         }
 
-        // TODO:in particular different reasons for ServerClusterCommandExists to test false should result in different errors here
+        // TODO [$61ef8970dc80f90009355880]:in particular different reasons for ServerClusterCommandExists to test false should result in different errors here
         AddStatus(path, Protocols::InteractionModel::Status::InvalidCommand);
     }
 
@@ -172,7 +172,7 @@ CHIP_ERROR CommandHandler::AddStatusInternal(const ConcreteCommandPath & aComman
     statusIBBuilder = mInvokeCommandBuilder.GetCommandListBuilder().GetCommandDataIBBuilder().CreateStatusIBBuilder();
 
     //
-    // TODO: Most of the callers are incorrectly passing SecureChannel as the protocol ID, when in fact, the status code provided
+    // TODO [$61ef8970dc80f90009355881]: Most of the callers are incorrectly passing SecureChannel as the protocol ID, when in fact, the status code provided
     // above is always an IM code. Instead of fixing all the callers (which is a fairly sizeable change), we'll embark on fixing
     // this more completely when we fix #9530.
     //

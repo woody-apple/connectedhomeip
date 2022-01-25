@@ -34,7 +34,7 @@ namespace chip {
 namespace DeviceLayer {
 namespace PersistedStorage {
 
-/* TODO: adjust this value */
+/* TODO [$61ef8970dc80f900093559cc]: adjust this value */
 #define MAX_NO_OF_KEYS 255
 
 KeyValueStoreManagerImpl KeyValueStoreManagerImpl::sInstance;

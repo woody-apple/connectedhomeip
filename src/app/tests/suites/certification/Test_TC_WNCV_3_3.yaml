@@ -14,7 +14,7 @@
 
 name: Window Covering [TC-WNCV-3.3] StopMotion Verification with server as DUT
 
-# TODO: WindowCovering tests TC-WNCV-3.3 finalize featuremap conditional dependencies
+# TODO [$61ef8970dc80f900093558c6]: WindowCovering tests TC-WNCV-3.3 finalize featuremap conditional dependencies
 
 config:
     cluster: "Window Covering"

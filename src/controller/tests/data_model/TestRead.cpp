@@ -219,7 +219,7 @@ void TestReadInteraction::TestReadTimeout(nlTestSuite * apSuite, void * apContex
     NL_TEST_ASSERT(apSuite, chip::app::InteractionModelEngine::GetInstance()->GetNumActiveReadClients() == 0);
 
     //
-    // TODO: Figure out why I cannot enable this line below.
+    // TODO [$61ef8970dc80f90009355925]: Figure out why I cannot enable this line below.
     //
     // NL_TEST_ASSERT(apSuite, ctx.GetExchangeManager().GetNumActiveExchanges() == 1);
 
@@ -230,7 +230,7 @@ void TestReadInteraction::TestReadTimeout(nlTestSuite * apSuite, void * apContex
     NL_TEST_ASSERT(apSuite, chip::app::InteractionModelEngine::GetInstance()->GetNumActiveReadHandlers() == 0);
 
     //
-    // TODO: Figure out why I cannot enable this line below.
+    // TODO [$61ef8970dc80f90009355926]: Figure out why I cannot enable this line below.
     //
     // NL_TEST_ASSERT(apSuite, ctx.GetExchangeManager().GetNumActiveExchanges() == 0);
 }

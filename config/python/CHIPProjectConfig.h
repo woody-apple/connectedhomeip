@@ -70,7 +70,7 @@
 
 #define CHIP_DEVICE_CONFIG_ENABLE_TEST_DEVICE_IDENTITY 1
 
-/* TODO: Ideally, these #defines should be enabled by default for Linux
+/* TODO [$61ef8970dc80f90009355814]: Ideally, these #defines should be enabled by default for Linux
  AND the python tool would provide runtime options to enable/disable them */
 #define CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY 1
 #define CHIP_DEVICE_CONFIG_ENABLE_BOTH_COMMISSIONER_AND_COMMISSIONEE 1

@@ -41,7 +41,7 @@ CHIP_ERROR ApplicationExchangeDispatch::SendPreparedMessage(SessionHandle sessio
 
 bool ApplicationExchangeDispatch::MessagePermitted(uint16_t protocol, uint8_t type)
 {
-    // TODO: Change this check to only include the protocol and message types that are allowed
+    // TODO [$61ef8970dc80f90009355980]: Change this check to only include the protocol and message types that are allowed
     switch (protocol)
     {
     case Protocols::SecureChannel::Id.GetProtocolId():

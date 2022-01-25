@@ -85,7 +85,7 @@ bool emberAfMediaInputClusterRenameInputCallback(app::CommandHandler * command, 
     auto & input = commandData.index;
     auto & name  = commandData.name;
 
-    // TODO: char is not null terminated, verify this code once #7963 gets merged.
+    // TODO [$61ef8970dc80f90009355898]: char is not null terminated, verify this code once #7963 gets merged.
     std::string nameString(name.data(), name.size());
     bool success         = mediaInputClusterRenameInput(input, nameString);
     EmberAfStatus status = success ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;

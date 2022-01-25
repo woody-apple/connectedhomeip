@@ -37,7 +37,7 @@ _chip_banner "Environment bringup"
 
 git -C "$CHIP_ROOT" submodule update --init
 
-# TODO: Fix pigweed to bootstrap if necessary in activate.sh.
+# TODO [$61ef8970dc80f90009355863]: Fix pigweed to bootstrap if necessary in activate.sh.
 echo
 echo "NB: If this fails run \"source scripts/bootstrap.sh\""
 

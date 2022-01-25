@@ -126,7 +126,7 @@ class EnterNetworkFragment : Fragment() {
 
       override fun onError(ex: Exception) {
         Log.e(TAG, "EnableNetwork for $ssid failed", ex)
-        // TODO: consolidate error codes
+        // TODO [$61ef8970dc80f9000935587a]: consolidate error codes
         FragmentUtil.getHost(
           this@EnterNetworkFragment,
           DeviceProvisioningFragment.Callback::class.java
@@ -224,7 +224,7 @@ class EnterNetworkFragment : Fragment() {
 
       override fun onError(ex: Exception) {
         Log.e(TAG, "EnableNetwork for $panIdStr failed", ex)
-        // TODO: consolidate error codes
+        // TODO [$61ef8970dc80f9000935587b]: consolidate error codes
         FragmentUtil.getHost(
           this@EnterNetworkFragment,
           DeviceProvisioningFragment.Callback::class.java

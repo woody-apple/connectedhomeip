@@ -62,17 +62,17 @@
 
 #define LWIP_FREERTOS_USE_STATIC_TCPIP_TASK 0
 
-// TODO: seems like this is unnecessary on Thread-only platforms
+// TODO [$61ef8970dc80f9000935597a]: seems like this is unnecessary on Thread-only platforms
 #define LWIP_RAW 1
 #define MEMP_NUM_RAW_PCB (5)
 
-// TODO: verify count
+// TODO [$61ef8970dc80f9000935597b]: verify count
 #define MEMP_NUM_UDP_PCB (7)
 
 #define LWIP_HAVE_LOOPIF (0)
 
 #define LWIP_NETIF_API 1
-// TODO: not sure why this is disabled
+// TODO [$61ef8970dc80f9000935597c]: not sure why this is disabled
 #define LWIP_NETIF_LOOPBACK (0)
 #define PBUF_LINK_HLEN (WHD_PHYSICAL_HEADER)
 
