@@ -139,13 +139,13 @@ static MTRDeviceController * sController = nil;
     [self waitForExpectationsWithTimeout:kPairingTimeoutInSeconds handler:nil];
 
     __block XCTestExpectation * connectionExpectation = [self expectationWithDescription:@"CASE established"];
-    [controller getConnectedDevice:nodeId
-                             queue:dispatch_get_main_queue()
-                 completionHandler:^(MTRDevice * _Nullable device, NSError * _Nullable error) {
-                     XCTAssertEqual(error.code, 0);
-                     [connectionExpectation fulfill];
-                     connectionExpectation = nil;
-                 }];
+    [controller getDevice:nodeId
+                    queue:dispatch_get_main_queue()
+        completionHandler:^(MTRDevice * _Nullable device, NSError * _Nullable error) {
+            XCTAssertEqual(error.code, 0);
+            [connectionExpectation fulfill];
+            connectionExpectation = nil;
+        }];
     [self waitForExpectationsWithTimeout:kCASESetupTimeoutInSeconds handler:nil];
 }
 
@@ -168,14 +168,14 @@ static MTRDeviceController * sController = nil;
 
     __block MTRDevice * device;
     __block XCTestExpectation * connectionExpectation = [self expectationWithDescription:@"CASE established"];
-    [controller getConnectedDevice:nodeId
-                             queue:dispatch_get_main_queue()
-                 completionHandler:^(MTRDevice * _Nullable retrievedDevice, NSError * _Nullable error) {
-                     XCTAssertEqual(error.code, 0);
-                     [connectionExpectation fulfill];
-                     connectionExpectation = nil;
-                     device = retrievedDevice;
-                 }];
+    [controller getDevice:nodeId
+                    queue:dispatch_get_main_queue()
+        completionHandler:^(MTRDevice * _Nullable retrievedDevice, NSError * _Nullable error) {
+            XCTAssertEqual(error.code, 0);
+            [connectionExpectation fulfill];
+            connectionExpectation = nil;
+            device = retrievedDevice;
+        }];
     [self waitForExpectationsWithTimeout:kCASESetupTimeoutInSeconds handler:nil];
 
     XCTestExpectation * expectation = [self expectationWithDescription:@"ReuseMTRClusterObjectFirstCall"];

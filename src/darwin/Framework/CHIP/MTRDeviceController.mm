@@ -39,9 +39,9 @@
 
 #include <platform/CHIPDeviceBuildConfig.h>
 
-#include <controller/CommissioningWindowOpener.h>
 #include <controller/CHIPDeviceController.h>
 #include <controller/CHIPDeviceControllerFactory.h>
+#include <controller/CommissioningWindowOpener.h>
 #include <credentials/FabricTable.h>
 #include <credentials/GroupDataProvider.h>
 #include <credentials/attestation_verifier/DefaultDeviceAttestationVerifier.h>
@@ -519,9 +519,7 @@ static NSString * const kErrorCSRValidation = @"Extracting public key from CSR f
     return [[MTRDevice alloc] initWithDevice:deviceProxy];
 }
 
-- (BOOL)getConnectedDevice:(uint64_t)deviceID
-                     queue:(dispatch_queue_t)queue
-         completionHandler:(MTRDeviceConnectionCallback)completionHandler
+- (BOOL)getDevice:(uint64_t)deviceID queue:(dispatch_queue_t)queue completionHandler:(MTRDeviceConnectionCallback)completionHandler
 {
     __block CHIP_ERROR errorCode = CHIP_ERROR_INCORRECT_STATE;
     if (![self isRunning]) {

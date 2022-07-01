@@ -1,8 +1,5 @@
 {{> header}}
 
-#ifndef MTR_STRUCTS_H
-#define MTR_STRUCTS_H
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -34,5 +31,3 @@ NS_ASSUME_NONNULL_BEGIN
 {{/zcl_clusters}}
 
 NS_ASSUME_NONNULL_END
-
-#endif /* MTR_STRUCTS_H */

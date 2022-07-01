@@ -15,9 +15,6 @@
  *    limitations under the License.
  */
 
-#ifndef MTR_CONTROLLER_FACTORY_H
-#define MTR_CONTROLLER_FACTORY_H
-
 /**
  * An object that allows creating Matter controllers. There can be only one such
  * object in a given process.
@@ -118,5 +115,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif // MTR_CONTROLLER_FACTORY_H

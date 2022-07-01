@@ -1,8 +1,5 @@
 {{> header}}
 
-#ifndef MTR_COMMAND_PAYLOADS_H
-#define MTR_COMMAND_PAYLOADS_H
-
 #import <Foundation/Foundation.h>
 #import <Matter/MTRStructsObjc.h>
 
@@ -40,5 +37,3 @@ NS_ASSUME_NONNULL_BEGIN
 {{/zcl_clusters}}
 
 NS_ASSUME_NONNULL_END
-
-#endif /* MTR_COMMAND_PAYLOADS_H */

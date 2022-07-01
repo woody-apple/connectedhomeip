@@ -135,7 +135,7 @@ BOOL CHIPGetConnectedDevice(MTRDeviceConnectionCallback completionHandler)
 
     // Let's use the last device that was paired
     uint64_t deviceId = CHIPGetLastPairedDeviceId();
-    return [controller getConnectedDevice:deviceId queue:dispatch_get_main_queue() completionHandler:completionHandler];
+    return [controller getDevice:deviceId queue:dispatch_get_main_queue() completionHandler:completionHandler];
 }
 
 MTRDevice * CHIPGetDeviceBeingCommissioned(void)
@@ -154,7 +154,7 @@ BOOL CHIPGetConnectedDeviceWithID(uint64_t deviceId, MTRDeviceConnectionCallback
 {
     MTRDeviceController * controller = InitializeCHIP();
 
-    return [controller getConnectedDevice:deviceId queue:dispatch_get_main_queue() completionHandler:completionHandler];
+    return [controller getDevice:deviceId queue:dispatch_get_main_queue() completionHandler:completionHandler];
 }
 
 BOOL CHIPIsDevicePaired(uint64_t deviceId)

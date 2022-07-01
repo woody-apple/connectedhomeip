@@ -21,11 +21,10 @@
 #import "MTRDevice.h"
 #import "MTRDevice_Internal.h"
 
-#import "zap-generated/MTRClustersObjc.h"
 #import "zap-generated/CHIPClusters.h"
+#import "zap-generated/MTRClustersObjc.h"
 
 using namespace chip::app::Clusters;
-
 
 @interface MTRCluster ()
 @property (readonly, nonatomic) dispatch_queue_t callbackQueue;

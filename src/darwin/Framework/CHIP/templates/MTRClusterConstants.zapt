@@ -1,8 +1,5 @@
 {{> header}}
 
-#ifndef MATTER_CLUSTER_CONSTANTS_H
-#define MATTER_CLUSTER_CONSTANTS_H
-
 #import <Foundation/Foundation.h>
 #import <stdint.h>
 
@@ -72,5 +69,3 @@ MTRCluster{{asUpperCamelCase parent.label}}Event{{asUpperCamelCase name}}ID = {{
 {{/zcl_events}}
 {{/zcl_clusters}}
 };
-
-#endif

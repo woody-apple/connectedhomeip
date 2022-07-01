@@ -14,9 +14,6 @@
  *    limitations under the License.
  */
 
-#ifndef MTR_DEVICE_CONTROLLER_STARTUP_PARAMS_H
-#define MTR_DEVICE_CONTROLLER_STARTUP_PARAMS_H
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -223,5 +220,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif // MTR_DEVICE_CONTROLLER_STARTUP_PARAMS_H

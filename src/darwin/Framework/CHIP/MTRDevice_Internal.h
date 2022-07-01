@@ -15,9 +15,6 @@
  *    limitations under the License.
  */
 
-#ifndef MTR_DEVICE_INTERNAL_H
-#define MTR_DEVICE_INTERNAL_H
-
 #import "MTRDevice.h"
 #import <Foundation/Foundation.h>
 
@@ -53,5 +50,3 @@ NS_ASSUME_NONNULL_BEGIN
 id _Nullable NSObjectFromCHIPTLV(chip::TLV::TLVReader * data);
 
 NS_ASSUME_NONNULL_END
-
-#endif /* MTR_DEVICE_INTERNAL_H */
