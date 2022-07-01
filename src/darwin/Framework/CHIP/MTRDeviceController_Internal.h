@@ -14,9 +14,6 @@
  *    limitations under the License.
  */
 
-#ifndef MTR_DEVICE_CONTROLLER_INTERNAL_H
-#define MTR_DEVICE_CONTROLLER_INTERNAL_H
-
 /**
  * Parts of MTRDeviceController that are not part of the framework API.  Mostly
  * for use from MTRControllerFactory.
@@ -91,5 +88,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif // MTR_DEVICE_CONTROLLER_INTERNAL_H

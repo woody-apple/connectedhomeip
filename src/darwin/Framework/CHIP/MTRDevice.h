@@ -15,9 +15,6 @@
  *    limitations under the License.
  */
 
-#ifndef MTR_DEVICE_H
-#define MTR_DEVICE_H
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -272,5 +269,3 @@ extern NSString * const MTRArrayValueType;
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif /* MTR_DEVICE_H */

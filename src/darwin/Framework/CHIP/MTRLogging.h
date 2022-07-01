@@ -16,9 +16,6 @@
  *    limitations under the License.
  */
 
-#ifndef CHIPLogging_h
-#define CHIPLogging_h
-
 #import <os/log.h>
 
 #if DEBUG
@@ -33,5 +30,3 @@
 #define CHIP_LOG_METHOD_ENTRY() ({})
 
 #endif
-
-#endif /* CHIPLogging_h */

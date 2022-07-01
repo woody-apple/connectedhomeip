@@ -360,7 +360,7 @@ private:
         DeviceProxy * device = [self internalDevice];
         if (!device) {
             dispatch_async(queue, ^{
-                errorHandler([CHIPError errorForCHIPErrorCode:CHIP_ERROR_INCORRECT_STATE]);
+                errorHandler([MTRError errorForCHIPErrorCode:CHIP_ERROR_INCORRECT_STATE]);
             });
             return;
         }
@@ -382,10 +382,10 @@ private:
         std::unique_ptr<ReadClient> readClient;
         std::unique_ptr<ClusterStateCache> attributeCache;
         if (attributeCacheContainer) {
-            __weak CHIPAttributeCacheContainer * weakPtr = attributeCacheContainer;
+            __weak MTRAttributeCacheContainer * weakPtr = attributeCacheContainer;
             callback = std::make_unique<SubscriptionCallback>(
                 queue, attributeReportHandler, eventReportHandler, errorHandler, subscriptionEstablishedHandler, ^{
-                    CHIPAttributeCacheContainer * container = weakPtr;
+                    MTRAttributeCacheContainer * container = weakPtr;
                     if (container) {
                         container.cppAttributeCache = nullptr;
                     }
@@ -412,7 +412,7 @@ private:
 
         if (err != CHIP_NO_ERROR) {
             dispatch_async(queue, ^{
-                errorHandler([CHIPError errorForCHIPErrorCode:err]);
+                errorHandler([MTRError errorForCHIPErrorCode:err]);
             });
 
             return;

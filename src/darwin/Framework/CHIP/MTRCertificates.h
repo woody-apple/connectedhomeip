@@ -13,8 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef MTR_CERTIFICATES_H
-#define MTR_CERTIFICATES_H
 
 /**
  * Utilities for working with Matter certificates.
@@ -130,5 +128,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif // MTR_CERTIFICATES_H

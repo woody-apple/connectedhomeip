@@ -1,8 +1,5 @@
 {{> header}}
 
-#ifndef MTR_CLUSTERS_H
-#define MTR_CLUSTERS_H
-
 #import <Foundation/Foundation.h>
 
 #import <Matter/MTRAttributeCacheContainer.h>
@@ -81,5 +78,3 @@ typedef NS_OPTIONS({{asUnderlyingZclType name}}, {{objCEnumName ../name label}})
 {{/zcl_clusters}}
 
 NS_ASSUME_NONNULL_END
-
-#endif /* MTR_CLUSTERS_H */

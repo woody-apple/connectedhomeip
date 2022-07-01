@@ -127,17 +127,17 @@ public:
             mConnectedDevices[identity] = nil;
         }
 
-        [controller getConnectedDevice:value.nodeId
-                                 queue:mCallbackQueue
-                     completionHandler:^(MTRDevice * _Nullable device, NSError * _Nullable error) {
-                         if (error != nil) {
-                             SetCommandExitStatus(error);
-                             return;
-                         }
+        [controller getDevice:value.nodeId
+                        queue:mCallbackQueue
+            completionHandler:^(MTRDevice * _Nullable device, NSError * _Nullable error) {
+                if (error != nil) {
+                    SetCommandExitStatus(error);
+                    return;
+                }
 
-                         mConnectedDevices[identity] = device;
-                         NextTest();
-                     }];
+                mConnectedDevices[identity] = device;
+                NextTest();
+            }];
         return CHIP_NO_ERROR;
     }
 
