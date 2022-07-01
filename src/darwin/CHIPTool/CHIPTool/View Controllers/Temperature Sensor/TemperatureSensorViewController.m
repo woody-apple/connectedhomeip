@@ -226,31 +226,34 @@ static TemperatureSensorViewController * _Nullable sCurrentController = nil;
                                    maxInterval:maxIntervalSeconds
                                         params:nil
                                 cacheContainer:nil
-                                 reportHandler:^(NSArray<MTRAttributeReport *> * _Nullable reports, NSError * _Nullable error) {
-                                     if (error) {
-                                         NSLog(@"Status: update reportAttributeMeasuredValue completed with error %@",
-                                             [error description]);
-                                         return;
-                                     }
-                                     for (MTRAttributeReport * report in reports) {
-                                         // These should be exposed by the SDK
-                                         if ([report.path.cluster isEqualToNumber:@(MTRClusterTemperatureMeasurementID)] &&
-                                             [report.path.attribute
-                                                 isEqualToNumber:@(MTRClusterTemperatureMeasurementAttributeMeasuredValueID)]) {
-                                             if (report.error != nil) {
-                                                 NSLog(@"Error reading temperature: %@", report.error);
-                                             } else {
-                                                 __auto_type controller = [TemperatureSensorViewController currentController];
-                                                 if (controller != nil) {
-                                                     [controller updateTempInUI:((NSNumber *) report.value).shortValue];
-                                                 }
-                                             }
-                                         }
-                                     }
+                        attributeReportHandler:^(NSArray * _Nullable reports) {
+                            if ( !reports )
+                                return;
+                            for (MTRAttributeReport * report in reports) {
+                                // These should be exposed by the SDK
+                                if ([report.path.cluster isEqualToNumber:@(MTRClusterTemperatureMeasurementID)] &&
+                                    [report.path.attribute
+                                        isEqualToNumber:@(MTRClusterTemperatureMeasurementAttributeMeasuredValueID)]) {
+                                    if (report.error != nil) {
+                                        NSLog(@"Error reading temperature: %@", report.error);
+                                    } else {
+                                        __auto_type controller = [TemperatureSensorViewController currentController];
+                                        if (controller != nil) {
+                                            [controller updateTempInUI:((NSNumber *) report.value).shortValue];
+                                        }
+                                    }
+                                }
+                            }                        
+                        }
+                            eventReportHandler:nil
+                                 errorHandler:^(NSError * error) {
+                                     NSLog(@"Status: update reportAttributeMeasuredValue completed with error %@",
+                                         [error description]);
                                  }
-                       subscriptionEstablished:^ {
-
-                       }];
+                      subscriptionEstablished:(nullable void (^)(void))subscriptionEstablishedHandler {                                  if (error) {
+                         NSLog(@"Status: update reportAttributeMeasuredValue completed");
+                      }
+                ];
             } else {
                 NSLog(@"Status: Failed to establish a connection with the device");
             }

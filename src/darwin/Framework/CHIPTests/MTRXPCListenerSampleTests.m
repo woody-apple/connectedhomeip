@@ -378,14 +378,18 @@ static NSString * const MTRDeviceControllerId = @"CHIPController";
                                    maxInterval:[maxInterval unsignedShortValue]
                                    params:[MTRDeviceController decodeXPCSubscribeParams:params]
                                    cacheContainer:attributeCacheContainer
-                                   reportHandler:^(NSArray * _Nullable value, NSError * _Nullable error) {
-                                       NSLog(@"Report received: %@, error: %@", value, error);
-                                       if (error && ![established[0] boolValue]) {
+                                   attributeReportHandler:^(NSArray * value) {
+                                       NSLog(@"Received report: %@", value);
+                                   }
+                                   eventReportHandler:nil
+                                   errorHandler:^(NSError * error) {
+                                       NSLog(@"Received report error: %@", error);
+                                       if (![established[0] boolValue]) {
                                            established[0] = @YES;
                                            completion(error);
                                        }
                                    }
-                                   subscriptionEstablished:^{
+                                   subscriptionEstablished:^() {
                                        NSLog(@"Attribute cache subscription succeeded for device %llu", nodeId);
                                        if (attributeCacheContainer) {
                                            [self.attributeCacheDictionary setObject:attributeCacheContainer forKey:@(nodeId)];
@@ -1783,10 +1787,14 @@ static void (^globalReportHandler)(id _Nullable values, NSError * _Nullable erro
         maxInterval:60
         params:nil
         cacheContainer:attributeCacheContainer
-        reportHandler:^(NSArray * _Nullable value, NSError * _Nullable error) {
-            NSLog(@"Report for attribute cache: %@, error: %@", value, error);
+        attributeReportHandler:^(NSArray * value) {
+            NSLog(@"Report for attribute cache: %@", error);
         }
-        subscriptionEstablished:^{
+        eventReportHandler:nil
+        errorHandler:^(NSError * error) {
+            NSLog(@"Received error for attribute cache: %@", error);
+        }
+        subscriptionEstablished:^() {
             NSLog(@"Attribute cache subscribed attributes");
             [expectation fulfill];
         }];

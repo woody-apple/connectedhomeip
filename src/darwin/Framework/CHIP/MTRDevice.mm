@@ -341,31 +341,6 @@ private:
                 maxInterval:(uint16_t)maxInterval
                      params:(nullable MTRSubscribeParams *)params
              cacheContainer:(MTRAttributeCacheContainer * _Nullable)attributeCacheContainer
-              reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
-    subscriptionEstablished:(nullable void (^)(void))subscriptionEstablishedHandler
-{
-    [self subscribeWithQueue:queue
-        minInterval:minInterval
-        maxInterval:maxInterval
-        params:params
-        cacheContainer:attributeCacheContainer
-        attributeReportHandler:^(NSArray * _Nullable value) {
-            reportHandler(value, nil);
-        }
-        eventReportHandler:^(NSArray * _Nullable value) {
-            ; // do nothing
-        }
-        errorHandler:^(NSError * _Nullable error) {
-            reportHandler(nil, error);
-        }
-        subscriptionEstablished:subscriptionEstablishedHandler];
-}
-
-- (void)subscribeWithQueue:(dispatch_queue_t)queue
-                minInterval:(uint16_t)minInterval
-                maxInterval:(uint16_t)maxInterval
-                     params:(nullable MTRSubscribeParams *)params
-             cacheContainer:(MTRAttributeCacheContainer * _Nullable)attributeCacheContainer
      attributeReportHandler:(void (^)(NSArray * value))attributeReportHandler
          eventReportHandler:(void (^)(NSArray * value))eventReportHandler
                errorHandler:(void (^)(NSError * error))errorHandler

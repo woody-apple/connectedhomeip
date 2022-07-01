@@ -51,8 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
                 maxInterval:(uint16_t)maxInterval
                      params:(nullable MTRSubscribeParams *)params
              cacheContainer:(MTRAttributeCacheContainer * _Nullable)attributeCacheContainer
-              reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
-    subscriptionEstablished:(void (^_Nullable)(void))subscriptionEstablishedHandler
+     attributeReportHandler:(void (^)(NSArray * value))attributeReportHandler
+         eventReportHandler:(void (^)(NSArray * value))eventReportHandler
+               errorHandler:(void (^)(NSError * error))errorHandler
+    subscriptionEstablished:(nullable void (^)(void))subscriptionEstablishedHandler;
 {
     CHIP_LOG_DEBUG("Subscribing all attributes... Note that reportHandler is not supported.");
     if (attributeCacheContainer) {
@@ -70,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
                                            completion:^(NSError * _Nullable error) {
                                                dispatch_async(queue, ^{
                                                    if (error) {
-                                                       reportHandler(nil, error);
+                                                       errorHandler(error);
                                                    } else {
                                                        subscriptionEstablishedHandler();
                                                    }
@@ -81,7 +83,7 @@ NS_ASSUME_NONNULL_BEGIN
             } else {
                 CHIP_LOG_ERROR("Failed to obtain XPC connection to write attribute");
                 dispatch_async(queue, ^{
-                    reportHandler(nil, [NSError errorWithDomain:MTRErrorDomain code:MTRErrorCodeGeneralError userInfo:nil]);
+                    errorHandler([NSError errorWithDomain:MTRErrorDomain code:MTRErrorCodeGeneralError userInfo:nil]);
                 });
             }
         }];

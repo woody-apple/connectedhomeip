@@ -708,22 +708,19 @@ static void (^globalReportHandler)(id _Nullable values, NSError * _Nullable erro
     XCTestExpectation * subscribeExpectation = [self expectationWithDescription:@"Subscription complete"];
 
     NSLog(@"Subscribing...");
-    __block void (^reportHandler)(NSArray * _Nullable value, NSError * _Nullable error);
     [device subscribeWithQueue:queue
         minInterval:2
         maxInterval:60
         params:nil
         cacheContainer:attributeCacheContainer
-        reportHandler:^(NSArray * _Nullable value, NSError * _Nullable error) {
-            NSLog(@"Received report: %@, error: %@", value, error);
-            if (reportHandler) {
-                __auto_type handler = reportHandler;
-                reportHandler = nil;
-                handler(value, error);
-            }
+        attributeReportHandler:^(NSArray * value) {
+            NSLog(@"Received report: %@", value);
         }
-        subscriptionEstablished:^{
-            NSLog(@"Subscription established");
+        eventReportHandler:nil
+        errorHandler:^(NSError * error) {
+            NSLog(@"Received report error: %@", error);
+        }
+        subscriptionEstablished:^() {
             [subscribeExpectation fulfill];
         }];
     [self waitForExpectations:@[ subscribeExpectation ] timeout:60];

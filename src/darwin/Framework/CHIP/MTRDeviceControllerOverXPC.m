@@ -51,7 +51,7 @@ static void SetupXPCQueue(void)
       setupPINCode:(uint32_t)setupPINCode
              error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support pairDevice over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support pairDevice over XPC");
     return NO;
 }
 
@@ -62,13 +62,13 @@ static void SetupXPCQueue(void)
       setupPINCode:(uint32_t)setupPINCode
              error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support pairDevice over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support pairDevice over XPC");
     return NO;
 }
 
 - (BOOL)pairDevice:(uint64_t)deviceID onboardingPayload:(NSString *)onboardingPayload error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support pairDevice over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support pairDevice over XPC");
     return NO;
 }
 
@@ -76,30 +76,30 @@ static void SetupXPCQueue(void)
      commissioningParams:(MTRCommissioningParameters *)commissioningParams
                    error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support pairDevice over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support pairDevice over XPC");
     return NO;
 }
 
 - (void)setListenPort:(uint16_t)port
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support setListenPort over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support setListenPort over XPC");
 }
 
 - (BOOL)stopDevicePairing:(uint64_t)deviceID error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support stopDevicePairing over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support stopDevicePairing over XPC");
     return NO;
 }
 
 - (nullable MTRDevice *)getDeviceBeingCommissioned:(uint64_t)deviceId error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support getDeviceBeingCommissioned over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support getDeviceBeingCommissioned over XPC");
     return nil;
 }
 
 - (BOOL)deviceBeingCommissionedOverBLE:(uint64_t)deviceId
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support deviceBeingCommissionedOverBLE over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support deviceBeingCommissionedOverBLE over XPC");
     return NO;
 }
 
@@ -146,7 +146,7 @@ static void SetupXPCQueue(void)
 
 - (BOOL)openPairingWindow:(uint64_t)deviceID duration:(NSUInteger)duration error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support openPairingWindow over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support openPairingWindow over XPC");
     return NO;
 }
 
@@ -156,7 +156,7 @@ static void SetupXPCQueue(void)
                                        setupPIN:(NSUInteger)setupPIN
                                           error:(NSError * __autoreleasing *)error
 {
-    CHIP_LOG_ERROR("CHIPDevice doesn't support openPairingWindow over XPC");
+    CHIP_LOG_ERROR("MTRDevice doesn't support openPairingWindow over XPC");
     return nil;
 }
 

@@ -113,20 +113,24 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                maxInterval:43200
                                params:params
                                cacheContainer:self
-                               reportHandler:^(NSArray * _Nullable value, NSError * _Nullable error) {
-                                   NSLog(@"Report received for attribute cache: %@, error: %@", value, error);
+                               attributeReportHandler:^(NSArray * value) {
+                                   NSLog(@"Report received for attribute cache: %@", value);
+                               }
+                               eventReportHandler:nil
+                               errorHandler:^(NSError * error) {
+                                   NSLog(@"Report error received for attribute cache: %@", error);
                                    if (![established[0] boolValue]) {
                                        established[0] = @YES;
                                        completionHandler(error);
                                    }
                                }
-                               subscriptionEstablished:^{
+                               subscriptionEstablished:^() {
                                    NSLog(@"Attribute cache subscription succeeded for device %llu", deviceId);
                                    if (![established[0] boolValue]) {
                                        established[0] = @YES;
                                        completionHandler(nil);
                                    }
-                               }];
+                             }];
                        }];
 }
 @end

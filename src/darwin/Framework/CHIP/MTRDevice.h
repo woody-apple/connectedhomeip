@@ -105,39 +105,6 @@ extern NSString * const MTRArrayValueType;
  * A non-nil attribute cache container will cache attribute values, retrievable
  * through the designated attribute cache container.
  *
- * reportHandler will be called any time a data update is available (with a
- * non-nil "value" and nil "error"), or any time there is an error for the
- * entire subscription (with a nil "value" and non-nil "error").  If it's called
- * with an error, that will terminate the subscription.
- *
- * The array passed to reportHandler will contain MTRAttributeReport
- * instances.  Errors for specific paths, not the whole subscription, will be
- * reported via those objects.
- *
- * reportHandler is not supported over XPC at the moment.
- *
- * subscriptionEstablished block, if not nil, will be called once the
- * subscription is established.  This will be _after_ the first (priming) call
- * to reportHandler.  Note that if the MTRSubscribeParams are set to
- * automatically resubscribe this can end up being called more than once.
- *
- * TODO: Remove this once the replacement below is adopted
- */
-- (void)subscribeWithQueue:(dispatch_queue_t)queue
-                minInterval:(uint16_t)minInterval
-                maxInterval:(uint16_t)maxInterval
-                     params:(nullable MTRSubscribeParams *)params
-             cacheContainer:(MTRAttributeCacheContainer * _Nullable)attributeCacheContainer
-              reportHandler:(void (^)(NSArray * _Nullable value, NSError * _Nullable error))reportHandler
-    subscriptionEstablished:(nullable void (^)(void))subscriptionEstablishedHandler;
-
-/**
- * Subscribe to receive attribute reports for everything (all endpoints, all
- * clusters, all attributes, all events) on the device.
- *
- * A non-nil attribute cache container will cache attribute values, retrievable
- * through the designated attribute cache container.
- *
  * attributeReportHandler will be called any time a data update is available (with a
  * non-nil "value")
  *

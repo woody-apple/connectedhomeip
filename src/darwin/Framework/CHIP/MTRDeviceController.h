@@ -96,9 +96,7 @@ typedef void (^MTRDeviceConnectionCallback)(MTRDevice * _Nullable device, NSErro
 - (BOOL)stopDevicePairing:(uint64_t)deviceID error:(NSError * __autoreleasing *)error;
 
 - (nullable MTRDevice *)getDeviceBeingCommissioned:(uint64_t)deviceId error:(NSError * __autoreleasing *)error;
-- (BOOL)getConnectedDevice:(uint64_t)deviceID
-                     queue:(dispatch_queue_t)queue
-         completionHandler:(MTRDeviceConnectionCallback)completionHandler;
+- (BOOL)getDevice:(uint64_t)deviceID queue:(dispatch_queue_t)queue completionHandler:(MTRDeviceConnectionCallback)completionHandler;
 
 - (BOOL)openPairingWindow:(uint64_t)deviceID duration:(NSUInteger)duration error:(NSError * __autoreleasing *)error;
 - (nullable NSString *)openPairingWindowWithPIN:(uint64_t)deviceID
