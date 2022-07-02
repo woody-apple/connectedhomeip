@@ -18,8 +18,8 @@
 #import <Security/SecKey.h>
 
 @interface MTRTestKeys ()
-@property (readwrite, nonatomic, strong) SecKeyRef privateKey;
-@property (readwrite, nonatomic, strong) SecKeyRef publicKey;
+@property (readwrite) SecKeyRef privateKey;
+@property (readwrite) SecKeyRef publicKey;
 @end
 
 @implementation MTRTestKeys
