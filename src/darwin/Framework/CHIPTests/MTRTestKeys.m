@@ -24,6 +24,8 @@
 
 @implementation MTRTestKeys
 
+@synthesize publicKey = _publicKey, privateKey = _privateKey, ipk = _ipk;
+
 - (instancetype)init
 {
     if (!(self = [super init])) {
