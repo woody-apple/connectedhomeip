@@ -774,6 +774,7 @@ static void (^globalReportHandler)(id _Nullable values, NSError * _Nullable erro
     [self waitForExpectations:[NSArray arrayWithObject:newSubscriptionEstablished] timeout:kTimeoutInSeconds];
 
     __auto_type reportExpectation = [self expectationWithDescription:@"Report handler called"];
+    __block void (^reportHandler)(NSArray * _Nullable value, NSError * _Nullable error);
     reportHandler = ^(NSArray * _Nullable value, NSError * _Nullable error) {
         NSLog(@"Report received: %@, error: %@", value, error);
         for (MTRAttributeReport * report in value) {

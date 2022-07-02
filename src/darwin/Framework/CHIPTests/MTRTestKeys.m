@@ -18,13 +18,11 @@
 #import <Security/SecKey.h>
 
 @interface MTRTestKeys ()
-@property (readwrite) SecKeyRef privateKey;
-@property (readwrite) SecKeyRef publicKey;
+@property (readonly) SecKeyRef privateKey;
+@property (readonly) SecKeyRef publicKey;
 @end
 
 @implementation MTRTestKeys
-
-@synthesize publicKey = _publicKey, privateKey = _privateKey, ipk = _ipk;
 
 - (instancetype)init
 {
@@ -77,11 +75,6 @@
         NSLog(@"Failed to sign cert: %@", (__bridge NSError *) error);
     }
     return (__bridge_transfer NSData *) outData;
-}
-
-- (SecKeyRef)publicKey
-{
-    return _publicKey;
 }
 
 - (void)dealloc
