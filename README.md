@@ -56,7 +56,7 @@ Matter-certified device, subject to users’ permission.
 **Secure:** The specification leverages modern security practices and protocols.
 
 **User Control:** The end user is in control of authorization for interaction
-with devices.
+with devices.qweqweqweqweqwe
 
 **Federated:** No single entity serves as a throttle or a
 single-point-of-failure for root of trust.
