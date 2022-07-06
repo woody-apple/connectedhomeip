@@ -2,24 +2,24 @@ on:
   pull_request:
     branches:
       - test-main
-    types: ["closed"]
+    types: ["merged"]
 
 jobs:
   cherry_pick_release_v1_0:
     runs-on: ubuntu-latest
-    name: Cherry pick into release-v1.0
+    name: Cherry-Pick into sve branch
     if: contains(github.event.pull_request.labels.*.name, 'sve cherry-pick')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Cherry pick into release-v1.0
+      - name: Cherry-Pick into sve branch
         uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
         with:
           branch: test-sve
           labels: |
-            cherry-pick
+            sve
           reviewers: |
             woody-apple
 env:
