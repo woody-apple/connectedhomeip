@@ -2,13 +2,13 @@ on:
   pull_request:
     branches:
       - test-main
-    types: ["merged"]
+    types: ["closed"]
 
 jobs:
   cherry_pick_release_v1_0:
     runs-on: ubuntu-latest
     name: Cherry-Pick into sve branch
-    if: contains(github.event.pull_request.labels.*.name, 'sve cherry-pick')
+    if: (contains(github.event.pull_request.labels.*.name, 'sve cherry-pick')) && (github.event.pull_request.merged == true)
     steps:
       - name: Checkout
         uses: actions/checkout@v2
