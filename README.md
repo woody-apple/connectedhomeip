@@ -1,4 +1,4 @@
-# Matter test
+# Matter testing
 
 [![Builds](https://github.com/project-chip/connectedhomeip/workflows/Builds/badge.svg)](https://github.com/project-chip/connectedhomeip/actions/workflows/build.yaml)
 
