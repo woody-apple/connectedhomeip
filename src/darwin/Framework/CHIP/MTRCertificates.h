@@ -39,6 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
  * On failure returns nil and if "error" is not null sets *error to the relevant
  * error.
  */
+/**
+ *  TODO: Id => ID
+ *  TODO: better name than generateRootCertificate, createRootCertificate ?
+ */
 + (nullable NSData *)generateRootCertificate:(id<MTRKeypair>)keypair
                                     issuerId:(nullable NSNumber *)issuerId
                                     fabricId:(nullable NSNumber *)fabricId
@@ -56,6 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * On failure returns nil and if "error" is not null sets *error to the relevant
  * error.
+ */
+/**
+ *  TODO: rootCertificate either make structured or rootCertificateData (typedef)
+ *  TODO: issuerId:(nullable NSNumber *)issuerId => issuerId:(NSNumber * _Nullable)issuerId
  */
 + (nullable NSData *)generateIntermediateCertificate:(id<MTRKeypair>)rootKeypair
                                      rootCertificate:(NSData *)rootCertificate

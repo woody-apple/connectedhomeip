@@ -17,24 +17,37 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * TODO: add warnings to all imports to not allow direct imports
+ */
+
+/**
+ * TODO: Move to <Matter.h>
+ */
 #import <Matter/MTRDeviceController.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: remove this
+ */
 @class MTRSubscribeParams;
 
 @interface MTRAttributeCacheContainer : NSObject
 
 /**
  * Reads an attribute with specific attribute path
+ * TODO: Needs better preamble
+ * TODO: Jeff to update this with MTRDevice how it relates, and MTRBaseDevice
  *
- * @param endpointId  endpoint ID of the attribute
- * @param clusterId  cluster ID of the attribute
- * @param attributeId  attribute ID of the attribute
+ * @param endpointId   endpoint ID of the attribute   [TODO: define nullability behavior, refer to MTR/BaseDevice]
+ * @param clusterId    cluster ID of the attribute    [TODO: define nullability behavior, refer to MTR/BaseDevice]
+ * @param attributeId  attribute ID of the attribute  [TODO: define nullability behavior, refer to MTR/BaseDevice]
  * @param clientQueue  client queue to dispatch the completion handler through
- * @param completion  block to receive the result.
- *                   "values" received by the block will have the same format of object as the one received by completion block
- *                   of CHIPDevice readAttributeWithEndpointId:clusterId:attributeId:clientQueue:completion method.
+ * @param completion   block to receive the result.
+ *                       "values" received by the block will have the same format of object as the one received by completion block
+ *                       of MTRDevice readAttributeWithEndpointId:clusterId:attributeId:clientQueue:completion method.
+ * TODO: Is this MTRDevice or MTRBaseDevice
  */
 - (void)readAttributeWithEndpointId:(NSNumber * _Nullable)endpointId
                           clusterId:(NSNumber * _Nullable)clusterId
