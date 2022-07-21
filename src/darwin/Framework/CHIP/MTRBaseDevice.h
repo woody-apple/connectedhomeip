@@ -68,6 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 typedef void (^MTRDeviceResponseHandler)(NSArray<NSDictionary<NSString *, id> *> * _Nullable values, NSError * _Nullable error);
 
+/**
+ *  TODO: macro -> MTR_EXTERN
+ *
+ */
 extern NSString * const MTRAttributePathKey;
 extern NSString * const MTRCommandPathKey;
 extern NSString * const MTRDataKey;
@@ -126,6 +130,15 @@ extern NSString * const MTRArrayValueType;
  * to both report handlers.  Note that if the MTRSubscribeParams are set to
  * automatically resubscribe this can end up being called more than once.
  */
+/**
+ *  TODO: uint16_t -> NSNumber
+ */
+/**
+ *  TODO: cacheContainer -> attributeCacheContainer
+ *  TODO: eyeball all parameter -> variable names
+ *  TODO: eyeball all parameter -> variable names
+ *  TODO: Typedef all handlers (nullable void (^)(NSArray * value)))
+ */
 - (void)subscribeWithQueue:(dispatch_queue_t)queue
                 minInterval:(uint16_t)minInterval
                 maxInterval:(uint16_t)maxInterval
@@ -138,6 +151,13 @@ extern NSString * const MTRArrayValueType;
 
 /**
  * Read attribute in a designated attribute path
+ */
+/**
+ *  TODO: Describe nullability here, look at title "read" ? "readAttributes?"
+ *  TODO: look to see if all these clientQueue: should be queue:
+ *  TODO: make consistent
+ *  TODO: look to see if all these completionHandler: should be completion:
+ *  TODO: make consistent
  */
 - (void)readAttributeWithEndpointId:(NSNumber * _Nullable)endpointId
                           clusterId:(NSNumber * _Nullable)clusterId
@@ -179,6 +199,9 @@ extern NSString * const MTRArrayValueType;
  *
  * @param completion  response handler will receive either values or error.
  */
+/**
+ *  TODO: endpointId => endpointID
+ */
 - (void)invokeCommandWithEndpointId:(NSNumber *)endpointId
                           clusterId:(NSNumber *)clusterId
                           commandId:(NSNumber *)commandId
@@ -189,6 +212,11 @@ extern NSString * const MTRArrayValueType;
 
 /**
  * Subscribe an attribute in a designated attribute path
+ */
+/**
+ *  TODO: Describe nullability here
+ *  TODO: Consider MTRAttributePath
+ *  TODO: minInterval, maxInterval compression (MTRSubscribeParams ?)
  */
 - (void)subscribeAttributeWithEndpointId:(NSNumber * _Nullable)endpointId
                                clusterId:(NSNumber * _Nullable)clusterId
@@ -207,9 +235,26 @@ extern NSString * const MTRArrayValueType;
  * There could be multiple clients accessing a node through a remote controller object and hence it is not appropriate
  * for one of those clients to shut down the entire stack to stop receiving reports.
  */
+/**
+ *  TODO: completion typedef
+ *  TODO: Needs better definition, look at if we need this at all (XPC)
+ */
 - (void)deregisterReportHandlersWithClientQueue:(dispatch_queue_t)clientQueue completion:(void (^)(void))completion;
 
 @end
+
+/**
+ *  TODO: remove all strong, maybe nonnull
+ */
+
+/**
+ *  TODO: add base for:
+ @interface MTRAttributePath : NSObject
+@property (nonatomic, readonly, strong, nonnull) NSNumber * endpoint;
+@property (nonatomic, readonly, strong, nonnull) NSNumber * cluster;
+@property (nonatomic, readonly, strong, nonnull) NSNumber * attribute;
+
+ */
 
 @interface MTRAttributePath : NSObject
 @property (nonatomic, readonly, strong, nonnull) NSNumber * endpoint;
@@ -244,6 +289,9 @@ extern NSString * const MTRArrayValueType;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
+/**
+ *  TODO: is 'new' needed being unavailable?
+ */
 @end
 
 @interface MTRAttributeReport : NSObject
@@ -258,6 +306,9 @@ extern NSString * const MTRArrayValueType;
 
 @interface MTREventReport : NSObject
 @property (nonatomic, readonly, strong, nonnull) MTREventPath * path;
+/**
+ *  TODO: Remove // chip::
+ */
 @property (nonatomic, readonly, strong, nonnull) NSNumber * eventNumber; // chip::EventNumber type (uint64_t)
 @property (nonatomic, readonly, strong, nonnull) NSNumber * priority; // chip::app::PriorityLevel type (uint8_t)
 @property (nonatomic, readonly, strong, nonnull) NSNumber * timestamp; // chip::app::Timestamp.mValue type (uint64_t)
