@@ -25,11 +25,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NSError * _Nullable error);
 
+/**
+ * Fix imports
+ */
 @class MTRCommissioningParameters;
 @protocol MTRDevicePairingDelegate;
 
 @interface MTRDeviceController : NSObject
 
+/**
+ * TODO: isRunning => running
+ */
 @property (readonly, nonatomic) BOOL isRunning;
 
 /**
@@ -50,6 +56,12 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
  */
+/**
+ * TODO: fix docs
+ * TODO: deviceID non-nullable => NSNumber *
+ * TODO: discriminator, setupPINCode => MTRSetupPayload
+- (void)setupPASEWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError * __autoreleasing *)error;
+ */
 - (BOOL)pairDevice:(uint64_t)deviceID
      discriminator:(uint16_t)discriminator
       setupPINCode:(uint32_t)setupPINCode
@@ -64,6 +76,11 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * error occurs, then notify onPairingComplete on the MTRDevicePairingDelegate
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
+ */
+/**
+ * TODO: check to see if used
+ * TODO: otherwise match above
+- (void)setupPASEWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError * __autoreleasing *)error;
  */
 - (BOOL)pairDevice:(uint64_t)deviceID
            address:(NSString *)address
@@ -81,23 +98,66 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
  */
+/**
+ * TODO: remove
+ */
 - (BOOL)pairDevice:(uint64_t)deviceID onboardingPayload:(NSString *)onboardingPayload error:(NSError * __autoreleasing *)error;
+
+/**
+ * TODO: fix docs
+ * TODO: deviceID non-nullable => NSNumber *
+ * TODO: discriminator, setupPINCode => MTRSetupPayload
+- (void)commissionNodeWithID:(NSNumber *)nodeID
+         commissioningParams:(MTRCommissioningParameters *)commissioningParams
+                       error:(NSError * __autoreleasing *)error;
+ */
 - (BOOL)commissionDevice:(uint64_t)deviceId
      commissioningParams:(MTRCommissioningParameters *)commissioningParams
                    error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: look at having a callback block in the flow to not require this.
+ * TODO: document this
+- (BOOL)continueCommissioningDevice:(void *)context
+           ignoreAttestationFailure:(BOOL)ignoreAttestationFailure
+                              error:(NSError * __autoreleasing *)error;
+
+ */
 - (BOOL)continueCommissioningDevice:(void *)device
            ignoreAttestationFailure:(BOOL)ignoreAttestationFailure
                               error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: See what this does
+ * TODO: document this [...continue here...]
+- (void)stopCommissioning:(NSNumber *)deviceID error:(NSError * __autoreleasing *)error;
+ */
 - (BOOL)stopDevicePairing:(uint64_t)deviceID error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: See what this does
+ * TODO: document this
+ */
 - (nullable MTRBaseDevice *)getDeviceBeingCommissioned:(uint64_t)deviceId error:(NSError * __autoreleasing *)error;
+
+/**
+ * TODO: See what this does
+ * TODO: document this
+ */
+
 - (BOOL)getBaseDevice:(uint64_t)deviceID
                 queue:(dispatch_queue_t)queue
     completionHandler:(MTRDeviceConnectionCallback)completionHandler;
 
+/**
+ * TODO: See what this does
+ * TODO: document this
+ */
 - (BOOL)openPairingWindow:(uint64_t)deviceID duration:(NSUInteger)duration error:(NSError * __autoreleasing *)error;
+/**
+ * TODO: See what this does
+ * TODO: document this
+ */
 - (nullable NSString *)openPairingWindowWithPIN:(uint64_t)deviceID
                                        duration:(NSUInteger)duration
                                   discriminator:(NSUInteger)discriminator

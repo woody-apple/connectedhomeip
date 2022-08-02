@@ -39,6 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MTRWriteParams : NSObject <NSCopying>
 
 /**
+ * TODO: Fix spacing
+ */
+/**
  * Controls whether the write is a timed write.
  *
  * If nil (the default value), a regular write is done for attributes that do
@@ -57,6 +60,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSNumber * timedWriteTimeout;
 
 /**
+ * TODO: Fix spacing
+ */
+/**
  * Sets the data version for the Write Request for the interaction.
  *
  * If not nil, the write will only succeed if the current data version of
@@ -64,6 +70,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy, nullable) NSNumber * dataVersion;
 
+/**
+ * TODO: This can be removed
+ */
 - (instancetype)init;
 - (id)copyWithZone:(nullable NSZone *)zone;
 
@@ -86,6 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * If NO, the read/subscribe is not fabric-filtered and will see all
  * non-fabric-sensitive data for the given attribute path.
+ */
+/**
+ * TODO: Make this a BOOL, with the default default
  */
 @property (nonatomic, copy, nullable) NSNumber * fabricFiltered;
 
@@ -111,6 +123,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * If YES, the subscribe will allow any previous subscriptions to remain.
  */
+/**
+ * TODO: Make this a BOOL, with the default default
+ */
 @property (nonatomic, copy, nullable) NSNumber * keepPreviousSubscriptions;
 
 /**
@@ -125,8 +140,14 @@ NS_ASSUME_NONNULL_BEGIN
  * called again.
  *
  */
+/**
+ * TODO: Make this a BOOL, with the default default
+ */
 @property (nonatomic, copy, nullable) NSNumber * autoResubscribe;
 
+/**
+ * TODO: This can be removed
+ */
 - (instancetype)init;
 - (id)copyWithZone:(nullable NSZone *)zone;
 

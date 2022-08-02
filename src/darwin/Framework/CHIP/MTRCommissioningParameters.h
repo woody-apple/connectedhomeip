@@ -22,17 +22,27 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol MTRDeviceAttestationDelegate;
 
 /**
+ * TODO: Needs better description, no CHIP
+ */
+/**
  * The class definition for the CHIPCommissioningParameters
  *
  */
 @interface MTRCommissioningParameters : NSObject
 
 /**
+ * TODO: Needs better description, nullability
+ * TODO: small CSRNonce
+ */
+/**
  *  The CSRNonce
  */
 @property (nonatomic, copy, nullable) NSData * CSRNonce;
 /**
  *  The AttestationNonce
+ */
+/**
+ * TODO: Document nullability
  */
 @property (nonatomic, copy, nullable) NSData * attestationNonce;
 /**
@@ -51,9 +61,16 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The Device Attestation status delegate
  */
+/**
+ * TODO: Document
+ */
 @property (nonatomic, strong, nullable) id<MTRDeviceAttestationDelegate> deviceAttestationDelegate;
 /**
  *  The timeout in secs to set for fail-safe when attestation fails
+ */
+/**
+ * TODO: Secs should be removed, make consistent with other parts of the API, s/MS
+ * TODO: Document default
  */
 @property (nonatomic, copy, nullable) NSNumber * failSafeExpiryTimeoutSecs;
 

@@ -24,6 +24,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Fix imports
+ */
 @protocol MTRPersistentStorageDelegate;
 @protocol MTROTAProviderDelegate;
 @protocol MTRKeypair;
@@ -36,6 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
  * Storage delegate must be provided for correct functioning of Matter
  * controllers.  It is used to store persistent information for the fabrics the
  * controllers ends up interacting with.
+ */
+/**
+ * TODO: storageDelegate => persistentStorageDelegate
  */
 @property (nonatomic, strong, readonly) id<MTRPersistentStorageDelegate> storageDelegate;
 
@@ -60,14 +66,23 @@ NS_ASSUME_NONNULL_BEGIN
  * Whether to run a server capable of accepting incoming CASE
  * connections.  Defaults to NO.
  */
+/**
+ * TODO: startServer => shouldStartServer
+ */
 @property (nonatomic, assign) BOOL startServer;
 
 - (instancetype)init NS_UNAVAILABLE;
+/**
+ * TODO: storageDelegate => persistentStorageDelegate
+ */
 - (instancetype)initWithStorage:(id<MTRPersistentStorageDelegate>)storageDelegate;
 @end
 
 @interface MTRControllerFactory : NSObject
 
+/**
+ * TODO: needs documentation
+ */
 @property (readonly, nonatomic) BOOL isRunning;
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -88,6 +103,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Whether startup succeded.
  */
+/**
+ * TODO: return NSError *
+ * TODO: startControllerFactory:
+ */
 - (BOOL)startup:(MTRControllerFactoryParams *)startupParams;
 
 /**
@@ -96,6 +115,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * Repeated calls to shutdown without calls to startup in between are
  * NO-OPs.
+ */
+/**
+ * TODO: stopControllerFactory:
  */
 - (void)shutdown;
 
@@ -108,6 +130,9 @@ NS_ASSUME_NONNULL_BEGIN
  * The fabric is identified by the root public key and fabric id in
  * the startupParams.
  */
+/**
+ * TODO: => createControllerOnExistingFabric:
+ */
 - (MTRDeviceController * _Nullable)startControllerOnExistingFabric:(MTRDeviceControllerStartupParams *)startupParams;
 
 /**
@@ -117,6 +142,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * The fabric is identified by the root public key and fabric id in
  * the startupParams.
+ */
+/**
+ * TODO: => createControllerOnNewFabric:
  */
 - (MTRDeviceController * _Nullable)startControllerOnNewFabric:(MTRDeviceControllerStartupParams *)startupParams;
 
