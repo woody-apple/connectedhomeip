@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * TODO: Fix imports
+ * MTRDeviceControllerFactory
  */
 @protocol MTRPersistentStorageDelegate;
 @protocol MTROTAProviderDelegate;

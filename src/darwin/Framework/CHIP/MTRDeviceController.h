@@ -60,7 +60,20 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * TODO: fix docs
  * TODO: deviceID non-nullable => NSNumber *
  * TODO: discriminator, setupPINCode => MTRSetupPayload
-- (void)setupPASEWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError * __autoreleasing *)error;
+ *
+ * [controller setupCommissioningSessionWithPayload: newNodeID: error: ]
+
+  -> Discover if the device needs thread and/or wifi credentials
+  -> ask for the thread and/or wifi credentials, and provide them
+
+[controller commissionNodeWithID: commissioningParams: error: ]
+
+may need to account for:
+     commissioningParams:(MTRCommissioningParameters *)commissioningParams
+
+
+- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError *
+__autoreleasing *)error;
  */
 - (BOOL)pairDevice:(uint64_t)deviceID
      discriminator:(uint16_t)discriminator
@@ -80,7 +93,8 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
 /**
  * TODO: check to see if used
  * TODO: otherwise match above
-- (void)setupPASEWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError * __autoreleasing *)error;
+- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError *
+__autoreleasing *)error;
  */
 - (BOOL)pairDevice:(uint64_t)deviceID
            address:(NSString *)address
@@ -104,6 +118,7 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
 - (BOOL)pairDevice:(uint64_t)deviceID onboardingPayload:(NSString *)onboardingPayload error:(NSError * __autoreleasing *)error;
 
 /**
+ * TODO: remove ***
  * TODO: fix docs
  * TODO: deviceID non-nullable => NSNumber *
  * TODO: discriminator, setupPINCode => MTRSetupPayload
@@ -116,6 +131,7 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
                    error:(NSError * __autoreleasing *)error;
 
 /**
+ * TODO: remove
  * TODO: look at having a callback block in the flow to not require this.
  * TODO: document this
 - (BOOL)continueCommissioningDevice:(void *)context
@@ -128,36 +144,48 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
                               error:(NSError * __autoreleasing *)error;
 
 /**
- * TODO: See what this does
+ * TODO: See what this does, not clear this does what it describes
+ * TODO: Reminder: Pairing => Comissioning across our API
  * TODO: document this [...continue here...]
-- (void)stopCommissioning:(NSNumber *)deviceID error:(NSError * __autoreleasing *)error;
+- (void)cancelAllCommissioningSessions:(NSNumber *)deviceID error:(NSError * __autoreleasing *)error;
+
+- (void)cancelCommissioningForNodeID:(NSNumber *)nodeID error:(NSError * __autoreleasing *)error;
  */
 - (BOOL)stopDevicePairing:(uint64_t)deviceID error:(NSError * __autoreleasing *)error;
 
 /**
- * TODO: See what this does
- * TODO: document this
+ * TODO: remove
  */
 - (nullable MTRBaseDevice *)getDeviceBeingCommissioned:(uint64_t)deviceId error:(NSError * __autoreleasing *)error;
 
 /**
- * TODO: See what this does
- * TODO: document this
+ * TODO: Add a pre-amble here to separate commissioning vs operational
  */
 
+/**
+ * TODO: Move to [[MTRBaseDevice alloc] initWithNodeID: (NSNumber *)nodeID controller: controller]
+ * TODO: Make public
+ */
 - (BOOL)getBaseDevice:(uint64_t)deviceID
                 queue:(dispatch_queue_t)queue
     completionHandler:(MTRDeviceConnectionCallback)completionHandler;
 
 /**
- * TODO: See what this does
- * TODO: document this
+ * TODO: remove
  */
 - (BOOL)openPairingWindow:(uint64_t)deviceID duration:(NSUInteger)duration error:(NSError * __autoreleasing *)error;
+
 /**
- * TODO: See what this does
- * TODO: document this
+ * TODO: Move to MTRBaseDevice and MTRDevice
+ * TODO: return value (nullable NSString *) to a block that calls back
+ * TODO: Document
+ * TODO: uint64_t
+- (nullable NSString *)openCommissioningWindowWithSetupCode:(NSUInteger)setupCode
+                                              discriminator:(NSUInteger)discriminator
+                                                   duration:(NSUInteger)duration
+                                                      error:(NSError * __autoreleasing *)error;
  */
+
 - (nullable NSString *)openPairingWindowWithPIN:(uint64_t)deviceID
                                        duration:(NSUInteger)duration
                                   discriminator:(NSUInteger)discriminator
@@ -180,6 +208,8 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
 - (void)setPairingDelegate:(id<MTRDevicePairingDelegate>)delegate queue:(dispatch_queue_t)queue;
 
 /**
+ * TODO: need to clarify the documentation a little, you must call shutdown, make sure dealloc calls shutdown
+ *
  * Shutdown the controller. Calls to shutdown after the first one are NO-OPs.
  */
 - (void)shutdown;

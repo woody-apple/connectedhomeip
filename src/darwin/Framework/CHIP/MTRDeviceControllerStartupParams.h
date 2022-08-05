@@ -189,12 +189,24 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
+ * TODO: uint64_t => NSNumber
+ *
+ * /
+/**
  * Prepare to initialize a controller given a keypair to use for signing
  * operational certificates.
  *
  * fabricId must be set to a valid (i.e. nonzero) value.
  *
  * ipk must be 16 bytes in length
+- (instancetype)initWithIPK:(NSData *)ipk
+                   fabricID:(NSNumber *)fabricId
+                  nocSigner:(id<MTRKeypair>)nocSigner
+
+
+- (instancetype)initWithFabricID:(NSNumber *)fabricId
+                             ipk:(NSData *)ipk
+                        nocSigner:(id<MTRKeypair>)nocSigner
  */
 - (instancetype)initWithSigningKeypair:(id<MTRKeypair>)nocSigner fabricId:(uint64_t)fabricId ipk:(NSData *)ipk;
 
@@ -210,7 +222,21 @@ NS_ASSUME_NONNULL_BEGIN
  * rootCertificate.
  *
  * ipk must be 16 bytes in length.
- */
+ - (instancetype)initWithIPK:(NSData *)ipk
+          operationalKeypair:(id<MTRKeypair>)operationalKeypair
+      operationalCertificate:(NSData *)operationalCertificate
+     intermediateCertificate:(nullable NSData *)intermediateCertificate
+             rootCertificate:(NSData *)rootCertificate;
+
+
+ - (instancetype)initWithFabricID:(NSNumber *)fabricId
+                              ipk:(NSData *)ipk
+               operationalKeypair:(id<MTRKeypair>)operationalKeypair
+           operationalCertificate:(NSData *)operationalCertificate
+          intermediateCertificate:(nullable NSData *)intermediateCertificate
+                  rootCertificate:(NSData *)rootCertificate;
+
+*/
 - (instancetype)initWithOperationalKeypair:(id<MTRKeypair>)operationalKeypair
                     operationalCertificate:(NSData *)operationalCertificate
                    intermediateCertificate:(nullable NSData *)intermediateCertificate
