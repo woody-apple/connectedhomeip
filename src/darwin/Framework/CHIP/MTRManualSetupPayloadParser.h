@@ -17,10 +17,21 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * TODO: Remove and include top level header
+ */
 @class MTRSetupPayload;
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Add documentation
+ *
+ * Switch tp class method on MTRSetupPayload?
+ *  + (MTRSetupPayload *)setupPayloadWithDecimalStringRepresentation:(NSString *)decimalStringRepresentation error:(NSError * __autoreleasing *)error;
+ * 
+ * Make this private and remove from here. Clients use MTROnboardingPayloadParser
+ */
 @interface MTRManualSetupPayloadParser : NSObject
 - (instancetype)initWithDecimalStringRepresentation:(NSString *)decimalStringRepresentation;
 - (nullable MTRSetupPayload *)populatePayload:(NSError * __autoreleasing *)error;

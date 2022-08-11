@@ -19,11 +19,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// TODO: Re-check CHIP Prefix and switch to MTR
 /**
  * The protocol definition for the CHIPPersistenStorageDelegate
  *
  * All delegate methods will be called on the supplied Delegate Queue.
  */
+
+// TODO: Rename MTRPersistentStorageDelegate => MTRStorageDelegate
 @protocol MTRPersistentStorageDelegate <NSObject>
 @required
 

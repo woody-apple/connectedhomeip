@@ -20,6 +20,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// TODO: The prefix names of the delegates need to be consistent
+
+// TODO: Document which queue the callback blocks run on or add a queue to the delegate methods
+
+// TODO: Fix inconsistent OTA vs Ota
+
+// TODO: Re-review with Carol
+
+// TODO: Remove _Nonnull since header assumes so
 /**
  * The protocol definition for the MTROTAProviderDelegate
  *
@@ -47,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
  * Notify the delegate when notify update applied command is received
  *
  */
+ // TODO: StatusCompletion => MTRStatusCompletion ?
+ // MTRCluster.h: Fix prefixes in the header that are missing prefixes as well
 - (void)handleNotifyUpdateApplied:(MTROtaSoftwareUpdateProviderClusterNotifyUpdateAppliedParams *)params
                 completionHandler:(StatusCompletion)completionHandler;
 

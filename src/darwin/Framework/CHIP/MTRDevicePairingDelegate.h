@@ -58,7 +58,7 @@ typedef NS_ENUM(NSUInteger, MTRPairingStatus) {
  * - (void)deviceController:(MTRDeviceController *)deviceController
  *    failedToCommissionNodeWithID:(NSNumber *)nodeID;
  *     error:(NSError * _Nullable)error;
-*/
+ */
 
 
 /**

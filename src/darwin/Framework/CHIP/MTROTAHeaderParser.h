@@ -19,6 +19,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Documentation 
+*/
+
 typedef NS_ENUM(NSUInteger, MTROTAImageDigestType) {
     MTROTAImageDigestTypeSha256 = 1,
     MTROTAImageDigestTypeSha256_128,
@@ -35,6 +39,7 @@ typedef NS_ENUM(NSUInteger, MTROTAImageDigestType) {
 };
 
 @interface MTROTAHeader : NSObject
+// TODO: Make properties copy instead of strong
 
 @property (nonatomic, strong) NSNumber * vendorID;
 @property (nonatomic, strong) NSNumber * productID;
@@ -49,6 +54,7 @@ typedef NS_ENUM(NSUInteger, MTROTAImageDigestType) {
 
 @end
 
+// TODO: Move to MTROTAHeader
 @interface MTROTAHeaderParser : NSObject
 + (nullable MTROTAHeader *)headerFromData:(NSData *)data error:(NSError * __autoreleasing *)error;
 @end
