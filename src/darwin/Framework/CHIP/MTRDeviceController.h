@@ -93,8 +93,7 @@ __autoreleasing *)error;
 /**
  * TODO: check to see if used
  * TODO: otherwise match above
-- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError *
-__autoreleasing *)error;
+- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID;
  */
 - (BOOL)pairDevice:(uint64_t)deviceID
            address:(NSString *)address

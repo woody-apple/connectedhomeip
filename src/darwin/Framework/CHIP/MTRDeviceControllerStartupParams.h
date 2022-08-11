@@ -18,6 +18,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Fix imports
+ */
 @protocol MTRKeypair;
 
 @interface MTRDeviceControllerStartupParams : NSObject
@@ -42,6 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
  *   key of the nocSigner keypair, since in this case we are not using an
  *   intermediate certificate.
  */
+/**
+  * TODO: Fix uint64_t => NSNumber *
+  */
 @property (nonatomic, assign, readonly) uint64_t fabricId;
 /**
  * IPK to use for the controller's fabric.  Allowed to change from the last time
@@ -65,6 +71,9 @@ NS_ASSUME_NONNULL_BEGIN
  * * Will override existing value if not nil. Otherwise existing value will be
  *   used.
  */
+ /**
+  * TODO: Fix vendorId => vendorID
+  */
 @property (nonatomic, copy, nullable) NSNumber * vendorId;
 
 /**
@@ -95,9 +104,13 @@ NS_ASSUME_NONNULL_BEGIN
  *    generated operational key.
  *
  */
+  /**
+  * TODO: Fix nodeId => nodeID
+  */
 @property (nonatomic, copy, nullable) NSNumber * nodeId;
 
-// TODO: Add something here for CATs?
+// TODO: Add something here for CATs? 
+// Convert to issue and remove comment above
 
 /**
  * Root certificate, in X.509 DER form, to use.
