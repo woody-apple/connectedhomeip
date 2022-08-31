@@ -25,12 +25,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NSError * _Nullable error);
 
+/**
+ * Fix imports
+ */
 @class MTRCommissioningParameters;
 @protocol MTRDevicePairingDelegate;
-@protocol MTROTAProviderDelegate;
 
 @interface MTRDeviceController : NSObject
 
+/**
+ * TODO: isRunning => running
+ */
 @property (readonly, nonatomic) BOOL isRunning;
 
 /**
@@ -51,6 +56,25 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
  */
+/**
+ * TODO: fix docs
+ * TODO: deviceID non-nullable => NSNumber *
+ * TODO: discriminator, setupPINCode => MTRSetupPayload
+ *
+ * [controller setupCommissioningSessionWithPayload: newNodeID: error: ]
+
+  -> Discover if the device needs thread and/or wifi credentials
+  -> ask for the thread and/or wifi credentials, and provide them
+
+[controller commissionNodeWithID: commissioningParams: error: ]
+
+may need to account for:
+     commissioningParams:(MTRCommissioningParameters *)commissioningParams
+
+
+- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID error:(NSError *
+__autoreleasing *)error;
+ */
 - (BOOL)pairDevice:(uint64_t)deviceID
      discriminator:(uint16_t)discriminator
       setupPINCode:(uint32_t)setupPINCode
@@ -65,6 +89,11 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * error occurs, then notify onPairingComplete on the MTRDevicePairingDelegate
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
+ */
+/**
+ * TODO: check to see if used
+ * TODO: otherwise match above
+- (void)setupCommissioningSessionWithPayload:(MTRSetupPayload *)setupPayload newNodeID:(uint64_t)nodeID;
  */
 - (BOOL)pairDevice:(uint64_t)deviceID
            address:(NSString *)address
@@ -82,23 +111,80 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
  * for this controller.  That delegate is expected to call commissionDevice
  * after that point if it wants to commission the device.
  */
+/**
+ * TODO: remove
+ */
 - (BOOL)pairDevice:(uint64_t)deviceID onboardingPayload:(NSString *)onboardingPayload error:(NSError * __autoreleasing *)error;
+
+/**
+ * TODO: remove ***
+ * TODO: fix docs
+ * TODO: deviceID non-nullable => NSNumber *
+ * TODO: discriminator, setupPINCode => MTRSetupPayload
+- (void)commissionNodeWithID:(NSNumber *)nodeID
+         commissioningParams:(MTRCommissioningParameters *)commissioningParams
+                       error:(NSError * __autoreleasing *)error;
+ */
 - (BOOL)commissionDevice:(uint64_t)deviceId
      commissioningParams:(MTRCommissioningParameters *)commissioningParams
                    error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: remove
+ * TODO: look at having a callback block in the flow to not require this.
+ * TODO: document this
+- (BOOL)continueCommissioningDevice:(void *)context
+           ignoreAttestationFailure:(BOOL)ignoreAttestationFailure
+                              error:(NSError * __autoreleasing *)error;
+
+ */
 - (BOOL)continueCommissioningDevice:(void *)device
            ignoreAttestationFailure:(BOOL)ignoreAttestationFailure
                               error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: See what this does, not clear this does what it describes
+ * TODO: Reminder: Pairing => Comissioning across our API
+ * TODO: document this [...continue here...]
+- (void)cancelAllCommissioningSessions:(NSNumber *)deviceID error:(NSError * __autoreleasing *)error;
+
+- (void)cancelCommissioningForNodeID:(NSNumber *)nodeID error:(NSError * __autoreleasing *)error;
+ */
 - (BOOL)stopDevicePairing:(uint64_t)deviceID error:(NSError * __autoreleasing *)error;
 
+/**
+ * TODO: remove
+ */
 - (nullable MTRBaseDevice *)getDeviceBeingCommissioned:(uint64_t)deviceId error:(NSError * __autoreleasing *)error;
+
+/**
+ * TODO: Add a pre-amble here to separate commissioning vs operational
+ */
+
+/**
+ * TODO: Move to [[MTRBaseDevice alloc] initWithNodeID: (NSNumber *)nodeID controller: controller]
+ * TODO: Make public
+ */
 - (BOOL)getBaseDevice:(uint64_t)deviceID
                 queue:(dispatch_queue_t)queue
     completionHandler:(MTRDeviceConnectionCallback)completionHandler;
 
+/**
+ * TODO: remove
+ */
 - (BOOL)openPairingWindow:(uint64_t)deviceID duration:(NSUInteger)duration error:(NSError * __autoreleasing *)error;
+
+/**
+ * TODO: Move to MTRBaseDevice and MTRDevice
+ * TODO: return value (nullable NSString *) to a block that calls back
+ * TODO: Document
+ * TODO: uint64_t
+- (nullable NSString *)openCommissioningWindowWithSetupCode:(NSUInteger)setupCode
+                                              discriminator:(NSUInteger)discriminator
+                                                   duration:(NSUInteger)duration
+                                                      error:(NSError * __autoreleasing *)error;
+ */
+
 - (nullable NSString *)openPairingWindowWithPIN:(uint64_t)deviceID
                                        duration:(NSUInteger)duration
                                   discriminator:(NSUInteger)discriminator
@@ -121,15 +207,8 @@ typedef void (^MTRDeviceConnectionCallback)(MTRBaseDevice * _Nullable device, NS
 - (void)setPairingDelegate:(id<MTRDevicePairingDelegate>)delegate queue:(dispatch_queue_t)queue;
 
 /**
- * Set the Delegate for the OTA Provider as well as the Queue on which the Delegate callbacks will be triggered
+ * TODO: need to clarify the documentation a little, you must call shutdown, make sure dealloc calls shutdown
  *
- * @param[in] delegate The delegate the OTA Provider should use
- *
- * @param[in] queue The queue on which the callbacks will be delivered
- */
-- (void)setOTAProviderDelegate:(id<MTROTAProviderDelegate>)delegate queue:(dispatch_queue_t)queue;
-
-/**
  * Shutdown the controller. Calls to shutdown after the first one are NO-OPs.
  */
 - (void)shutdown;

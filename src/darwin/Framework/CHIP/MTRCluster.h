@@ -31,13 +31,16 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- * CHIPWriteParams
+ * MTRWriteParams
  *    This is used to control the behavior of cluster writes.
  *    If not provided (i.e. nil passed for the CHIPWriteParams argument), will be
  *    treated as if a default-initialized object was passed in.
  */
-@interface MTRWriteParams : NSObject
+@interface MTRWriteParams : NSObject <NSCopying>
 
+/**
+ * TODO: Fix spacing
+ */
 /**
  * Controls whether the write is a timed write.
  *
@@ -54,17 +57,24 @@ NS_ASSUME_NONNULL_BEGIN
  * This value is specified in milliseconds
  *
  */
-@property (strong, nonatomic, nullable) NSNumber * timedWriteTimeout;
+@property (nonatomic, copy, nullable) NSNumber * timedWriteTimeout;
 
+/**
+ * TODO: Fix spacing
+ */
 /**
  * Sets the data version for the Write Request for the interaction.
  *
  * If not nil, the write will only succeed if the current data version of
  * the cluster matches the provided data version.
  */
-@property (strong, nonatomic, nullable) NSNumber * dataVersion;
+@property (nonatomic, copy, nullable) NSNumber * dataVersion;
 
+/**
+ * TODO: This can be removed
+ */
 - (instancetype)init;
+- (id)copyWithZone:(nullable NSZone *)zone;
 
 @end
 
@@ -74,7 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
  *    If not provided (i.e. nil passed for the MTRReadParams argument), will be
  *    treated as if a default-initialized object was passed in.
  */
-@interface MTRReadParams : NSObject
+@interface MTRReadParams : NSObject <NSCopying>
 
 /**
  * Whether the read/subscribe is fabric-filtered. nil (the default value) is
@@ -86,9 +96,13 @@ NS_ASSUME_NONNULL_BEGIN
  * If NO, the read/subscribe is not fabric-filtered and will see all
  * non-fabric-sensitive data for the given attribute path.
  */
-@property (strong, nonatomic, nullable) NSNumber * fabricFiltered;
+/**
+ * TODO: Make this a BOOL, with the default default
+ */
+@property (nonatomic, copy, nullable) NSNumber * fabricFiltered;
 
 - (instancetype)init;
+- (id)copyWithZone:(nullable NSZone *)zone;
 
 @end
 
@@ -109,7 +123,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * If YES, the subscribe will allow any previous subscriptions to remain.
  */
-@property (strong, nonatomic, nullable) NSNumber * keepPreviousSubscriptions;
+/**
+ * TODO: Make this a BOOL, with the default default
+ */
+@property (nonatomic, copy, nullable) NSNumber * keepPreviousSubscriptions;
 
 /**
  * Whether the subscription should automatically try to re-establish if it
@@ -123,9 +140,16 @@ NS_ASSUME_NONNULL_BEGIN
  * called again.
  *
  */
-@property (strong, nonatomic, nullable) NSNumber * autoResubscribe;
+/**
+ * TODO: Make this a BOOL, with the default default
+ */
+@property (nonatomic, copy, nullable) NSNumber * autoResubscribe;
 
+/**
+ * TODO: This can be removed
+ */
 - (instancetype)init;
+- (id)copyWithZone:(nullable NSZone *)zone;
 
 @end
 

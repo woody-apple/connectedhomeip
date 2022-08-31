@@ -19,19 +19,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+//TODO : Add documentation
 @interface MTRThreadOperationalDataset : NSObject
 
+// TODO: Fix CHIP Prefix to MTR and move this documentation as part of initWithNetworkName
 /**
  * The expected lengths of each of the NSData fields in the CHIPThreadOperationalDataset
  *
  * initWithNetworkName must be provided NSData fields with at least these lengths otherwise
  * the object will fail to init.
  */
+// TODO: These need to MTR_EXTERN NSNumber *
 extern size_t const MTRSizeThreadNetworkName;
 extern size_t const MTRSizeThreadExtendedPanId;
 extern size_t const MTRSizeThreadMasterKey;
 extern size_t const MTRSizeThreadPSKc;
 
+// TODO: Make these keys non-nullable
 /**
  *  The Thread Network name
  */
@@ -48,8 +52,10 @@ extern size_t const MTRSizeThreadPSKc;
  *  The Thread PSKc
  */
 @property (nonatomic, nullable, copy, readonly) NSData * PSKc;
+
+// TODO: Fix to NSNumber
 /**
- *  The Thread network channel
+ *  The Thread network channel and make this readonly?
  */
 @property (nonatomic, readwrite) uint16_t channel;
 /**

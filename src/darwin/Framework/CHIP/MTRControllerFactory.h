@@ -24,7 +24,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Fix imports
+ * MTRDeviceControllerFactory
+ */
 @protocol MTRPersistentStorageDelegate;
+@protocol MTROTAProviderDelegate;
 @protocol MTRKeypair;
 
 @class MTRDeviceController;
@@ -36,30 +41,49 @@ NS_ASSUME_NONNULL_BEGIN
  * controllers.  It is used to store persistent information for the fabrics the
  * controllers ends up interacting with.
  */
-@property (strong, nonatomic, readonly) id<MTRPersistentStorageDelegate> storageDelegate;
+/**
+ * TODO: storageDelegate => persistentStorageDelegate
+ */
+@property (nonatomic, strong, readonly) id<MTRPersistentStorageDelegate> storageDelegate;
+
+/*
+ * OTA Provider delegate to be called when an OTA Requestor is requesting a software update.
+ * Defaults to nil.
+ */
+@property (nonatomic, strong, nullable) id<MTROTAProviderDelegate> otaProviderDelegate;
+
 /*
  * The Product Attestation Authority certificates that are trusted to sign
  * device attestation information.  Defaults to nil.
  *
  */
-@property (strong, nonatomic, nullable) NSArray<NSData *> * paaCerts;
+@property (nonatomic, copy, nullable) NSArray<NSData *> * paaCerts;
 /*
  * The network port to bind to.  If not specified, an ephemeral port will be
  * used.
  */
-@property (strong, nonatomic, nullable) NSNumber * port;
+@property (nonatomic, copy, nullable) NSNumber * port;
 /*
  * Whether to run a server capable of accepting incoming CASE
  * connections.  Defaults to NO.
  */
-@property (nonatomic) BOOL startServer;
+/**
+ * TODO: startServer => shouldStartServer
+ */
+@property (nonatomic, assign) BOOL startServer;
 
 - (instancetype)init NS_UNAVAILABLE;
+/**
+ * TODO: storageDelegate => persistentStorageDelegate
+ */
 - (instancetype)initWithStorage:(id<MTRPersistentStorageDelegate>)storageDelegate;
 @end
 
 @interface MTRControllerFactory : NSObject
 
+/**
+ * TODO: needs documentation
+ */
 @property (readonly, nonatomic) BOOL isRunning;
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -80,6 +104,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Whether startup succeded.
  */
+/**
+ * TODO: return NSError *
+ * TODO: startControllerFactory:
+ */
 - (BOOL)startup:(MTRControllerFactoryParams *)startupParams;
 
 /**
@@ -88,6 +116,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * Repeated calls to shutdown without calls to startup in between are
  * NO-OPs.
+ */
+/**
+ * TODO: stopControllerFactory:
  */
 - (void)shutdown;
 
@@ -100,6 +131,9 @@ NS_ASSUME_NONNULL_BEGIN
  * The fabric is identified by the root public key and fabric id in
  * the startupParams.
  */
+/**
+ * TODO: => createControllerOnExistingFabric:
+ */
 - (MTRDeviceController * _Nullable)startControllerOnExistingFabric:(MTRDeviceControllerStartupParams *)startupParams;
 
 /**
@@ -109,6 +143,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * The fabric is identified by the root public key and fabric id in
  * the startupParams.
+ */
+/**
+ * TODO: => createControllerOnNewFabric:
  */
 - (MTRDeviceController * _Nullable)startControllerOnNewFabric:(MTRDeviceControllerStartupParams *)startupParams;
 

@@ -31,6 +31,7 @@ tests:
                 value: nodeId
 
     - label: "Turn on light for color control tests"
+      PICS: OO.S.C01.Rsp
       cluster: "On/Off"
       command: "on"
 
@@ -38,8 +39,16 @@ tests:
       cluster: "On/Off"
       command: "readAttribute"
       attribute: "OnOff"
+      PICS: OO.S.A0000
       response:
           value: 1
+
+    - label: "TH writes 0 to the Options attribute"
+      PICS: CC.S.F04 && CC.S.A000f
+      command: "writeAttribute"
+      attribute: "Options"
+      arguments:
+          value: 0
 
     - label: "TH reads ColorTempPhysicalMinMireds attribute from DUT"
       PICS: CC.S.F04 && CC.S.A400b
@@ -48,7 +57,7 @@ tests:
       response:
           saveAs: ColorTempPhysicalMinMiredsValue
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65279
 
@@ -59,7 +68,7 @@ tests:
       response:
           saveAs: ColorTempPhysicalMaxMiredsValue
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65279
 
@@ -69,7 +78,7 @@ tests:
       attribute: "ColorTemperature"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: ColorTempPhysicalMinMiredsValue
               maxValue: ColorTempPhysicalMaxMiredsValue
 
@@ -79,7 +88,7 @@ tests:
       arguments:
           values:
               - name: "colorTemperature"
-                value: 100
+                value: ColorTempPhysicalMaxMiredsValue
               - name: "TransitionTime"
                 value: 10
               - name: "OptionsMask"
@@ -100,13 +109,14 @@ tests:
       command: "readAttribute"
       attribute: "ColorTemperature"
       response:
-          value: 100
+          value: ColorTempPhysicalMaxMiredsValue
           constraints:
-              type: uint16
+              type: int16u
               minValue: ColorTempPhysicalMinMiredsValue
               maxValue: ColorTempPhysicalMaxMiredsValue
 
     - label: "Turn off light that we turned on"
+      PICS: OO.S.C00.Rsp
       cluster: "On/Off"
       command: "off"
 
@@ -114,5 +124,6 @@ tests:
       cluster: "On/Off"
       command: "readAttribute"
       attribute: "OnOff"
+      PICS: OO.S.A0000
       response:
           value: 0

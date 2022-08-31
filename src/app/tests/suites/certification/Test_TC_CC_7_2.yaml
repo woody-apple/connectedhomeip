@@ -18,6 +18,9 @@ config:
     nodeId: 0x12344321
     cluster: "Color Control"
     endpoint: 1
+    RateConfigValue:
+        type: int16u
+        defaultValue: 50
 
 tests:
     - label: "Wait for the commissioned device to be retrieved"
@@ -29,6 +32,7 @@ tests:
                 value: nodeId
 
     - label: "Turn on light for color control tests"
+      PICS: OO.S.C01.Rsp
       cluster: "On/Off"
       command: "on"
 
@@ -36,8 +40,16 @@ tests:
       cluster: "On/Off"
       command: "readAttribute"
       attribute: "OnOff"
+      PICS: OO.S.A0000
       response:
           value: 1
+
+    - label: "TH writes 0 to the Options attribute"
+      PICS: CC.S.F01 && CC.S.A000f
+      command: "writeAttribute"
+      attribute: "Options"
+      arguments:
+          value: 0
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT"
       command: "readAttribute"
@@ -45,7 +57,7 @@ tests:
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -57,7 +69,7 @@ tests:
               - name: "MoveMode"
                 value: 1
               - name: "Rate"
-                value: 50
+                value: RateConfigValue
               - name: "OptionsMask"
                 value: 0
               - name: "OptionsOverride"
@@ -72,12 +84,12 @@ tests:
                 value: 1000
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -90,12 +102,12 @@ tests:
                 value: 1000
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -108,12 +120,12 @@ tests:
                 value: 1000
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -132,12 +144,32 @@ tests:
                 value: 0
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times"
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
+          saveAs: EnhancedCurrentHueStep3b
           constraints:
-              type: uint16
+              type: int16u
+              minValue: 0
+              maxValue: 65535
+
+    - label: "Wait 1000ms"
+      cluster: "DelayCommands"
+      command: "WaitForMs"
+      arguments:
+          values:
+              - name: "ms"
+                value: 1000
+
+    - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
+      command: "readAttribute"
+      attribute: "EnhancedCurrentHue"
+      response:
+          value: EnhancedCurrentHueStep3b
+          constraints:
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -149,7 +181,7 @@ tests:
               - name: "MoveMode"
                 value: 3
               - name: "Rate"
-                value: 15
+                value: RateConfigValue
               - name: "OptionsMask"
                 value: 0
               - name: "OptionsOverride"
@@ -164,12 +196,12 @@ tests:
                 value: 500
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times"
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -182,12 +214,12 @@ tests:
                 value: 500
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times"
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -200,12 +232,12 @@ tests:
                 value: 500
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times"
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
           constraints:
-              type: uint16
+              type: int16u
               minValue: 0
               maxValue: 65535
 
@@ -224,16 +256,37 @@ tests:
                 value: 0
 
     - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
-      PICS: CC.S.F01 && CC.S.A4000
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
       command: "readAttribute"
       attribute: "EnhancedCurrentHue"
       response:
+          saveAs: EnhancedCurrentHueStep5b
           constraints:
-              type: uint16
+              type: int16u
+              minValue: 0
+              maxValue: 65535
+
+    - label: "Wait 1000ms"
+      cluster: "DelayCommands"
+      command: "WaitForMs"
+      arguments:
+          values:
+              - name: "ms"
+                value: 1000
+
+    - label: "TH reads EnhancedCurrentHue attribute from DUT several times."
+      PICS: CC.S.F01 && CC.S.A4000 && CC.S.C41.Rsp
+      command: "readAttribute"
+      attribute: "EnhancedCurrentHue"
+      response:
+          value: EnhancedCurrentHueStep5b
+          constraints:
+              type: int16u
               minValue: 0
               maxValue: 65535
 
     - label: "Turn off light that we turned on"
+      PICS: OO.S.C00.Rsp
       cluster: "On/Off"
       command: "off"
 
@@ -241,5 +294,6 @@ tests:
       cluster: "On/Off"
       command: "readAttribute"
       attribute: "OnOff"
+      PICS: OO.S.A0000
       response:
           value: 0

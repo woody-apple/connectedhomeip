@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MTRDeviceAttestationDelegate <NSObject>
 /**
+ * TODO: @required + document
+ */
+/**
  * Notify the delegate when device attestation fails
  *
  * @param controller Controller corresponding to the commissioning process

@@ -271,9 +271,12 @@ def HostTargets():
         app_targets.append(target.Extend('tv-casting-app', app=HostApp.TV_CASTING))
         app_targets.append(target.Extend('bridge', app=HostApp.BRIDGE))
 
-        nodeps_args = dict(enable_ble=False, enable_wifi=False, enable_thread=False, use_clang=True)
+        nodeps_args = dict(enable_ble=False, enable_wifi=False, enable_thread=False,
+                           crypto_library=HostCryptoLibrary.MBEDTLS, use_clang=True)
         app_targets.append(target.Extend('chip-tool-nodeps', app=HostApp.CHIP_TOOL, **nodeps_args))
         app_targets.append(target.Extend('all-clusters-app-nodeps', app=HostApp.ALL_CLUSTERS, **nodeps_args))
+        app_targets.append(target.Extend('ota-provider-nodeps', app=HostApp.OTA_PROVIDER, **nodeps_args))
+        app_targets.append(target.Extend('ota-requestor-nodeps', app=HostApp.OTA_REQUESTOR, **nodeps_args))
 
     builder = VariantBuilder()
 
@@ -534,7 +537,7 @@ def K32WTargets():
     target = Target('k32w', K32WBuilder)
 
     yield target.Extend('light-ota-se', app=K32WApp.LIGHT, release=True, disable_ble=True, se05x=True).GlobBlacklist("Only on demand build")
-    yield target.Extend('light-release-no-ota', app=K32WApp.LIGHT, tokenizer=True, disable_ota=True, release=True)
+    yield target.Extend('light-release-no-ota', app=K32WApp.LIGHT, tokenizer=True, disable_ota=True, release=True, tinycrypt=True)
     yield target.Extend('shell-release', app=K32WApp.SHELL, release=True)
     yield target.Extend('lock-release', app=K32WApp.LOCK, release=True)
     yield target.Extend('lock-low-power-release', app=K32WApp.LOCK,

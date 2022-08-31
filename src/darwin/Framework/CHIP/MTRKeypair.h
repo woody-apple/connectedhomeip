@@ -22,11 +22,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MTRKeypair <NSObject>
 @required
+/** 
+ * TODO: Convert to readonly property?
+ */
 /**
  * @brief Return public key for the keypair.
  */
 - (SecKeyRef)publicKey;
 
+ /** 
+ * TODO: Fix brief description for both to be more informative
+ */
+
+ /** 
+ * TODO: Switch to using enum for signing type and have just one method.
+ *   Also had a property that return a bitmask that defines signing capabilities which
+* lets the framework know which mode the client supports
+ */
 @optional
 /**
  * @brief A function to sign a message using ECDSA
@@ -40,6 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
  * Either this selector or signMessageECDSA_DER must be supported by a
  * MTRKeypair.
  */
+ /** 
+ * TODO: signMessageECDSA_RAW => signMessageWithECDSA_RAW
+ */
 - (NSData *)signMessageECDSA_RAW:(NSData *)message;
 
 /**
@@ -51,6 +66,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * Either this selector or signMessageECDSA_RAW must be supported by a
  * MTRKeypair.
+ */
+ /** 
+ * TODO: signMessageECDSA_DER => signMessageWithECDSA_DER
  */
 - (NSData *)signMessageECDSA_DER:(NSData *)message;
 

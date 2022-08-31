@@ -18,6 +18,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TODO: Fix imports
+ */
 @protocol MTRKeypair;
 
 @interface MTRDeviceControllerStartupParams : NSObject
@@ -30,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  * must be initialized using initWithOperationalKeypair (to provide the
  * operational credentials for the controller itself).
  */
-@property (strong, nonatomic, readonly, nullable) id<MTRKeypair> nocSigner;
+@property (nonatomic, copy, readonly, nullable) id<MTRKeypair> nocSigner;
 /**
  * Fabric id for the controller.  Must be set to a nonzero value.  This is
  * scoped by the root public key, which is determined as follows:
@@ -42,13 +45,16 @@ NS_ASSUME_NONNULL_BEGIN
  *   key of the nocSigner keypair, since in this case we are not using an
  *   intermediate certificate.
  */
-@property (nonatomic, readonly) uint64_t fabricId;
+/**
+  * TODO: Fix uint64_t => NSNumber *
+  */
+@property (nonatomic, assign, readonly) uint64_t fabricId;
 /**
  * IPK to use for the controller's fabric.  Allowed to change from the last time
  * a controller was started on this fabric if a new IPK has been distributed to
  * all the devices the controller wants to interact with.
  */
-@property (strong, nonatomic, readonly) NSData * ipk;
+@property (nonatomic, copy, readonly) NSData * ipk;
 
 /**
  * Vendor ID (allocated by the Connectivity Standards Alliance) for
@@ -65,7 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
  * * Will override existing value if not nil. Otherwise existing value will be
  *   used.
  */
-@property (strong, nonatomic, nullable) NSNumber * vendorId;
+ /**
+  * TODO: Fix vendorId => vendorID
+  */
+@property (nonatomic, copy, nullable) NSNumber * vendorId;
 
 /**
  * Node id for this controller.
@@ -95,9 +104,13 @@ NS_ASSUME_NONNULL_BEGIN
  *    generated operational key.
  *
  */
-@property (strong, nonatomic, nullable) NSNumber * nodeId;
+  /**
+  * TODO: Fix nodeId => nodeID
+  */
+@property (nonatomic, copy, nullable) NSNumber * nodeId;
 
-// TODO: Add something here for CATs?
+// TODO: Add something here for CATs? 
+// Convert to issue and remove comment above
 
 /**
  * Root certificate, in X.509 DER form, to use.
@@ -130,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
  *   2) The subject DN must match the subject DN of the existing root
  *      certificate.
  */
-@property (strong, nonatomic, nullable) NSData * rootCertificate;
+@property (nonatomic, copy, nullable) NSData * rootCertificate;
 
 /**
  * Intermediate certificate, in X.509 DER form, to use.
@@ -162,7 +175,7 @@ NS_ASSUME_NONNULL_BEGIN
  *     allows switching from using an intermediate CA to not using one.
  *
  */
-@property (strong, nonatomic, nullable) NSData * intermediateCertificate;
+@property (nonatomic, copy, nullable) NSData * intermediateCertificate;
 
 /**
  * Operational certificate, in X.509 DER form, to use.
@@ -173,7 +186,7 @@ NS_ASSUME_NONNULL_BEGIN
  * If nil, an operational certificate will be determined as described in the
  * documentation for nodeId.
  */
-@property (strong, nonatomic, nullable, readonly) NSData * operationalCertificate;
+@property (nonatomic, copy, readonly, nullable) NSData * operationalCertificate;
 
 /**
  * Operational keypair to use.  If operationalCertificate is not nil, the public
@@ -184,10 +197,14 @@ NS_ASSUME_NONNULL_BEGIN
  * will for that certificated will be determined as described in the
  * documentation for nodeId.
  */
-@property (strong, nonatomic, nullable) id<MTRKeypair> operationalKeypair;
+@property (nonatomic, strong, nullable) id<MTRKeypair> operationalKeypair;
 
 - (instancetype)init NS_UNAVAILABLE;
 
+/**
+ * TODO: uint64_t => NSNumber
+ *
+ * /
 /**
  * Prepare to initialize a controller given a keypair to use for signing
  * operational certificates.
@@ -195,6 +212,14 @@ NS_ASSUME_NONNULL_BEGIN
  * fabricId must be set to a valid (i.e. nonzero) value.
  *
  * ipk must be 16 bytes in length
+- (instancetype)initWithIPK:(NSData *)ipk
+                   fabricID:(NSNumber *)fabricId
+                  nocSigner:(id<MTRKeypair>)nocSigner
+
+
+- (instancetype)initWithFabricID:(NSNumber *)fabricId
+                             ipk:(NSData *)ipk
+                        nocSigner:(id<MTRKeypair>)nocSigner
  */
 - (instancetype)initWithSigningKeypair:(id<MTRKeypair>)nocSigner fabricId:(uint64_t)fabricId ipk:(NSData *)ipk;
 
@@ -210,7 +235,21 @@ NS_ASSUME_NONNULL_BEGIN
  * rootCertificate.
  *
  * ipk must be 16 bytes in length.
- */
+ - (instancetype)initWithIPK:(NSData *)ipk
+          operationalKeypair:(id<MTRKeypair>)operationalKeypair
+      operationalCertificate:(NSData *)operationalCertificate
+     intermediateCertificate:(nullable NSData *)intermediateCertificate
+             rootCertificate:(NSData *)rootCertificate;
+
+
+ - (instancetype)initWithFabricID:(NSNumber *)fabricId
+                              ipk:(NSData *)ipk
+               operationalKeypair:(id<MTRKeypair>)operationalKeypair
+           operationalCertificate:(NSData *)operationalCertificate
+          intermediateCertificate:(nullable NSData *)intermediateCertificate
+                  rootCertificate:(NSData *)rootCertificate;
+
+*/
 - (instancetype)initWithOperationalKeypair:(id<MTRKeypair>)operationalKeypair
                     operationalCertificate:(NSData *)operationalCertificate
                    intermediateCertificate:(nullable NSData *)intermediateCertificate

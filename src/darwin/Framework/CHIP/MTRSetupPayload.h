@@ -19,7 +19,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 typedef NS_ENUM(NSUInteger, MTRRendezvousInformationFlags) {
+    // TODO: Rename None to Unknown to mark that the discovery is not known
     MTRRendezvousInformationNone = 0, // Device does not support any method for rendezvous
     MTRRendezvousInformationSoftAP = 1 << 0, // Device supports WiFi softAP
     MTRRendezvousInformationBLE = 1 << 1, // Device supports BLE
@@ -42,29 +44,40 @@ typedef NS_ENUM(NSUInteger, MTROptionalQRCodeInfoType) {
     MTROptionalQRCodeInfoTypeInt32
 };
 
+// TODO: Documentation for objects
+
 @interface MTROptionalQRCodeInfo : NSObject
-@property (nonatomic, strong) NSNumber * infoType;
-@property (nonatomic, strong) NSNumber * tag;
-@property (nonatomic, strong) NSNumber * integerValue;
-@property (nonatomic, strong) NSString * stringValue;
+// TODO: Switch to MTROptionalQRCodeInfoType instead of NSNumber for infoType
+@property (nonatomic, copy) NSNumber * infoType;
+@property (nonatomic, copy) NSNumber * tag;
+
+// TODO: Mark both as nullable and specify that they are mutually exclusive
+@property (nonatomic, copy) NSNumber * integerValue;
+@property (nonatomic, copy) NSString * stringValue;
 @end
 
 @interface MTRSetupPayload : NSObject
 
-@property (nonatomic, strong) NSNumber * version;
-@property (nonatomic, strong) NSNumber * vendorID;
-@property (nonatomic, strong) NSNumber * productID;
+@property (nonatomic, copy) NSNumber * version;
+@property (nonatomic, copy) NSNumber * vendorID;
+@property (nonatomic, copy) NSNumber * productID;
 @property (nonatomic, assign) MTRCommissioningFlow commissioningFlow;
+// TODO: See TODO in MTRRendezvousInformationFlags
+// Make sure to always set this to MTRRendezvousInformationOnNetwork if the value post parsing QR Code evaluates to 0 (in implementation)
 @property (nonatomic, assign) MTRRendezvousInformationFlags rendezvousInformation;
-@property (nonatomic, strong) NSNumber * discriminator;
-@property (nonatomic, strong) NSNumber * setUpPINCode;
+@property (nonatomic, copy) NSNumber * discriminator;
+@property (nonatomic, assign) BOOL hasShortDiscriminator;
+// TODO: Rename to setupPasscode
+@property (nonatomic, copy) NSNumber * setUpPINCode;
 
-@property (nonatomic, strong) NSString * serialNumber;
+// TODO: Make this nullable
+@property (nonatomic, copy) NSString * serialNumber;
 - (nullable NSArray<MTROptionalQRCodeInfo *> *)getAllOptionalVendorData:(NSError * __autoreleasing *)error;
 
 /**
  * Generate a random Matter-valid setup PIN.
  */
+// TODO: Make this a NSNumber and rename to generateRandomSetupPasscode
 + (NSUInteger)generateRandomPIN;
 @end
 
