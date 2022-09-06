@@ -19,16 +19,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-typedef NS_ENUM(NSUInteger, MTRRendezvousInformationFlags) {
+typedef NS_ENUM(NSUInteger, MTRDiscoveryCapabilities) {
     // TODO: Rename None to Unknown to mark that the discovery is not known
-    MTRRendezvousInformationNone = 0, // Device does not support any method for rendezvous
-    MTRRendezvousInformationSoftAP = 1 << 0, // Device supports WiFi softAP
-    MTRRendezvousInformationBLE = 1 << 1, // Device supports BLE
-    MTRRendezvousInformationOnNetwork = 1 << 2, // Device supports On Network setup
+    MTRDiscoveryCapabilitiesNone = 0, // Device does not support any method for rendezvous
+    MTRDiscoveryCapabilitiesSoftAP = 1 << 0, // Device supports WiFi softAP
+    MTRDiscoveryCapabilitiesBLE = 1 << 1, // Device supports BLE
+    MTRDiscoveryCapabilitiesOnNetwork = 1 << 2, // Device supports On Network setup
 
-    MTRRendezvousInformationAllMask
-    = MTRRendezvousInformationSoftAP | MTRRendezvousInformationBLE | MTRRendezvousInformationOnNetwork,
+    MTRDiscoveryCapabilitiesAllMask
+    = MTRDiscoveryCapabilitiesSoftAP | MTRDiscoveryCapabilitiesBLE | MTRDiscoveryCapabilitiesOnNetwork,
 };
 
 typedef NS_ENUM(NSUInteger, MTRCommissioningFlow) {
@@ -56,15 +55,22 @@ typedef NS_ENUM(NSUInteger, MTROptionalQRCodeInfoType) {
 @property (nonatomic, copy) NSString * stringValue;
 @end
 
-@interface MTRSetupPayload : NSObject
+@interface MTRSetupPayload : NSObject <NSSecureCoding>
 
 @property (nonatomic, copy) NSNumber * version;
 @property (nonatomic, copy) NSNumber * vendorID;
 @property (nonatomic, copy) NSNumber * productID;
 @property (nonatomic, assign) MTRCommissioningFlow commissioningFlow;
 // TODO: See TODO in MTRRendezvousInformationFlags
-// Make sure to always set this to MTRRendezvousInformationOnNetwork if the value post parsing QR Code evaluates to 0 (in implementation)
-@property (nonatomic, assign) MTRRendezvousInformationFlags rendezvousInformation;
+// Make sure to always set this to MTRRendezvousInformationOnNetwork if the value post parsing QR Code evaluates to 0 (in
+// implementation)
+/**
+ * rendezvousInformation is nil when the discovery capabilities bitmask is
+ * unknown.
+ *
+ * Otherwise its value is made up of the MTRDiscoveryCapabilities flags.
+ */
+@property (nonatomic, copy, nullable) NSNumber * rendezvousInformation;
 @property (nonatomic, copy) NSNumber * discriminator;
 @property (nonatomic, assign) BOOL hasShortDiscriminator;
 // TODO: Rename to setupPasscode
@@ -79,6 +85,10 @@ typedef NS_ENUM(NSUInteger, MTROptionalQRCodeInfoType) {
  */
 // TODO: Make this a NSNumber and rename to generateRandomSetupPasscode
 + (NSUInteger)generateRandomPIN;
+
+/** Get 11 digit manual entry code from the setup payload. */
+- (nullable NSString *)manualEntryCode;
+
 @end
 
 NS_ASSUME_NONNULL_END

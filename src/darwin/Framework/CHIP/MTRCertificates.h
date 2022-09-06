@@ -133,6 +133,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSData *)generateCertificateSigningRequest:(id<MTRKeypair>)keypair
                                                  error:(NSError * __autoreleasing _Nullable * _Nullable)error;
 
+/** Converts the given X.509v3 certificate to the CHIP certificate format. */
++ (nullable NSData *)convertToCHIPCertFromX509Cert:(NSData *)x509Certificate;
+
 @end
 
 NS_ASSUME_NONNULL_END

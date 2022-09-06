@@ -92,7 +92,7 @@ BDXDownloader gDownloader;
 OTAImageProcessorImpl gImageProcessor;
 
 AppTask AppTask::sAppTask;
-static DeviceCallbacks EchoCallbacks;
+// static DeviceCallbacks EchoCallbacks;
 
 CHIP_ERROR AppTask::StartAppTask()
 {
@@ -145,6 +145,7 @@ CHIP_ERROR AppTask::Init()
     gRequestorCore.Init(chip::Server::GetInstance(), gRequestorStorage, gRequestorUser, gDownloader);
     gImageProcessor.SetOTADownloader(&gDownloader);
     gDownloader.SetImageProcessorDelegate(&gImageProcessor);
+    gRequestorUser.SetPeriodicQueryTimeout(OTA_PERIODIC_QUERY_TIMEOUT);
     gRequestorUser.Init(&gRequestorCore, &gImageProcessor);
 
     ConfigurationMgr().LogDeviceConfig();
@@ -152,8 +153,6 @@ CHIP_ERROR AppTask::Init()
     PrintOnboardingCodes(chip::RendezvousInformationFlag(chip::RendezvousInformationFlag::kBLE));
 
     InitButtons();
-    StoreWifiConfig();
-
 #if PW_RPC_ENABLED
     chip::rpc::Init();
 #endif
@@ -168,6 +167,7 @@ void AppTask::AppTaskMain(void * pvParameter)
     CHIP_ERROR err;
 
     log_info("App Task entered\r\n");
+    log_async_init();
     enable_async_log();
 
     err = sWiFiNetworkCommissioningInstance.Init();
@@ -554,11 +554,6 @@ void AppTask::InitButtons(void)
 {
     Button_Configure_FactoryResetEventHandler(&FactoryResetButtonEventHandler);
     Button_Configure_LightingActionEventHandler(&LightingActionButtonEventHandler);
-}
-
-void AppTask::StoreWifiConfig(void)
-{
-    wifi_mgmr_scan(NULL, NULL);
 }
 
 void AppTask::LightStateUpdateEventHandler(void)

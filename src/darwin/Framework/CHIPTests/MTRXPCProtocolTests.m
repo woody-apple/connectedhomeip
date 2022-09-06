@@ -130,7 +130,8 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                   established[0] = @YES;
                                   completionHandler(nil);
                               }
-                          }];
+                          }
+                          resubscriptionScheduled:nil];
                   }];
 }
 @end
@@ -378,7 +379,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                           NSLog(@"Read value: %@", value);
                                                           XCTAssertNotNil(value);
                                                           XCTAssertNil(error);
-                                                          XCTAssertTrue([myValues isEqualTo:value]);
+                                                          XCTAssertTrue([myValues isEqual:value]);
                                                           [responseExpectation fulfill];
                                                           self.xpcDisconnectExpectation =
                                                               [self expectationWithDescription:@"XPC Disconnected"];
@@ -440,7 +441,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                           NSLog(@"Read value: %@", value);
                                                           XCTAssertNotNil(value);
                                                           XCTAssertNil(error);
-                                                          XCTAssertTrue([myValues isEqualTo:value]);
+                                                          XCTAssertTrue([myValues isEqual:value]);
                                                           [responseExpectation fulfill];
                                                           self.xpcDisconnectExpectation =
                                                               [self expectationWithDescription:@"XPC Disconnected"];
@@ -531,7 +532,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
         XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
         XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
         XCTAssertEqual([attributeId unsignedLongValue], [myAttributeId unsignedLongValue]);
-        XCTAssertTrue([value isEqualTo:myValue]);
+        XCTAssertTrue([value isEqual:myValue]);
         XCTAssertNil(timedWriteTimeout);
         [callExpectation fulfill];
         completion([MTRDeviceController encodeXPCResponseValues:myResults], nil);
@@ -553,7 +554,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                            NSLog(@"Write response: %@", value);
                                                            XCTAssertNotNil(value);
                                                            XCTAssertNil(error);
-                                                           XCTAssertTrue([myResults isEqualTo:value]);
+                                                           XCTAssertTrue([myResults isEqual:value]);
                                                            [responseExpectation fulfill];
                                                            self.xpcDisconnectExpectation =
                                                                [self expectationWithDescription:@"XPC Disconnected"];
@@ -593,7 +594,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
         XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
         XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
         XCTAssertEqual([attributeId unsignedLongValue], [myAttributeId unsignedLongValue]);
-        XCTAssertTrue([value isEqualTo:myValue]);
+        XCTAssertTrue([value isEqual:myValue]);
         XCTAssertNotNil(timedWriteTimeout);
         XCTAssertEqual([timedWriteTimeout unsignedShortValue], [myTimedWriteTimeout unsignedShortValue]);
         [callExpectation fulfill];
@@ -616,7 +617,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                            NSLog(@"Write response: %@", value);
                                                            XCTAssertNotNil(value);
                                                            XCTAssertNil(error);
-                                                           XCTAssertTrue([myResults isEqualTo:value]);
+                                                           XCTAssertTrue([myResults isEqual:value]);
                                                            [responseExpectation fulfill];
                                                            self.xpcDisconnectExpectation =
                                                                [self expectationWithDescription:@"XPC Disconnected"];
@@ -650,7 +651,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
         XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
         XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
         XCTAssertEqual([attributeId unsignedLongValue], [myAttributeId unsignedLongValue]);
-        XCTAssertTrue([value isEqualTo:myValue]);
+        XCTAssertTrue([value isEqual:myValue]);
         XCTAssertNil(timedWriteTimeout);
         [callExpectation fulfill];
         completion(nil, myError);
@@ -710,7 +711,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
               XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
               XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
               XCTAssertEqual([commandId unsignedLongValue], [myCommandId unsignedLongValue]);
-              XCTAssertTrue([commandFields isEqualTo:myFields]);
+              XCTAssertTrue([commandFields isEqual:myFields]);
               XCTAssertNil(timedInvokeTimeout);
               [callExpectation fulfill];
               completion([MTRDeviceController encodeXPCResponseValues:myResults], nil);
@@ -732,7 +733,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                           NSLog(@"Command response: %@", value);
                                                           XCTAssertNotNil(value);
                                                           XCTAssertNil(error);
-                                                          XCTAssertTrue([myResults isEqualTo:value]);
+                                                          XCTAssertTrue([myResults isEqual:value]);
                                                           [responseExpectation fulfill];
                                                           self.xpcDisconnectExpectation =
                                                               [self expectationWithDescription:@"XPC Disconnected"];
@@ -772,7 +773,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
               XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
               XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
               XCTAssertEqual([commandId unsignedLongValue], [myCommandId unsignedLongValue]);
-              XCTAssertTrue([commandFields isEqualTo:myFields]);
+              XCTAssertTrue([commandFields isEqual:myFields]);
               XCTAssertNotNil(timedInvokeTimeout);
               XCTAssertEqual([timedInvokeTimeout unsignedShortValue], [myTimedInvokeTimeout unsignedShortValue]);
               [callExpectation fulfill];
@@ -795,7 +796,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                                                           NSLog(@"Command response: %@", value);
                                                           XCTAssertNotNil(value);
                                                           XCTAssertNil(error);
-                                                          XCTAssertTrue([myResults isEqualTo:value]);
+                                                          XCTAssertTrue([myResults isEqual:value]);
                                                           [responseExpectation fulfill];
                                                           self.xpcDisconnectExpectation =
                                                               [self expectationWithDescription:@"XPC Disconnected"];
@@ -832,7 +833,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
               XCTAssertEqual([endpointId unsignedShortValue], [myEndpointId unsignedShortValue]);
               XCTAssertEqual([clusterId unsignedLongValue], [myClusterId unsignedLongValue]);
               XCTAssertEqual([commandId unsignedLongValue], [myCommandId unsignedLongValue]);
-              XCTAssertTrue([commandFields isEqualTo:myFields]);
+              XCTAssertTrue([commandFields isEqual:myFields]);
               XCTAssertNil(timedInvokeTimeout);
               [callExpectation fulfill];
               completion(nil, myError);
@@ -921,7 +922,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1041,7 +1042,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1156,7 +1157,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1270,7 +1271,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1386,7 +1387,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1502,7 +1503,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1618,7 +1619,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1733,7 +1734,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1848,7 +1849,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -1963,7 +1964,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                     NSLog(@"Report value: %@", values);
                     XCTAssertNotNil(values);
                     XCTAssertNil(error);
-                    XCTAssertTrue([myReport isEqualTo:values]);
+                    XCTAssertTrue([myReport isEqual:values]);
                     [reportExpectation fulfill];
                 }
                 subscriptionEstablished:^{
@@ -2089,7 +2090,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                         NSLog(@"Subscriber [%d] report value: %@", i, values);
                         XCTAssertNotNil(values);
                         XCTAssertNil(error);
-                        XCTAssertTrue([myReports[i] isEqualTo:values]);
+                        XCTAssertTrue([myReports[i] isEqual:values]);
                         [reportExpectations[i] fulfill];
                     }
                     subscriptionEstablished:^{
@@ -2452,7 +2453,7 @@ static const uint16_t kNegativeTimeoutInSeconds = 1;
                              NSLog(@"Read cached value: %@", values);
                              XCTAssertNotNil(values);
                              XCTAssertNil(error);
-                             XCTAssertTrue([myValues isEqualTo:values]);
+                             XCTAssertTrue([myValues isEqual:values]);
                              [responseExpectation fulfill];
                          }];
     [self waitForExpectations:@[ callExpectation, responseExpectation, _xpcDisconnectExpectation ] timeout:kTimeoutInSeconds];

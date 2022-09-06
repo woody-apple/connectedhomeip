@@ -61,13 +61,7 @@ CHIP_ERROR SetupPayloadParseCommand::Run()
     NSString * codeString = [NSString stringWithCString:mCode encoding:NSASCIIStringEncoding];
     NSError * error;
     MTRSetupPayload * payload;
-    MTROnboardingPayloadType codeType;
-    if (IsQRCode(codeString)) {
-        codeType = MTROnboardingPayloadTypeQRCode;
-    } else {
-        codeType = MTROnboardingPayloadTypeManualCode;
-    }
-    payload = [MTROnboardingPayloadParser setupPayloadForOnboardingPayload:codeString ofType:codeType error:&error];
+    payload = [MTROnboardingPayloadParser setupPayloadForOnboardingPayload:codeString error:&error];
     if (error) {
         LogNSError("Error: ", error);
         return CHIP_ERROR_INTERNAL;
@@ -84,33 +78,34 @@ CHIP_ERROR SetupPayloadParseCommand::Print(MTRSetupPayload * payload)
     NSLog(@"ProductID:     %@", payload.productID);
     NSLog(@"Custom flow:   %lu    (%@)", payload.commissioningFlow, CustomFlowString(payload.commissioningFlow));
     {
-        NSMutableString * humanFlags = [[NSMutableString alloc] init];
+        if (payload.rendezvousInformation == nil) {
+            NSLog(@"Capabilities:  UNKNOWN");
+        } else {
+            NSMutableString * humanFlags = [[NSMutableString alloc] init];
 
-        if (payload.rendezvousInformation) {
-            if (payload.rendezvousInformation & MTRRendezvousInformationNone) {
+            auto value = [payload.rendezvousInformation unsignedLongValue];
+            if (value == MTRDiscoveryCapabilitiesNone) {
                 [humanFlags appendString:@"NONE"];
             } else {
-                if (payload.rendezvousInformation & MTRRendezvousInformationSoftAP) {
+                if (value & MTRDiscoveryCapabilitiesSoftAP) {
                     [humanFlags appendString:@"SoftAP"];
                 }
-                if (payload.rendezvousInformation & MTRRendezvousInformationBLE) {
+                if (value & MTRDiscoveryCapabilitiesBLE) {
                     if (!humanFlags) {
                         [humanFlags appendString:@", "];
                     }
                     [humanFlags appendString:@"BLE"];
                 }
-                if (payload.rendezvousInformation & MTRRendezvousInformationOnNetwork) {
+                if (value & MTRDiscoveryCapabilitiesOnNetwork) {
                     if (!humanFlags) {
                         [humanFlags appendString:@", "];
                     }
                     [humanFlags appendString:@"ON NETWORK"];
                 }
             }
-        } else {
-            [humanFlags appendString:@"NONE"];
-        }
 
-        NSLog(@"Capabilities:  0x%02lX (%@)", payload.rendezvousInformation, humanFlags);
+            NSLog(@"Capabilities:  0x%02lX (%@)", value, humanFlags);
+        }
     }
     NSLog(@"Discriminator: %@", payload.discriminator);
     NSLog(@"Passcode:      %@", payload.setUpPINCode);

@@ -445,6 +445,31 @@ void SessionManager::ExpireAllPASESessions()
     });
 }
 
+void SessionManager::MarkSessionsAsDefunct(const ScopedNodeId & node, const Optional<Transport::SecureSession::Type> & type)
+{
+    mSecureSessions.ForEachSession([&node, &type](auto session) {
+        if (session->IsActiveSession() && session->GetPeer() == node &&
+            (!type.HasValue() || type.Value() == session->GetSecureSessionType()))
+        {
+            session->MarkAsDefunct();
+        }
+        return Loop::Continue;
+    });
+}
+
+void SessionManager::UpdateAllSessionsPeerAddress(const ScopedNodeId & node, const Transport::PeerAddress & addr)
+{
+    mSecureSessions.ForEachSession([&node, &addr](auto session) {
+        // Arguably we should only be updating active and defunct sessions, but there is no harm
+        // in updating evicted sessions.
+        if (session->GetPeer() == node && Transport::SecureSession::Type::kCASE == session->GetSecureSessionType())
+        {
+            session->SetPeerAddress(addr);
+        }
+        return Loop::Continue;
+    });
+}
+
 Optional<SessionHandle> SessionManager::AllocateSession(SecureSession::Type secureSessionType,
                                                         const ScopedNodeId & sessionEvictionHint)
 {

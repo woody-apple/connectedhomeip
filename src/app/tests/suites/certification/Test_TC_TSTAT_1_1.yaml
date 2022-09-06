@@ -14,6 +14,9 @@
 
 name: 42.1.1. [TC-TSTAT-1.1] Global attributes with server as DUT
 
+PICS:
+    - TSTAT.S
+
 config:
     nodeId: 0x12344321
     cluster: "Thermostat"
@@ -38,15 +41,68 @@ tests:
 
     - label: "Read the global attribute: FeatureMap"
       PICS:
-          TSTAT.S.F00 || TSTAT.S.F01 || TSTAT.S.F02 || TSTAT.S.F03 ||
-          TSTAT.S.F04 || TSTAT.S.F05
+          "!TSTAT.S.F00 && !TSTAT.S.F01 && !TSTAT.S.F02 && !TSTAT.S.F03 &&
+          !TSTAT.S.F04 && !TSTAT.S.F05"
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          value: 0
+          constraints:
+              type: bitmap32
+
+    - label: "Given TSTAT.S.F00(HEAT ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F00
       command: "readAttribute"
       attribute: "FeatureMap"
       response:
           constraints:
               type: bitmap32
-              minValue: 1
-              maxValue: 63
+              hasMasksSet: [0x1]
+
+    - label: "Given TSTAT.S.F01(COOL) ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F01
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x2]
+
+    - label: "Given TSTAT.S.F02(OCC) ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F02
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x4]
+
+    - label: "Given TSTAT.S.F03(SCH) ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F03
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x8]
+
+    - label: "Given TSTAT.S.F04(SB) ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F04
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x10]
+
+    - label: "Given TSTAT.S.F05(AUTO) ensure featuremap has the correct bit set"
+      PICS: TSTAT.S.F05
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x20]
 
     - label: "Read the global attribute: AttributeList"
       command: "readAttribute"
@@ -179,18 +235,17 @@ tests:
       response:
           constraints:
               type: list
-
-    #issue #15011 disabled steps below Global attributes missing from YAML framework
-    - label: "Read the global attribute: EventList"
-      disabled: true
-      verification: |
-          Not implemented in chip-tool
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
+    #Commenting out the step EventList attribute which is out of scope for matter V1.0
+    # - label: "Read the global attribute: EventList"
+    #   disabled: true
+    #   verification: |
+    #       Not implemented in chip-tool
+    #   cluster: "LogCommands"
+    #   command: "UserPrompt"
+    #   PICS: PICS_USER_PROMPT
+    #   arguments:
+    #       values:
+    #           - name: "message"
+    #             value: "Please enter 'y' for success"
+    #           - name: "expectedValue"
+    #             value: "y"

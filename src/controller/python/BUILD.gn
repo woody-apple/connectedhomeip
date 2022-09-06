@@ -51,10 +51,13 @@ shared_library("ChipDeviceCtrl") {
   if (chip_controller) {
     sources += [
       "ChipCommissionableNodeController-ScriptBinding.cpp",
+      "ChipDeviceController-Discovery.cpp",
       "ChipDeviceController-IssueNocChain.cpp",
       "ChipDeviceController-ScriptBinding.cpp",
       "ChipDeviceController-ScriptDevicePairingDelegate.cpp",
       "ChipDeviceController-ScriptDevicePairingDelegate.h",
+      "ChipDeviceController-ScriptPairingDeviceDiscoveryDelegate.cpp",
+      "ChipDeviceController-ScriptPairingDeviceDiscoveryDelegate.h",
       "ChipDeviceController-StorageDelegate.cpp",
       "ChipDeviceController-StorageDelegate.h",
       "OpCredsBinding.cpp",
@@ -107,6 +110,7 @@ shared_library("ChipDeviceCtrl") {
     public_deps += [
       "${chip_root}/src/controller/data_model",
       "${chip_root}/src/credentials:file_attestation_trust_store",
+      "${chip_root}/third_party/jsoncpp",
     ]
   } else {
     public_deps += [ "$chip_data_model" ]
@@ -183,6 +187,7 @@ chip_python_wheel_action("chip-core") {
     {
       src_dir = "."
       sources = [
+        "chip/CertificateAuthority.py",
         "chip/ChipBleBase.py",
         "chip/ChipBleUtility.py",
         "chip/ChipBluezMgr.py",
@@ -281,6 +286,12 @@ chip_python_wheel_action("chip-core") {
     "pyyaml",
     "ipdb",
     "deprecation",
+    "mobly",
+
+    # Crypto libraries for complex tests and internal Python controller usage
+    "cryptography",
+    "pycrypto",
+    "ecdsa",
   ]
 
   if (current_os == "mac") {
@@ -397,6 +408,7 @@ chip_python_wheel_action("chip-repl") {
     "ipython!=8.1.0",
     "rich",
     "ipykernel",
+    "mobly",
   ]
 
   py_package_name = "chip-repl"

@@ -17,6 +17,8 @@
 
 #include "OTAImageProcessorImpl.h"
 
+#include "Reboot.h"
+
 #include <app/clusters/ota-requestor/OTADownloader.h>
 #include <app/clusters/ota-requestor/OTARequestorInterface.h>
 #include <lib/support/CodeUtils.h>
@@ -35,7 +37,6 @@
 #include <dfu/mcuboot.h>
 #include <logging/log.h>
 #include <pm/device.h>
-#include <sys/reboot.h>
 
 #if CONFIG_CHIP_CERTIFICATION_DECLARATION_STORAGE
 // Cd globals are needed to be accessed from dfu image writer lambdas
@@ -70,7 +71,7 @@ CHIP_ERROR OTAImageProcessorImpl::PrepareDownloadImpl()
         writer.image_id = image_id;
         writer.open     = [](int id, size_t size) { return dfu_target_init(DFU_TARGET_IMAGE_TYPE_MCUBOOT, id, size, nullptr); };
         writer.write    = [](const uint8_t * chunk, size_t chunk_size) { return dfu_target_write(chunk, chunk_size); };
-        writer.close    = [](bool success) { return dfu_target_done(success); };
+        writer.close    = [](bool success) { return success ? dfu_target_done(success) : dfu_target_reset(); };
 
         ReturnErrorOnFailure(System::MapErrorZephyr(dfu_multi_image_register_writer(&writer)));
     };
@@ -123,7 +124,7 @@ CHIP_ERROR OTAImageProcessorImpl::Apply()
             [](System::Layer *, void * /* context */) {
                 PlatformMgr().HandleServerShuttingDown();
                 k_msleep(CHIP_DEVICE_CONFIG_SERVER_SHUTDOWN_ACTIONS_SLEEP_MS);
-                sys_reboot(SYS_REBOOT_WARM);
+                Reboot(SoftwareRebootReason::kSoftwareUpdate);
             },
             nullptr /* context */);
     }

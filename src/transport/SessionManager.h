@@ -351,6 +351,26 @@ public:
 
     /**
      * @brief
+     *   Marks all active sessions that match provided arguments as defunct.
+     *
+     * @param node    Scoped node ID of the active sessions we should mark as defunct.
+     * @param type    Type of session we are looking to mark as defunct. If matching
+     *                against all types of sessions is desired, NullOptional should
+     *                be passed into type.
+     */
+    void MarkSessionsAsDefunct(const ScopedNodeId & node, const Optional<Transport::SecureSession::Type> & type);
+
+    /**
+     * @brief
+     *   Update all CASE sessions that match `node` with the provided transport peer address.
+     *
+     * @param node    Scoped node ID of the active sessions we want to update.
+     * @param addr    Transport peer address that we want to update to.
+     */
+    void UpdateAllSessionsPeerAddress(const ScopedNodeId & node, const Transport::PeerAddress & addr);
+
+    /**
+     * @brief
      *   Return the System Layer pointer used by current SessionManager.
      */
     System::Layer * SystemLayer() { return mSystemLayer; }

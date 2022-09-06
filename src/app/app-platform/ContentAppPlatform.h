@@ -23,7 +23,7 @@
 #pragma once
 
 #include <app-common/zap-generated/enums.h>
-#include <app/OperationalDeviceProxy.h>
+#include <app/OperationalSessionSetup.h>
 #include <app/app-platform/ContentApp.h>
 #include <app/util/attribute-storage.h>
 #include <controller/CHIPCluster.h>
@@ -80,12 +80,20 @@ public:
 
     // add apps to the platform.
     // This will assign the app to an endpoint (if it is not already added) and make it accessible via Matter
-    // returns the global endpoint for this app, or 0 if an error occurred
-    //
+    // returns the global endpoint for this app, or kNoCurrentEndpointId if an error occurred.
     // dataVersionStorage.size() needs to be at least as big as the number of
     // server clusters in the EmberAfEndpointType passed in.
     EndpointId AddContentApp(ContentApp * app, EmberAfEndpointType * ep, const Span<DataVersion> & dataVersionStorage,
                              const Span<const EmberAfDeviceType> & deviceTypeList);
+
+    // add apps to the platform.
+    // This will assign the app to the desiredEndpointId (if it is not already used)
+    // and make it accessible via Matter, return the global endpoint for this app(if app is already added)
+    // , or kNoCurrentEndpointId if an error occurred. desiredEndpointId cannot be less that Fixed endpoint count
+    // dataVersionStorage.size() needs to be at least as big as the number of
+    // server clusters in the EmberAfEndpointType passed in.
+    EndpointId AddContentApp(ContentApp * app, EmberAfEndpointType * ep, const Span<DataVersion> & dataVersionStorage,
+                             const Span<const EmberAfDeviceType> & deviceTypeList, EndpointId desiredEndpointId);
 
     // remove app from the platform.
     // returns the endpoint id where the app was, or 0 if app was not loaded
@@ -130,16 +138,17 @@ public:
      *   Add ACLs on this device for the given client,
      *   and create bindings on the given client so that it knows what it has access to.
      *
-     * @param[in] targetDeviceProxy  OperationalDeviceProxy for the target device.
-     * @param[in] targetVendorId     Vendor ID for the target device.
-     * @param[in] localNodeId        The NodeId for the local device.
-     * @param[in] successCb          The function to be called on success of adding the binding.
-     * @param[in] failureCb          The function to be called on failure of adding the binding.
+     * @param[in] exchangeMgr     Exchange manager to be used to get an exchange context.
+     * @param[in] sessionHandle   Reference to an established session.
+     * @param[in] targetVendorId  Vendor ID for the target device.
+     * @param[in] localNodeId     The NodeId for the local device.
+     * @param[in] successCb       The function to be called on success of adding the binding.
+     * @param[in] failureCb       The function to be called on failure of adding the binding.
      *
      * @return CHIP_ERROR         CHIP_NO_ERROR on success, or corresponding error
      */
-    CHIP_ERROR ManageClientAccess(OperationalDeviceProxy * targetDeviceProxy, uint16_t targetVendorId, NodeId localNodeId,
-                                  Controller::WriteResponseSuccessCallback successCb,
+    CHIP_ERROR ManageClientAccess(Messaging::ExchangeManager & exchangeMgr, SessionHandle & sessionHandle, uint16_t targetVendorId,
+                                  NodeId localNodeId, Controller::WriteResponseSuccessCallback successCb,
                                   Controller::WriteResponseFailureCallback failureCb);
 
 protected:
@@ -154,6 +163,9 @@ protected:
     EndpointId mCurrentEndpointId;
     EndpointId mFirstDynamicEndpointId;
     ContentApp * mContentApps[CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT];
+
+private:
+    void IncrementCurrentEndpointID();
 };
 
 } // namespace AppPlatform

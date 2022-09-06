@@ -706,6 +706,16 @@ CHIP_ERROR EcdsaAsn1SignatureToRaw(size_t fe_length_bytes, const ByteSpan & asn1
     return CHIP_NO_ERROR;
 }
 
+CHIP_ERROR AES_CTR_crypt(const uint8_t * input, size_t input_length, const uint8_t * key, size_t key_length, const uint8_t * nonce,
+                         size_t nonce_length, uint8_t * output)
+{
+    // Discard tag portion of CCM to apply only CTR mode encryption/decryption.
+    constexpr size_t kTagLen = Crypto::kAES_CCM128_Tag_Length;
+    uint8_t tag[kTagLen];
+
+    return AES_CCM_encrypt(input, input_length, nullptr, 0, key, key_length, nonce, nonce_length, output, tag, kTagLen);
+}
+
 CHIP_ERROR GenerateCompressedFabricId(const Crypto::P256PublicKey & root_public_key, uint64_t fabric_id,
                                       MutableByteSpan & out_compressed_fabric_id)
 {
@@ -828,6 +838,19 @@ CHIP_ERROR DeriveGroupPrivacyKey(const ByteSpan & encryption_key, MutableByteSpa
     Crypto::HKDF_sha crypto;
     return crypto.HKDF_SHA256(encryption_key.data(), encryption_key.size(), null_span.data(), null_span.size(), kGroupPrivacyInfo,
                               sizeof(kGroupPrivacyInfo), out_key.data(), Crypto::CHIP_CRYPTO_SYMMETRIC_KEY_LENGTH_BYTES);
+}
+
+CHIP_ERROR DeriveGroupOperationalCredentials(const ByteSpan & epoch_key, const ByteSpan & compressed_fabric_id,
+                                             GroupOperationalCredentials & operational_credentials)
+{
+    MutableByteSpan encryption_key(operational_credentials.encryption_key);
+    MutableByteSpan privacy_key(operational_credentials.privacy_key);
+
+    ReturnErrorOnFailure(Crypto::DeriveGroupOperationalKey(epoch_key, compressed_fabric_id, encryption_key));
+    ReturnErrorOnFailure(Crypto::DeriveGroupSessionId(encryption_key, operational_credentials.hash));
+    ReturnErrorOnFailure(Crypto::DeriveGroupPrivacyKey(encryption_key, privacy_key));
+
+    return CHIP_NO_ERROR;
 }
 
 CHIP_ERROR ExtractVIDPIDFromAttributeString(DNAttrType attrType, const ByteSpan & attr,
@@ -1077,6 +1100,29 @@ exit:
         csr_span.reduce_size(writer.GetLengthWritten());
     }
     return err;
+}
+
+CHIP_ERROR VerifyCertificateSigningRequestFormat(const uint8_t * csr, size_t csr_length)
+{
+    // Ensure we have enough size to validate header
+    VerifyOrReturnError((csr_length >= 16) && (csr_length <= kMAX_CSR_Length), CHIP_ERROR_UNSUPPORTED_CERT_FORMAT);
+
+    Reader reader(csr, csr_length);
+
+    // Ensure we have an outermost SEQUENCE
+    uint8_t seq_header = 0;
+    ReturnErrorOnFailure(reader.Read8(&seq_header).StatusCode());
+    VerifyOrReturnError(seq_header == kSeqTag, CHIP_ERROR_UNSUPPORTED_CERT_FORMAT);
+
+    uint8_t seq_length = 0;
+    VerifyOrReturnError(ReadDerLength(reader, seq_length) == CHIP_NO_ERROR, CHIP_ERROR_UNSUPPORTED_CERT_FORMAT);
+
+    // Ensure that outer length matches sequence length + tag overhead, otherwise
+    // we have trailing garbage
+    size_t header_overhead = (seq_length <= 127) ? 2 : 3;
+    VerifyOrReturnError(csr_length == (seq_length + header_overhead), CHIP_ERROR_UNSUPPORTED_CERT_FORMAT);
+
+    return CHIP_NO_ERROR;
 }
 
 } // namespace Crypto

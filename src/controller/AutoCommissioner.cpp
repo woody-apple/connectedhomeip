@@ -51,6 +51,12 @@ CHIP_ERROR AutoCommissioner::SetCommissioningParameters(const CommissioningParam
         mParams.SetFailsafeTimerSeconds(params.GetFailsafeTimerSeconds().Value());
     }
 
+    if (params.GetAdminSubject().HasValue())
+    {
+        ChipLogProgress(Controller, "Setting adminSubject from parameters");
+        mParams.SetAdminSubject(params.GetAdminSubject().Value());
+    }
+
     if (params.GetThreadOperationalDataset().HasValue())
     {
         ByteSpan dataset = params.GetThreadOperationalDataset().Value();
@@ -133,6 +139,12 @@ CHIP_ERROR AutoCommissioner::SetCommissioningParameters(const CommissioningParam
     }
     mParams.SetCSRNonce(ByteSpan(mCSRNonce, sizeof(mCSRNonce)));
 
+    if (params.GetSkipCommissioningComplete().HasValue())
+    {
+        ChipLogProgress(Controller, "Setting PASE-only commissioning from parameters");
+        mParams.SetSkipCommissioningComplete(params.GetSkipCommissioningComplete().Value());
+    }
+
     return CHIP_NO_ERROR;
 }
 
@@ -197,6 +209,8 @@ CommissioningStage AutoCommissioner::GetNextCommissioningStageInternal(Commissio
         // skip scan step
         return CommissioningStage::kConfigRegulatory;
     case CommissioningStage::kScanNetworks:
+        return CommissioningStage::kNeedsNetworkCreds;
+    case CommissioningStage::kNeedsNetworkCreds:
         return CommissioningStage::kConfigRegulatory;
     case CommissioningStage::kConfigRegulatory:
         return CommissioningStage::kSendPAICertificateRequest;
@@ -244,6 +258,10 @@ CommissioningStage AutoCommissioner::GetNextCommissioningStageInternal(Commissio
         }
         else
         {
+            if (mParams.GetSkipCommissioningComplete().ValueOr(false))
+            {
+                return CommissioningStage::kCleanup;
+            }
             return CommissioningStage::kFindOperational;
         }
     case CommissioningStage::kWiFiNetworkSetup:
@@ -272,11 +290,19 @@ CommissioningStage AutoCommissioner::GetNextCommissioningStageInternal(Commissio
         {
             return CommissioningStage::kThreadNetworkEnable;
         }
+        else if (mParams.GetSkipCommissioningComplete().ValueOr(false))
+        {
+            return CommissioningStage::kCleanup;
+        }
         else
         {
             return CommissioningStage::kFindOperational;
         }
     case CommissioningStage::kThreadNetworkEnable:
+        if (mParams.GetSkipCommissioningComplete().ValueOr(false))
+        {
+            return CommissioningStage::kCleanup;
+        }
         return CommissioningStage::kFindOperational;
     case CommissioningStage::kFindOperational:
         return CommissioningStage::kSendComplete;
@@ -507,7 +533,7 @@ CHIP_ERROR AutoCommissioner::CommissioningStepFinished(CHIP_ERROR err, Commissio
             ReleasePAI();
             ReleaseDAC();
             mCommissioneeDeviceProxy = nullptr;
-            mOperationalDeviceProxy  = nullptr;
+            mOperationalDeviceProxy  = OperationalDeviceProxy();
             mDeviceCommissioningInfo = ReadCommissioningInfo();
             return CHIP_NO_ERROR;
         default:
@@ -530,26 +556,15 @@ CHIP_ERROR AutoCommissioner::CommissioningStepFinished(CHIP_ERROR err, Commissio
     }
     mParams.SetCompletionStatus(completionStatus);
 
-    if (mCommissioningPaused)
-    {
-        mPausedStage = nextStage;
-
-        if (GetDeviceProxyForStep(nextStage) == nullptr)
-        {
-            ChipLogError(Controller, "Invalid device for commissioning");
-            return CHIP_ERROR_INCORRECT_STATE;
-        }
-        return CHIP_NO_ERROR;
-    }
     return PerformStep(nextStage);
 }
 
 DeviceProxy * AutoCommissioner::GetDeviceProxyForStep(CommissioningStage nextStage)
 {
     if (nextStage == CommissioningStage::kSendComplete ||
-        (nextStage == CommissioningStage::kCleanup && mOperationalDeviceProxy != nullptr))
+        (nextStage == CommissioningStage::kCleanup && mOperationalDeviceProxy.GetDeviceId() != kUndefinedNodeId))
     {
-        return mOperationalDeviceProxy;
+        return &mOperationalDeviceProxy;
     }
     return mCommissioneeDeviceProxy;
 }
@@ -566,28 +581,6 @@ CHIP_ERROR AutoCommissioner::PerformStep(CommissioningStage nextStage)
     mCommissioner->PerformCommissioningStep(proxy, nextStage, mParams, this, GetEndpoint(nextStage),
                                             GetCommandTimeout(proxy, nextStage));
     return CHIP_NO_ERROR;
-}
-
-void AutoCommissioner::PauseCommissioning()
-{
-    mCommissioningPaused = true;
-}
-
-CHIP_ERROR AutoCommissioner::ResumeCommissioning()
-{
-    VerifyOrReturnError(mCommissioningPaused, CHIP_ERROR_INCORRECT_STATE);
-    mCommissioningPaused = false;
-
-    // if no new step was attempted
-    if (mPausedStage == CommissioningStage::kError)
-    {
-        return CHIP_NO_ERROR;
-    }
-
-    CommissioningStage nextStage = mPausedStage;
-    mPausedStage                 = CommissioningStage::kError;
-
-    return PerformStep(nextStage);
 }
 
 void AutoCommissioner::ReleaseDAC()

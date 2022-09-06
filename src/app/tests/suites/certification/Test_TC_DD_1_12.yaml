@@ -17,12 +17,22 @@ name:
     3.1.12. [TC-DD-1.12] Onboarding Payload Verification - Custom Flow = 0 [DUT
     - Commissionee]
 
+PICS:
+    - MCORE.ROLE.COMMISSIONEE
+    - MCORE.DD.QR
+    - MCORE.DD.STANDARD_COMM_FLOW
+
 config:
     nodeId: 0x12344321
     cluster: "Basic"
     endpoint: 0
 
 tests:
+    - label: "Preconditions"
+      verification: |
+          1 - 5.1.3 - QR code/ Manual Pairing Code is printed on the device or in additional provided materials (ex: manual)
+      disabled: true
+
     - label: "Scan the DUTs QR code using the TH."
       verification: |
           1. Run DUT. Example for DUT=all-clusters-app
@@ -42,6 +52,9 @@ tests:
 
           2. Parse onboarding payload using TH=chip-tool
           $ ./chip-tool payload parse-setup-payload MT:-24J0AFN00KA0648G00
+
+          Verify in TH as commissioner side:
+
           [1657214153060] [29000:16610528] CHIP: [SPL] Parsing base38Representation: MT:-24J0AFN00KA0648G00
           [1657214153060] [29000:16610528] CHIP: [SPL] Version:       0
           [1657214153060] [29000:16610528] CHIP: [SPL] VendorID:      65521
@@ -52,20 +65,11 @@ tests:
           [1657214153060] [29000:16610528] CHIP: [SPL] Passcode:      20202021
       disabled: true
 
-    - label:
-          "Verify that the TH presents the user with a pairing hint in the
-          CommissioningModeInitialStepsHint field of the DCL. Verify that the
-          CommissioningCustomFlow field is set to a value = 0"
-      verification: |
-          1. Verify CommissioningCustomFlow=0
-          2. Verify CommissioningModeInitialStepsHint contains a valid, non-zero integer = 1 for Standard Commissioning flow
-      disabled: true
-
-    - label:
-          "If CommissioningCustomFlow field in Step 2 = 0 (Standard
-          Commissioning Flow), reboot the DUT device"
+    - label: "Reboot the DUT device."
       verification: |
           1. Verify DUT is advertising in commissioning mode. On DUT, verify through commissioning
+
+          Verify in TH as commissioner side:
 
           $  ./chip-tool pairing code 1 MT:-24J0AFN00KA0648G00
           ...

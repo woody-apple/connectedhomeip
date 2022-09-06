@@ -453,7 +453,11 @@ void GenericThreadStackManagerImpl_OpenThread<ImplClass>::_OnNetworkScanFinished
         // If Thread scanning was done before commissioning, turn off the IPv6 interface.
         if (otThreadGetDeviceRole(mOTInst) == OT_DEVICE_ROLE_DISABLED && !otDatasetIsCommissioned(mOTInst))
         {
-            otIp6SetEnabled(mOTInst, false);
+            DeviceLayer::SystemLayer().ScheduleLambda([this]() {
+                Impl()->LockThreadStack();
+                otIp6SetEnabled(mOTInst, false);
+                Impl()->UnlockThreadStack();
+            });
         }
 
         if (mpScanCallback != nullptr)
@@ -1587,7 +1591,7 @@ CHIP_ERROR GenericThreadStackManagerImpl_OpenThread<ImplClass>::_WriteThreadNetw
     }
     break;
 
-    case ThreadNetworkDiagnostics::Attributes::ChannelMask::Id: {
+    case ThreadNetworkDiagnostics::Attributes::ChannelPage0Mask::Id: {
         err = CHIP_ERROR_INCORRECT_STATE;
         if (otDatasetIsCommissioned(mOTInst))
         {

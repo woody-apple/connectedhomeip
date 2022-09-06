@@ -81,6 +81,12 @@ CHIP_ERROR InteractiveStartCommand::RunCommand()
         }
     }
 
+    if (command != nullptr)
+    {
+        free(command);
+        command = nullptr;
+    }
+
     SetCommandExitStatus(CHIP_NO_ERROR);
     return CHIP_NO_ERROR;
 }
@@ -89,7 +95,7 @@ bool InteractiveStartCommand::ParseCommand(char * command)
 {
     if (strcmp(command, kInteractiveModeStopCommand) == 0)
     {
-        ExecuteDeferredCleanups();
+        chip::DeviceLayer::PlatformMgr().ScheduleWork(ExecuteDeferredCleanups, 0);
         return false;
     }
 

@@ -14,6 +14,9 @@
 
 name: 74.1.1. [TC-SWTCH-1.1] Global attributes with server as DUT
 
+PICS:
+    - SWTCH.S
+
 config:
     nodeId: 0x12344321
     cluster: "Switch"
@@ -28,78 +31,76 @@ tests:
               - name: "nodeId"
                 value: nodeId
 
-    - label: "Read the global attribute: FeatureMap"
-      command: "readAttribute"
-      attribute: "FeatureMap"
-      response:
-          saveAs: FeatureMapValue
-
-    - label:
-          "Read the FeatureMap value and verify LS is set to 1; MS, MSR, MSL,
-          MSM are all set to 0"
-      PICS: SWTCH.S.F00
-      command: "readAttribute"
-      attribute: "FeatureMap"
-      response:
-          value: FeatureMapValue
-
-    - label: "Check values of flags in this FeatureMap"
-      verification: |
-          LS is set to 0; MS is set to 1
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT && SWTCH.S.F01
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
-
-    - label: "Check values of flags in this FeatureMap"
-      verification: |
-          LS is set to 0; MS, MSR are set to 1
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT && SWTCH.S.F02
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
-
-    - label: "Check values of flags in this FeatureMap"
-      verification: |
-          LS is set to 0; MS, MSR, MSL are all set to 1
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT && SWTCH.S.F03
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
-
-    - label: "Check values of flags in this FeatureMap"
-      verification: |
-          LS is set to 0; MS, MSR, MSM are all set to 1
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT && SWTCH.S.F04
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
-
-    - label: "read the global attribute: ClusterRevision"
+    - label: "Read the global attribute: ClusterRevision"
       command: "readAttribute"
       attribute: "ClusterRevision"
       response:
           value: 1
+          constraints:
+              type: int16u
+
+    - label:
+          "Read FeatureMap  attribute and Check values of flags in this
+          FeatureMap"
+      PICS:
+          "!SWTCH.S.F00 && !SWTCH.S.F01 && !SWTCH.S.F02 && !SWTCH.S.F03 &&
+          !SWTCH.S.F04"
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          value: 0
+          constraints:
+              type: bitmap32
+
+    - label: "Given SWTCH.S.F00(LS) ensure featuremap has the correct bit set"
+      PICS: SWTCH.S.F00
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x01]
+              hasMasksClear: [0x02, 0x04, 0x08, 0x10]
+
+    - label: "Given SWTCH.S.F01(MS) ensure featuremap has the correct bit set"
+      PICS: SWTCH.S.F01
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x2]
+              hasMasksClear: [0x1]
+
+    - label: "Given SWTCH.S.F02(MSR) ensure featuremap has the correct bit set"
+      PICS: SWTCH.S.F02
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x2, 0x4]
+              hasMasksClear: [0x1]
+
+    - label: "Given SWTCH.S.F03(MSL) ensure featuremap has the correct bit set"
+      PICS: SWTCH.S.F03
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x2, 0x4, 0x8]
+              hasMasksClear: [0x1]
+
+    - label: "Given SWTCH.S.F04(MSM) ensure featuremap has the correct bit set"
+      PICS: SWTCH.S.F04
+      command: "readAttribute"
+      attribute: "FeatureMap"
+      response:
+          constraints:
+              type: bitmap32
+              hasMasksSet: [0x2, 0x4, 0x10]
+              hasMasksClear: [0x1]
 
     - label: "Read the global attribute: AttributeList"
       PICS: SWTCH.S.F04
@@ -134,19 +135,18 @@ tests:
           value: []
           constraints:
               type: list
-
-    #issue #15011
-    - label:
-          "Read EventList attribute from the DUT and Verify that the DUT
-          response provides a list of supported events."
-      verification: |
-          OUT OF SCOPE FOR V1.0
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
+    #Commenting out the step EventList attribute which is out of scope for matter V1.0
+    #- label:
+    #      "Read EventList attribute from the DUT and Verify that the DUT
+    #      response provides a list of supported events."
+    #  verification: |
+    #      Not implemented in chip-tool
+    #  cluster: "LogCommands"
+    #  command: "UserPrompt"
+    #  PICS: PICS_USER_PROMPT
+    #  arguments:
+    #      values:
+    #          - name: "message"
+    #            value: "Please enter 'y' for success"
+    #          - name: "expectedValue"
+    #            value: "y"

@@ -17,7 +17,7 @@
  */
 
 #pragma once
-#include <app/OperationalDeviceProxy.h>
+#include <app/OperationalSessionSetup.h>
 #include <controller/CommissioneeDeviceProxy.h>
 #include <credentials/attestation_verifier/DeviceAttestationDelegate.h>
 #include <credentials/attestation_verifier/DeviceAttestationVerifier.h>
@@ -55,6 +55,7 @@ enum CommissioningStage : uint8_t
     // ScanNetworks can happen anytime after kArmFailsafe.
     // However, the circ tests fail if it is earlier in the list
     kScanNetworks,
+    kNeedsNetworkCreds,
 };
 
 const char * StageToString(CommissioningStage stage);
@@ -377,6 +378,15 @@ public:
         return *this;
     }
 
+    // Only perform the PASE steps of commissioning.
+    // Commissioning will be completed by another admin on the network.
+    Optional<bool> GetSkipCommissioningComplete() const { return mSkipCommissioningComplete; }
+    CommissioningParameters & SetSkipCommissioningComplete(bool skipCommissioningComplete)
+    {
+        mSkipCommissioningComplete = MakeOptional(skipCommissioningComplete);
+        return *this;
+    }
+
 private:
     // Items that can be set by the commissioner
     Optional<uint16_t> mFailsafeTimerSeconds;
@@ -406,6 +416,7 @@ private:
         nullptr; // Delegate to handle device attestation failures during commissioning
     Optional<bool> mAttemptWiFiNetworkScan;
     Optional<bool> mAttemptThreadNetworkScan; // This automatically gets set to false when a ThreadOperationalDataset is set
+    Optional<bool> mSkipCommissioningComplete;
 };
 
 struct RequestedCertificate
@@ -444,8 +455,8 @@ struct NocChain
 
 struct OperationalNodeFoundData
 {
-    OperationalNodeFoundData(OperationalDeviceProxy * proxy) : operationalProxy(proxy) {}
-    OperationalDeviceProxy * operationalProxy;
+    OperationalNodeFoundData(OperationalDeviceProxy proxy) : operationalProxy(proxy) {}
+    OperationalDeviceProxy operationalProxy;
 };
 
 struct NetworkClusterInfo

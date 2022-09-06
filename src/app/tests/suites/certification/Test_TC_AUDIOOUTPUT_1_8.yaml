@@ -16,6 +16,9 @@ name:
     19.1.8. [TC-AUDIOOUTPUT-1.8] Global attributes - Audio Output Cluster(DUT as
     Server)
 
+PICS:
+    - AUDIOOUTPUT.S
+
 config:
     nodeId: 0x12344321
     cluster: "Audio Output"
@@ -64,7 +67,7 @@ tests:
               contains: [0]
 
     - label: "Read the global attribute: GeneratedCommandList"
-      PICS: MEDIAINPUT.S.NU
+      PICS: AUDIOOUTPUT.S.NU
       command: "readAttribute"
       attribute: "GeneratedCommandList"
       response:
@@ -73,26 +76,25 @@ tests:
               type: list
 
     - label: "Read the global attribute: GeneratedCommandList"
-      PICS: " !MEDIAINPUT.S.NU "
+      PICS: " !AUDIOOUTPUT.S.NU "
       command: "readAttribute"
       attribute: "GeneratedCommandList"
       response:
           value: []
           constraints:
               type: list
-
-    #issue #11053 disabled steps below Global attributes missing from YAML framework
-    - label:
-          "Read EventList attribute from the DUT and Verify that the DUT
-          response provides a list of supported events."
-      verification: |
-          Not implemented in chip-tool
-      cluster: "LogCommands"
-      command: "UserPrompt"
-      PICS: PICS_USER_PROMPT
-      arguments:
-          values:
-              - name: "message"
-                value: "Please enter 'y' for success"
-              - name: "expectedValue"
-                value: "y"
+    #Commenting out the step EventList attribute which is out of scope for matter V1.0
+    #- label:
+    #      "Read EventList attribute from the DUT and Verify that the DUT
+    #      response provides a list of supported events."
+    #  verification: |
+    #      Not implemented in chip-tool
+    #  cluster: "LogCommands"
+    #  command: "UserPrompt"
+    #  PICS: PICS_USER_PROMPT
+    #  arguments:
+    #      values:
+    #          - name: "message"
+    #            value: "Please enter 'y' for success"
+    #          - name: "expectedValue"
+    #            value: "y"

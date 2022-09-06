@@ -246,6 +246,7 @@ public:
     static void TestReadAttributeError(nlTestSuite * apSuite, void * apContext);
     static void TestReadAttributeTimeout(nlTestSuite * apSuite, void * apContext);
     static void TestSubscribeAttributeTimeout(nlTestSuite * apSuite, void * apContext);
+    static void TestResubscribeAttributeTimeout(nlTestSuite * apSuite, void * apContext);
     static void TestReadEventResponse(nlTestSuite * apSuite, void * apContext);
     static void TestReadFabricScopedWithoutFabricFilter(nlTestSuite * apSuite, void * apContext);
     static void TestReadFabricScopedWithFabricFilter(nlTestSuite * apSuite, void * apContext);
@@ -296,6 +297,11 @@ private:
     // Issue the given number of reads in parallel and wait for them all to
     // succeed.
     static void MultipleReadHelper(nlTestSuite * apSuite, TestContext & aCtx, size_t aReadCount);
+
+    // Helper for MultipleReadHelper that does not spin the event loop, so we
+    // don't end up with nested event loops.
+    static void MultipleReadHelperInternal(nlTestSuite * apSuite, TestContext & aCtx, size_t aReadCount,
+                                           uint32_t & aNumSuccessCalls, uint32_t & aNumFailureCalls);
 
     // Establish the given number of subscriptions, then issue the given number
     // of reads in parallel and wait for them all to succeed.
@@ -1488,20 +1494,12 @@ public:
         mLastError = aError;
     }
 
-    void OnSubscriptionEstablished(SubscriptionId aSubscriptionId) override
-    {
-        mOnSubscriptionEstablishedCount++;
-
-        //
-        // Set the liveness timeout to a super small number that isn't 0 to
-        // force the liveness timeout to fire.
-        //
-        mpReadClient->OverrideLivenessTimeout(System::Clock::Milliseconds32(10));
-    }
+    void OnSubscriptionEstablished(SubscriptionId aSubscriptionId) override { mOnSubscriptionEstablishedCount++; }
 
     CHIP_ERROR OnResubscriptionNeeded(app::ReadClient * apReadClient, CHIP_ERROR aTerminationCause) override
     {
         mOnResubscriptionsAttempted++;
+        mLastError = aTerminationCause;
         return apReadClient->ScheduleResubscription(apReadClient->ComputeTimeTillNextSubscription(), NullOptional, false);
     }
 
@@ -1532,10 +1530,12 @@ public:
 // TODO: This does not validate the CASE establishment pathways since we're limited by the PASE-centric TestContext.
 //
 //
-void TestReadInteraction::TestSubscribeAttributeTimeout(nlTestSuite * apSuite, void * apContext)
+void TestReadInteraction::TestResubscribeAttributeTimeout(nlTestSuite * apSuite, void * apContext)
 {
     TestContext & ctx  = *static_cast<TestContext *>(apContext);
     auto sessionHandle = ctx.GetSessionBobToAlice();
+
+    ctx.SetMRPMode(Test::MessagingContext::MRPMode::kResponsive);
 
     {
         TestResubscriptionCallback callback;
@@ -1556,26 +1556,114 @@ void TestReadInteraction::TestSubscribeAttributeTimeout(nlTestSuite * apSuite, v
 
         readPrepareParams.mMaxIntervalCeilingSeconds = 1;
 
-        readClient.SendAutoResubscribeRequest(std::move(readPrepareParams));
+        auto err = readClient.SendAutoResubscribeRequest(std::move(readPrepareParams));
+        NL_TEST_ASSERT(apSuite, err == CHIP_NO_ERROR);
 
         //
-        // Drive servicing IO till we have established a subscription at least 2 times.
+        // Drive servicing IO till we have established a subscription.
         //
-        ctx.GetIOContext().DriveIOUntil(System::Clock::Seconds16(2),
-                                        [&]() { return callback.mOnSubscriptionEstablishedCount > 1; });
-
-        NL_TEST_ASSERT(apSuite, callback.mOnDone == 0);
+        ctx.GetIOContext().DriveIOUntil(System::Clock::Milliseconds32(2000),
+                                        [&]() { return callback.mOnSubscriptionEstablishedCount >= 1; });
+        NL_TEST_ASSERT(apSuite, callback.mOnSubscriptionEstablishedCount == 1);
+        NL_TEST_ASSERT(apSuite, callback.mOnError == 0);
+        NL_TEST_ASSERT(apSuite, callback.mOnResubscriptionsAttempted == 0);
 
         //
-        // With re-sub enabled, we shouldn't encounter any errors.
+        // Disable packet transmission, and drive IO till we have reported a re-subscription attempt.
+        //
+        // 1.5s should cover the liveness timeout in the client of 1s max interval + 50ms ACK timeout.
+        //
+        ctx.GetLoopback().mNumMessagesToDrop = Test::LoopbackTransport::kUnlimitedMessageCount;
+        ctx.GetIOContext().DriveIOUntil(System::Clock::Milliseconds32(1500),
+                                        [&]() { return callback.mOnResubscriptionsAttempted > 0; });
+
+        NL_TEST_ASSERT(apSuite, callback.mOnResubscriptionsAttempted == 1);
+        NL_TEST_ASSERT(apSuite, callback.mLastError == CHIP_ERROR_TIMEOUT);
+
+        ctx.GetLoopback().mNumMessagesToDrop = 0;
+        callback.ClearCounters();
+
+        //
+        // Drive servicing IO till we have established a subscription.
+        //
+        ctx.GetIOContext().DriveIOUntil(System::Clock::Milliseconds32(2000),
+                                        [&]() { return callback.mOnSubscriptionEstablishedCount == 1; });
+        NL_TEST_ASSERT(apSuite, callback.mOnSubscriptionEstablishedCount == 1);
+
+        //
+        // With re-sub enabled, we shouldn't have encountered any errors
         //
         NL_TEST_ASSERT(apSuite, callback.mOnError == 0);
+        NL_TEST_ASSERT(apSuite, callback.mOnDone == 0);
+    }
+
+    ctx.SetMRPMode(Test::MessagingContext::MRPMode::kDefault);
+
+    app::InteractionModelEngine::GetInstance()->ShutdownActiveReads();
+    NL_TEST_ASSERT(apSuite, ctx.GetExchangeManager().GetNumActiveExchanges() == 0);
+}
+
+//
+// This validates a vanilla subscription with re-susbcription disabled timing out correctly on the client
+// side and triggering the OnError callback with the right error code.
+//
+void TestReadInteraction::TestSubscribeAttributeTimeout(nlTestSuite * apSuite, void * apContext)
+{
+    TestContext & ctx  = *static_cast<TestContext *>(apContext);
+    auto sessionHandle = ctx.GetSessionBobToAlice();
+
+    ctx.SetMRPMode(Test::MessagingContext::MRPMode::kResponsive);
+
+    {
+        TestResubscriptionCallback callback;
+        app::ReadClient readClient(app::InteractionModelEngine::GetInstance(), &ctx.GetExchangeManager(), callback,
+                                   app::ReadClient::InteractionType::Subscribe);
+
+        callback.SetReadClient(&readClient);
+
+        app::ReadPrepareParams readPrepareParams(ctx.GetSessionBobToAlice());
+
+        app::AttributePathParams attributePathParams[1];
+        readPrepareParams.mpAttributePathParamsList    = attributePathParams;
+        readPrepareParams.mAttributePathParamsListSize = ArraySize(attributePathParams);
+        attributePathParams[0].mClusterId              = app::Clusters::TestCluster::Id;
+        attributePathParams[0].mAttributeId            = app::Clusters::TestCluster::Attributes::Boolean::Id;
 
         //
-        // We should have attempted just one re-subscription.
+        // Request a max interval that's very small to reduce time to discovering a liveness failure.
         //
-        NL_TEST_ASSERT(apSuite, callback.mOnResubscriptionsAttempted == 1);
+        readPrepareParams.mMaxIntervalCeilingSeconds = 1;
+
+        auto err = readClient.SendRequest(readPrepareParams);
+        NL_TEST_ASSERT(apSuite, err == CHIP_NO_ERROR);
+
+        //
+        // Drive servicing IO till we have established a subscription.
+        //
+        ctx.GetIOContext().DriveIOUntil(System::Clock::Milliseconds32(2000),
+                                        [&]() { return callback.mOnSubscriptionEstablishedCount >= 1; });
+        NL_TEST_ASSERT(apSuite, callback.mOnSubscriptionEstablishedCount == 1);
+
+        //
+        // Request we drop all further messages.
+        //
+        ctx.GetLoopback().mNumMessagesToDrop = Test::LoopbackTransport::kUnlimitedMessageCount;
+
+        //
+        // Drive IO until we get an error on the subscription, which should be caused
+        // by the liveness timer firing within ~1s of the establishment of the subscription.
+        //
+        // 1.5s should cover the liveness timeout in the client of 1s max interval + 50ms ACK timeout.
+        //
+        ctx.GetIOContext().DriveIOUntil(System::Clock::Milliseconds32(1500), [&]() { return callback.mOnError >= 1; });
+
+        NL_TEST_ASSERT(apSuite, callback.mOnError == 1);
+        NL_TEST_ASSERT(apSuite, callback.mLastError == CHIP_ERROR_TIMEOUT);
+        NL_TEST_ASSERT(apSuite, callback.mOnDone == 1);
+        NL_TEST_ASSERT(apSuite, callback.mOnResubscriptionsAttempted == 0);
     }
+
+    ctx.SetMRPMode(Test::MessagingContext::MRPMode::kDefault);
 
     app::InteractionModelEngine::GetInstance()->ShutdownActiveReads();
     NL_TEST_ASSERT(apSuite, ctx.GetExchangeManager().GetNumActiveExchanges() == 0);
@@ -1645,6 +1733,7 @@ void TestReadInteraction::TestReadHandler_MultipleSubscriptions(nlTestSuite * ap
     NL_TEST_ASSERT(apSuite, gTestReadInteraction.mNumActiveSubscriptions == 0);
     NL_TEST_ASSERT(apSuite, ctx.GetExchangeManager().GetNumActiveExchanges() == 0);
 
+    ctx.SetMRPMode(Test::MessagingContext::MRPMode::kDefault);
     app::InteractionModelEngine::GetInstance()->UnregisterReadHandlerAppCallback();
 }
 
@@ -2400,6 +2489,9 @@ void TestReadInteraction::SubscribeThenReadHelper(nlTestSuite * apSuite, TestCon
     uint32_t numSuccessCalls                 = 0;
     uint32_t numSubscriptionEstablishedCalls = 0;
 
+    uint32_t numReadSuccessCalls = 0;
+    uint32_t numReadFailureCalls = 0;
+
     responseDirective = kSendDataResponse;
 
     // Passing of stack variables by reference is only safe because of synchronous completion of the interaction. Otherwise, it's
@@ -2417,12 +2509,12 @@ void TestReadInteraction::SubscribeThenReadHelper(nlTestSuite * apSuite, TestCon
         NL_TEST_ASSERT(apSuite, false);
     };
 
-    auto onSubscriptionEstablishedCb = [&numSubscriptionEstablishedCalls, &apSuite, &aCtx, aSubscribeCount,
-                                        aReadCount](const app::ReadClient & readClient) {
+    auto onSubscriptionEstablishedCb = [&numSubscriptionEstablishedCalls, &apSuite, &aCtx, aSubscribeCount, aReadCount,
+                                        &numReadSuccessCalls, &numReadFailureCalls](const app::ReadClient & readClient) {
         numSubscriptionEstablishedCalls++;
         if (numSubscriptionEstablishedCalls == aSubscribeCount)
         {
-            MultipleReadHelper(apSuite, aCtx, aReadCount);
+            MultipleReadHelperInternal(apSuite, aCtx, aReadCount, numReadSuccessCalls, numReadFailureCalls);
         }
     };
 
@@ -2438,40 +2530,50 @@ void TestReadInteraction::SubscribeThenReadHelper(nlTestSuite * apSuite, TestCon
 
     NL_TEST_ASSERT(apSuite, numSuccessCalls == aSubscribeCount);
     NL_TEST_ASSERT(apSuite, numSubscriptionEstablishedCalls == aSubscribeCount);
+    NL_TEST_ASSERT(apSuite, numReadSuccessCalls == aReadCount);
+    NL_TEST_ASSERT(apSuite, numReadFailureCalls == 0);
 }
 
-void TestReadInteraction::MultipleReadHelper(nlTestSuite * apSuite, TestContext & aCtx, size_t aReadCount)
+// The guts of MultipleReadHelper which take references to the success/failure
+// counts to modify and assume the consumer will be spinning the event loop.
+void TestReadInteraction::MultipleReadHelperInternal(nlTestSuite * apSuite, TestContext & aCtx, size_t aReadCount,
+                                                     uint32_t & aNumSuccessCalls, uint32_t & aNumFailureCalls)
 {
-    auto sessionHandle       = aCtx.GetSessionBobToAlice();
-    uint32_t numSuccessCalls = 0;
-    uint32_t numFailureCalls = 0;
+    NL_TEST_ASSERT(apSuite, aNumSuccessCalls == 0);
+    NL_TEST_ASSERT(apSuite, aNumFailureCalls == 0);
+
+    auto sessionHandle = aCtx.GetSessionBobToAlice();
 
     responseDirective = kSendDataResponse;
 
     uint16_t firstExpectedResponse = totalReadCount + 1;
 
-    // Passing of stack variables by reference is only safe because of synchronous completion of the interaction. Otherwise, it's
-    // not safe to do so.
-    auto onFailureCb = [&apSuite, &numFailureCalls](const app::ConcreteDataAttributePath * attributePath, CHIP_ERROR aError) {
-        numFailureCalls++;
+    auto onFailureCb = [apSuite, &aNumFailureCalls](const app::ConcreteDataAttributePath * attributePath, CHIP_ERROR aError) {
+        aNumFailureCalls++;
 
         NL_TEST_ASSERT(apSuite, attributePath == nullptr);
     };
 
     for (size_t i = 0; i < aReadCount; ++i)
     {
-        // Passing of stack variables by reference is only safe because of synchronous completion of the interaction. Otherwise,
-        // it's not safe to do so.
-        auto onSuccessCb = [&numSuccessCalls, &apSuite, firstExpectedResponse,
+        auto onSuccessCb = [&aNumSuccessCalls, apSuite, firstExpectedResponse,
                             i](const app::ConcreteDataAttributePath & attributePath, const auto & dataResponse) {
             NL_TEST_ASSERT(apSuite, dataResponse == firstExpectedResponse + i);
-            numSuccessCalls++;
+            aNumSuccessCalls++;
         };
 
         NL_TEST_ASSERT(apSuite,
                        Controller::ReadAttribute<TestCluster::Attributes::Int16u::TypeInfo>(
                            &aCtx.GetExchangeManager(), sessionHandle, kTestEndpointId, onSuccessCb, onFailureCb) == CHIP_NO_ERROR);
     }
+}
+
+void TestReadInteraction::MultipleReadHelper(nlTestSuite * apSuite, TestContext & aCtx, size_t aReadCount)
+{
+    uint32_t numSuccessCalls = 0;
+    uint32_t numFailureCalls = 0;
+
+    MultipleReadHelperInternal(apSuite, aCtx, aReadCount, numSuccessCalls, numFailureCalls);
 
     aCtx.DrainAndServiceIO();
 
@@ -4334,6 +4436,7 @@ const nlTest sTests[] =
     NL_TEST_DEF("TestReadAttribute_ManyDataValues", TestReadInteraction::TestReadAttribute_ManyDataValues),
     NL_TEST_DEF("TestReadAttribute_ManyDataValuesWrongPath", TestReadInteraction::TestReadAttribute_ManyDataValuesWrongPath),
     NL_TEST_DEF("TestReadAttribute_ManyErrors", TestReadInteraction::TestReadAttribute_ManyErrors),
+    NL_TEST_DEF("TestResubscribeAttributeTimeout", TestReadInteraction::TestResubscribeAttributeTimeout),
     NL_TEST_DEF("TestSubscribeAttributeTimeout", TestReadInteraction::TestSubscribeAttributeTimeout),
     NL_TEST_SENTINEL()
 };

@@ -1,1 +1,1 @@
-0.5.92 Version bump reason: [TIZEN] Support for installing Tizen SDK without docker
+0.5.99 Version bump reason: fix IMX SDK root in vscode dockerfile

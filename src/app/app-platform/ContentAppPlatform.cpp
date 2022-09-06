@@ -100,6 +100,8 @@ EndpointId ContentAppPlatform::AddContentApp(ContentApp * app, EmberAfEndpointTy
         if (mContentApps[index] == app)
         {
             ChipLogProgress(DeviceLayer, "Already added");
+            // already added, return endpointId of already added endpoint.
+            // desired endpointId does not have any impact
             return app->GetEndpointId();
         }
         index++;
@@ -108,36 +110,100 @@ EndpointId ContentAppPlatform::AddContentApp(ContentApp * app, EmberAfEndpointTy
     index = 0;
     while (index < CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT)
     {
-        if (nullptr == mContentApps[index])
+        if (mContentApps[index] != nullptr)
         {
-            mContentApps[index] = app;
-            EmberAfStatus ret;
-            while (1)
+            index++;
+            continue;
+        }
+        EmberAfStatus ret;
+        EndpointId initEndpointId = mCurrentEndpointId;
+
+        do
+        {
+            ret = emberAfSetDynamicEndpoint(index, mCurrentEndpointId, ep, dataVersionStorage, deviceTypeList);
+            if (ret == EMBER_ZCL_STATUS_SUCCESS)
             {
-                ret = emberAfSetDynamicEndpoint(index, mCurrentEndpointId, ep, dataVersionStorage, deviceTypeList);
-                if (ret == EMBER_ZCL_STATUS_SUCCESS)
-                {
-                    ChipLogProgress(DeviceLayer, "Added ContentApp %s to dynamic endpoint %d (index=%d)", vendorApp.applicationId,
-                                    mCurrentEndpointId, index);
-                    app->SetEndpointId(mCurrentEndpointId);
-                    return app->GetEndpointId();
-                }
-                else if (ret != EMBER_ZCL_STATUS_DUPLICATE_EXISTS)
-                {
-                    ChipLogError(DeviceLayer, "Adding ContentApp error=%d", ret);
-                    return kNoCurrentEndpointId;
-                }
-                // Handle wrap condition
-                if (++mCurrentEndpointId < mFirstDynamicEndpointId)
-                {
-                    mCurrentEndpointId = mFirstDynamicEndpointId;
-                }
+                ChipLogProgress(DeviceLayer, "Added ContentApp %s to dynamic endpoint %d (index=%d)", vendorApp.applicationId,
+                                mCurrentEndpointId, index);
+                app->SetEndpointId(mCurrentEndpointId);
+                mContentApps[index] = app;
+                IncrementCurrentEndpointID();
+                return app->GetEndpointId();
             }
+            else if (ret != EMBER_ZCL_STATUS_DUPLICATE_EXISTS)
+            {
+                ChipLogError(DeviceLayer, "Adding ContentApp error=%d", ret);
+                return kNoCurrentEndpointId;
+            }
+            IncrementCurrentEndpointID();
+        } while (initEndpointId != mCurrentEndpointId);
+        ChipLogError(DeviceLayer, "Failed to add dynamic endpoint: No endpoints available!");
+        return kNoCurrentEndpointId;
+    }
+    ChipLogError(DeviceLayer, "Failed to add dynamic endpoint: max endpoint count reached!");
+    return kNoCurrentEndpointId;
+}
+
+EndpointId ContentAppPlatform::AddContentApp(ContentApp * app, EmberAfEndpointType * ep,
+                                             const Span<DataVersion> & dataVersionStorage,
+                                             const Span<const EmberAfDeviceType> & deviceTypeList, EndpointId desiredEndpointId)
+{
+    CatalogVendorApp vendorApp = app->GetApplicationBasicDelegate()->GetCatalogVendorApp();
+
+    ChipLogProgress(DeviceLayer, "Adding ContentApp with appid %s ", vendorApp.applicationId);
+    uint8_t index = 0;
+    // check if already loaded
+    while (index < CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT)
+    {
+        if (mContentApps[index] == app)
+        {
+            ChipLogProgress(DeviceLayer, "Already added");
+            // already added, return endpointId of already added endpoint.
+            // desired endpointId does not have any impact
+            return app->GetEndpointId();
         }
         index++;
     }
-    ChipLogError(DeviceLayer, "Failed to add dynamic endpoint: No endpoints available!");
+
+    if (desiredEndpointId < FIXED_ENDPOINT_COUNT ||
+        emberAfGetDynamicIndexFromEndpoint(desiredEndpointId) != kEmberInvalidEndpointIndex)
+    {
+        // invalid desiredEndpointId
+        ChipLogError(DeviceLayer, "Failed to add dynamic endpoint: desired endpointID is invalid!");
+        return kNoCurrentEndpointId;
+    }
+
+    index = 0;
+    while (index < CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT)
+    {
+        if (mContentApps[index] != nullptr)
+        {
+            index++;
+            continue;
+        }
+        EmberAfStatus ret = emberAfSetDynamicEndpoint(index, desiredEndpointId, ep, dataVersionStorage, deviceTypeList);
+        if (ret != EMBER_ZCL_STATUS_SUCCESS)
+        {
+            ChipLogError(DeviceLayer, "Adding ContentApp error=%d", ret);
+            return kNoCurrentEndpointId;
+        }
+        ChipLogProgress(DeviceLayer, "Added ContentApp %s to dynamic endpoint %d (index=%d)", vendorApp.applicationId,
+                        desiredEndpointId, index);
+        app->SetEndpointId(desiredEndpointId);
+        mContentApps[index] = app;
+        return app->GetEndpointId();
+    }
+    ChipLogError(DeviceLayer, "Failed to add dynamic endpoint: max endpoint count reached!");
     return kNoCurrentEndpointId;
+}
+
+void ContentAppPlatform::IncrementCurrentEndpointID()
+{
+    // Handle wrap condition
+    if (++mCurrentEndpointId < mFirstDynamicEndpointId)
+    {
+        mCurrentEndpointId = mFirstDynamicEndpointId;
+    }
 }
 
 EndpointId ContentAppPlatform::RemoveContentApp(ContentApp * app)
@@ -406,11 +472,11 @@ constexpr ClusterId kClusterIdAudioOutput     = 0x050b;
 // constexpr ClusterId kClusterIdApplicationLauncher = 0x050c;
 // constexpr ClusterId kClusterIdAccountLogin        = 0x050e;
 
-CHIP_ERROR ContentAppPlatform::ManageClientAccess(OperationalDeviceProxy * targetDeviceProxy, uint16_t targetVendorId,
-                                                  NodeId localNodeId, Controller::WriteResponseSuccessCallback successCb,
+CHIP_ERROR ContentAppPlatform::ManageClientAccess(Messaging::ExchangeManager & exchangeMgr, SessionHandle & sessionHandle,
+                                                  uint16_t targetVendorId, NodeId localNodeId,
+                                                  Controller::WriteResponseSuccessCallback successCb,
                                                   Controller::WriteResponseFailureCallback failureCb)
 {
-    VerifyOrReturnError(targetDeviceProxy != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrReturnError(successCb != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrReturnError(failureCb != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
 
@@ -419,9 +485,9 @@ CHIP_ERROR ContentAppPlatform::ManageClientAccess(OperationalDeviceProxy * targe
     Access::AccessControl::Entry entry;
     ReturnErrorOnFailure(GetAccessControl().PrepareEntry(entry));
     ReturnErrorOnFailure(entry.SetAuthMode(Access::AuthMode::kCase));
-    entry.SetFabricIndex(targetDeviceProxy->GetFabricIndex());
+    entry.SetFabricIndex(sessionHandle->GetFabricIndex());
     ReturnErrorOnFailure(entry.SetPrivilege(vendorPrivilege));
-    ReturnErrorOnFailure(entry.AddSubject(nullptr, targetDeviceProxy->GetDeviceId()));
+    ReturnErrorOnFailure(entry.AddSubject(nullptr, sessionHandle->GetPeer().GetNodeId()));
 
     std::vector<Binding::Structs::TargetStruct::Type> bindings;
 
@@ -522,13 +588,12 @@ CHIP_ERROR ContentAppPlatform::ManageClientAccess(OperationalDeviceProxy * targe
     }
 
     // TODO: add a subject description on the ACL
-    ReturnErrorOnFailure(GetAccessControl().CreateEntry(nullptr, targetDeviceProxy->GetFabricIndex(), nullptr, entry));
+    ReturnErrorOnFailure(GetAccessControl().CreateEntry(nullptr, sessionHandle->GetFabricIndex(), nullptr, entry));
 
     ChipLogProgress(Controller, "Attempting to update Binding list");
     BindingListType bindingList(bindings.data(), bindings.size());
 
-    chip::Controller::BindingCluster cluster(*targetDeviceProxy->GetExchangeManager(),
-                                             targetDeviceProxy->GetSecureSession().Value(), kTargetBindingClusterEndpointId);
+    chip::Controller::BindingCluster cluster(exchangeMgr, sessionHandle, kTargetBindingClusterEndpointId);
 
     ReturnErrorOnFailure(
         cluster.WriteAttribute<Binding::Attributes::Binding::TypeInfo>(bindingList, nullptr, successCb, failureCb));
