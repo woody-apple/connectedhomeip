@@ -10,3 +10,5 @@ The application could be build in the same manner as `all-clusters-app`:
 ```
 ? scripts/examples/gn_build_example.sh examples/resource-monitoring-app/linux out/resource-monitoring-app
 ```
+
+# testing 123
