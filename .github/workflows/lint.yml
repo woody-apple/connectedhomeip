@@ -36,7 +36,7 @@ jobs:
         if: github.actor != 'restyled-io[bot]'
 
         container:
-            image: ghcr.io/project-chip/chip-build:134
+            image: ghcr.io/project-chip/chip-build:140
 
         steps:
             - name: Checkout
@@ -294,7 +294,7 @@ jobs:
                   type-safe getters
               if: always()
               run: |
-                  git grep -I -n 'emberAfReadAttribute' -- './*' ':(exclude).github/workflows/lint.yml' ':(exclude)src/app/util/attribute-table.h' ':(exclude)zzz_generated/app-common/app-common/zap-generated/attributes/Accessors.cpp' ':(exclude)src/app/zap-templates/templates/app/attributes/Accessors.cpp.zapt' ':(exclude)src/app/util/attribute-table.cpp'  && exit 1 || exit 0
+                  git grep -I -n 'emberAfReadAttribute' -- './*' ':(exclude).github/workflows/lint.yml' ':(exclude)src/app/util/attribute-table.h' ':(exclude)zzz_generated/app-common/app-common/zap-generated/attributes/Accessors.cpp' ':(exclude)src/app/zap-templates/templates/app/attributes/Accessors.cpp.zapt' ':(exclude)src/app/util/attribute-table.cpp' ':(exclude)src/app/dynamic_server/DynamicDispatcher.cpp' && exit 1 || exit 0
 
             # git grep exits with 0 if it finds a match, but we want
             # to fail (exit nonzero) on match.  And we want to exclude this file,
@@ -325,6 +325,12 @@ jobs:
               if: always()
               run: |
                   ruff check
+
+            # Run ChipStackError linter
+            - name: Check for errors using ruff Python linter
+              if: always()
+              run: |
+                  python3 scripts/check_chipstack.py
 
             # git grep exits with 0 if it finds a match, but we want
             # to fail (exit nonzero) on match.  And we want to exclude this file,

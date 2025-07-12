@@ -1,1 +1,1 @@
-137 : Upgrade docker to add gstreamer‑app‑1.0
+148 : Update docker image to add ffmpeg, curl dev packages for cross compile
