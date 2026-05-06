@@ -53,8 +53,11 @@ CHIP_ERROR ASN1Reader::Next()
     VerifyOrReturnError(!EndOfContents, ASN1_END);
     VerifyOrReturnError(!IndefiniteLen, ASN1_ERROR_UNSUPPORTED_ENCODING);
 
-    // Note: avoid using addition assignment operator (+=), which may result in integer overflow
-    // in the right hand side of an assignment (mHeadLen + ValueLen).
+    // Guard against integer overflow: mHeadLen + ValueLen are both uint32_t and their sum
+    // could wrap around, potentially advancing mElemStart to an unintended location.
+    VerifyOrReturnError(mHeadLen <= UINT32_MAX - ValueLen, ASN1_ERROR_LENGTH_OVERFLOW);
+    VerifyOrReturnError(static_cast<size_t>(mContainerEnd - mElemStart) >= static_cast<size_t>(mHeadLen) + ValueLen, ASN1_END);
+
     mElemStart = mElemStart + mHeadLen + ValueLen;
 
     ResetElementState();
@@ -132,6 +135,10 @@ CHIP_ERROR ASN1Reader::ExitContainer()
     ASN1ParseContext & prevContext = mSavedContexts[--mNumSavedContexts];
 
     VerifyOrReturnError(!prevContext.IndefiniteLen, ASN1_ERROR_UNSUPPORTED_ENCODING);
+
+    // Guard against integer overflow: HeadLen + ValueLen are both uint32_t and their sum
+    // could wrap around, potentially advancing mElemStart to an unintended location.
+    VerifyOrReturnError(prevContext.HeadLen <= UINT32_MAX - prevContext.ValueLen, ASN1_ERROR_LENGTH_OVERFLOW);
 
     mElemStart = prevContext.ElemStart + prevContext.HeadLen + prevContext.ValueLen;
 
