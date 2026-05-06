@@ -673,7 +673,7 @@ TEST(TestASN1, OverflowGuard_ExitContainer)
     int64_t intVal;
     err = reader.GetInteger(intVal);
     EXPECT_EQ(err, CHIP_NO_ERROR);
-    EXPECT_EQ(intVal, INT64_C(0x42));
+    EXPECT_EQ(intVal, static_cast<int64_t>(0x42));
 
     // Exit inner SEQUENCE - exercises ExitContainer with the overflow guard
     err = reader.ExitConstructedType();
@@ -686,7 +686,7 @@ TEST(TestASN1, OverflowGuard_ExitContainer)
 
     err = reader.GetInteger(intVal);
     EXPECT_EQ(err, CHIP_NO_ERROR);
-    EXPECT_EQ(intVal, INT64_C(0x07));
+    EXPECT_EQ(intVal, static_cast<int64_t>(0x07));
 
     // No more elements in outer SEQUENCE
     err = reader.Next();
