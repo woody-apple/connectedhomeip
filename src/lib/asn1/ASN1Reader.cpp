@@ -55,9 +55,8 @@ CHIP_ERROR ASN1Reader::Next()
 
     // Guard against integer overflow: mHeadLen + ValueLen are both uint32_t and their sum
     // could wrap around, potentially advancing mElemStart to an unintended location.
-    uint64_t totalLen = static_cast<uint64_t>(mHeadLen) + ValueLen;
-    VerifyOrReturnError(totalLen <= UINT32_MAX, ASN1_ERROR_LENGTH_OVERFLOW);
-    VerifyOrReturnError(totalLen <= static_cast<uint64_t>(mContainerEnd - mElemStart), ASN1_END);
+    VerifyOrReturnError(mHeadLen <= UINT32_MAX - ValueLen, ASN1_ERROR_LENGTH_OVERFLOW);
+    VerifyOrReturnError(mElemStart + mHeadLen + ValueLen <= mContainerEnd, ASN1_END);
 
     mElemStart = mElemStart + mHeadLen + ValueLen;
 
@@ -139,13 +138,12 @@ CHIP_ERROR ASN1Reader::ExitContainer()
 
     // Guard against integer overflow: HeadLen + ValueLen are both uint32_t and their sum
     // could wrap around, potentially advancing mElemStart to an unintended location.
-    uint64_t totalLen = static_cast<uint64_t>(prevContext.HeadLen) + prevContext.ValueLen;
-    if (totalLen > UINT32_MAX)
+    if (prevContext.HeadLen > UINT32_MAX - prevContext.ValueLen)
     {
         ResetElementState();
         return ASN1_ERROR_LENGTH_OVERFLOW;
     }
-    if (totalLen > static_cast<uint64_t>(prevContext.ContainerEnd - prevContext.ElemStart))
+    if (prevContext.ElemStart + prevContext.HeadLen + prevContext.ValueLen > prevContext.ContainerEnd)
     {
         ResetElementState();
         return ASN1_END;
