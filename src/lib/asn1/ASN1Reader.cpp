@@ -57,7 +57,7 @@ CHIP_ERROR ASN1Reader::Next()
     // could wrap around, potentially advancing mElemStart to an unintended location.
     uint64_t totalLen = static_cast<uint64_t>(mHeadLen) + ValueLen;
     VerifyOrReturnError(totalLen <= UINT32_MAX, ASN1_ERROR_LENGTH_OVERFLOW);
-    VerifyOrReturnError(static_cast<uint32_t>(totalLen) <= static_cast<uint32_t>(mContainerEnd - mElemStart), ASN1_END);
+    VerifyOrReturnError(totalLen <= static_cast<uint64_t>(mContainerEnd - mElemStart), ASN1_END);
 
     mElemStart = mElemStart + mHeadLen + ValueLen;
 
@@ -145,7 +145,7 @@ CHIP_ERROR ASN1Reader::ExitContainer()
         ResetElementState();
         return ASN1_ERROR_LENGTH_OVERFLOW;
     }
-    if (static_cast<uint32_t>(totalLen) > static_cast<uint32_t>(prevContext.ContainerEnd - prevContext.ElemStart))
+    if (totalLen > static_cast<uint64_t>(prevContext.ContainerEnd - prevContext.ElemStart))
     {
         ResetElementState();
         return ASN1_END;
