@@ -571,7 +571,6 @@ exit:
     EXPECT_EQ(err, CHIP_NO_ERROR);
 }
 
-
 /**
  * Test that the overflow guards in Next() and ExitContainer() correctly
  * reject crafted DER blobs where HeadLen + ValueLen would overflow or
