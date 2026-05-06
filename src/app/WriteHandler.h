@@ -216,7 +216,6 @@ private:
     Optional<AttributeAccessToken> mACLCheckCache = NullOptional;
 
     DataModel::Provider * mDataModelProvider = nullptr;
-    std::optional<ConcreteAttributePath> mLastSuccessfullyWrittenPath;
 
     // This may be a "fake" pointer or a real delegate pointer, depending
     // on CHIP_CONFIG_STATIC_GLOBAL_INTERACTION_MODEL_ENGINE setting.

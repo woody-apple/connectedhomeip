@@ -621,8 +621,6 @@ Status WriteHandler::ProcessWriteRequest(System::PacketBufferHandle && aPayload,
     // our callees hand out Status as well.
     Status status = Status::InvalidAction;
 
-    mLastSuccessfullyWrittenPath = std::nullopt;
-
     reader.Init(std::move(aPayload));
 
     err = writeRequestParser.Init(reader);
@@ -842,50 +840,29 @@ DataModel::ActionReturnStatus WriteHandler::CheckWriteAllowed(const Access::Subj
 Status WriteHandler::CheckWriteAccess(const Access::SubjectDescriptor & aSubject, const ConcreteAttributePath & aPath,
                                       const Access::Privilege aRequiredPrivilege)
 {
+    Access::RequestPath requestPath{ .cluster     = aPath.mClusterId,
+                                     .endpoint    = aPath.mEndpointId,
+                                     .requestType = Access::RequestType::kAttributeWriteRequest,
+                                     .entityId    = aPath.mAttributeId };
 
-    bool checkAcl = true;
-    if (mLastSuccessfullyWrittenPath.has_value())
+    CHIP_ERROR err = Access::GetAccessControl().Check(aSubject, requestPath, aRequiredPrivilege);
+
+    if (err == CHIP_NO_ERROR)
     {
-        // only validate ACL if path has changed
-        //
-        // Note that this is NOT operator==: we could do `checkAcl == (aPath != *mLastSuccessfullyWrittenPath)`
-        // however that seems to use more flash.
-        if ((aPath.mEndpointId == mLastSuccessfullyWrittenPath->mEndpointId) &&
-            (aPath.mClusterId == mLastSuccessfullyWrittenPath->mClusterId) &&
-            (aPath.mAttributeId == mLastSuccessfullyWrittenPath->mAttributeId))
-        {
-            checkAcl = false;
-        }
+        return Status::Success;
     }
 
-    if (checkAcl)
+    if (err == CHIP_ERROR_ACCESS_DENIED)
     {
-        Access::RequestPath requestPath{ .cluster     = aPath.mClusterId,
-                                         .endpoint    = aPath.mEndpointId,
-                                         .requestType = Access::RequestType::kAttributeWriteRequest,
-                                         .entityId    = aPath.mAttributeId };
-
-        CHIP_ERROR err = Access::GetAccessControl().Check(aSubject, requestPath, aRequiredPrivilege);
-
-        if (err == CHIP_NO_ERROR)
-        {
-            return Status::Success;
-        }
-
-        if (err == CHIP_ERROR_ACCESS_DENIED)
-        {
-            return Status::UnsupportedAccess;
-        }
-
-        if (err == CHIP_ERROR_ACCESS_RESTRICTED_BY_ARL)
-        {
-            return Status::AccessRestricted;
-        }
-
-        return Status::Failure;
+        return Status::UnsupportedAccess;
     }
 
-    return Status::Success;
+    if (err == CHIP_ERROR_ACCESS_RESTRICTED_BY_ARL)
+    {
+        return Status::AccessRestricted;
+    }
+
+    return Status::Failure;
 }
 
 CHIP_ERROR WriteHandler::WriteClusterData(const Access::SubjectDescriptor & aSubject, const ConcreteDataAttributePath & aPath,
@@ -908,8 +885,6 @@ CHIP_ERROR WriteHandler::WriteClusterData(const Access::SubjectDescriptor & aSub
         AttributeValueDecoder decoder(aData, aSubject);
         status = mDataModelProvider->WriteAttribute(request, decoder);
     }
-
-    mLastSuccessfullyWrittenPath = status.IsSuccess() ? std::make_optional(aPath) : std::nullopt;
 
     return AddStatusInternal(aPath, StatusIB(status.GetStatusCode()));
 }
