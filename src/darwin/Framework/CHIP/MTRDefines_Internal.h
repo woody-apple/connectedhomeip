@@ -69,6 +69,9 @@ typedef struct {} variable_hidden_by_mtr_hide;
 // Default timed interaction timeout, in ms, if another one is not provided.
 #define MTR_DEFAULT_TIMED_INTERACTION_TIMEOUT_MS 10000
 
+#define MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN (10 * 60)
+#define MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX (60 * 60)
+
 // Useful building block for type-checking machinery.  Uses C-style cast so it
 // can be used in .m files as well.
 #define MTR_SAFE_CAST(object, classname) \

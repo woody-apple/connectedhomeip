@@ -50,6 +50,8 @@
 
 #import <os/lock.h>
 
+#include <algorithm>
+
 #include <app/server/Dnssd.h>
 #include <controller/CHIPDeviceControllerFactory.h>
 #include <credentials/CHIPCert.h>
@@ -86,7 +88,8 @@ class MTRApplicationCallback : public app::ReadHandler::ApplicationCallback {
         uint16_t requestedMaxInterval = 0;
         readHandler.GetReportingIntervals(requestedMinInterval, requestedMaxInterval);
 
-        uint16_t maximumMaxInterval = std::max(kSubscriptionMaxIntervalPublisherLimit, requestedMaxInterval);
+        uint16_t maximumMaxInterval = [MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:requestedMinInterval
+                                                                                          maxIntervalCeiling:requestedMaxInterval];
         return readHandler.SetMaxReportingInterval(maximumMaxInterval);
     }
 };
@@ -190,6 +193,13 @@ MTR_DIRECT_MEMBERS
 + (void)initialize
 {
     MTRFrameworkInit();
+}
+
++ (uint16_t)publisherSelectedMaxIntervalForMinInterval:(uint16_t)requestedMinInterval
+                                    maxIntervalCeiling:(uint16_t)requestedMaxInterval
+{
+    return std::clamp<uint16_t>(requestedMaxInterval, MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN,
+        MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
 }
 
 + (MTRDeviceControllerFactory *)sharedInstance

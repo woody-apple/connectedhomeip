@@ -58,6 +58,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) MTRAsyncWorkQueue<MTRDeviceController *> * concurrentSubscriptionPool;
 @end
 
+// MTRDeviceControllerFactory_Internal.h includes C++ headers, so declare the
+// subscription-interval policy separately for tests.
+@interface MTRDeviceControllerFactory (Test)
++ (uint16_t)publisherSelectedMaxIntervalForMinInterval:(uint16_t)requestedMinInterval
+                                    maxIntervalCeiling:(uint16_t)requestedMaxInterval;
+@end
+
 @interface MTRDevice (Test)
 - (NSMutableArray<NSNumber *> *)arrayOfNumbersFromAttributeValue:(MTRDeviceDataValueDictionary)dataDictionary;
 - (void)setStorageBehaviorConfiguration:(MTRDeviceStorageBehaviorConfiguration *)storageBehaviorConfiguration;

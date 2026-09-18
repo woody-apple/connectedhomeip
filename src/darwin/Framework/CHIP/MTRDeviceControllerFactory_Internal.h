@@ -132,6 +132,18 @@ MTR_DIRECT_MEMBERS
 - (instancetype)initWithoutStorage;
 @end
 
+MTR_TESTABLE_DIRECT_MEMBERS
+@interface MTRDeviceControllerFactory ()
+
+/**
+ * The MaxInterval to use for an inbound subscription whose subscriber requested
+ * the given MinIntervalFloor and MaxIntervalCeiling.
+ */
++ (uint16_t)publisherSelectedMaxIntervalForMinInterval:(uint16_t)requestedMinInterval
+                                    maxIntervalCeiling:(uint16_t)requestedMaxInterval;
+
+@end
+
 // Methods accessed from MTRServerAccessControl linked into darwin-framework-tool
 // TODO: https://github.com/project-chip/connectedhomeip/issues/32991
 @interface MTRDeviceControllerFactory ()

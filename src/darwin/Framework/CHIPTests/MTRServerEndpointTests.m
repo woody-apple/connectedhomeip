@@ -17,6 +17,9 @@
 #import <Matter/Matter.h>
 #import <XCTest/XCTest.h>
 
+#import "MTRDefines_Internal.h"
+#import "MTRTestDeclarations.h"
+
 @interface MTRServerEndpointTests : XCTestCase
 
 @end
@@ -525,6 +528,39 @@
 
         // Adding the same-id cluster to a different endpoint should work.
         XCTAssertTrue([otherEndpoint addServerCluster:otherCluster]);
+    }
+}
+
+- (void)testPublisherSelectedMaxIntervalRaisesShortCeilingsToFloor
+{
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:1 maxIntervalCeiling:1], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:1 maxIntervalCeiling:60], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:300], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:0], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+}
+
+- (void)testPublisherSelectedMaxIntervalHonorsCeilingsAboveFloor
+{
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:1800], 1800);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
+}
+
+- (void)testPublisherSelectedMaxIntervalCapsCeilingsAbovePublisherLimit
+{
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:7200], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:UINT16_MAX], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
+}
+
+- (void)testPublisherSelectedMaxIntervalStaysWithinBounds
+{
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:5000 maxIntervalCeiling:6000], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
+    XCTAssertEqual([MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:4000 maxIntervalCeiling:4000], MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
+
+    for (uint32_t ceiling = 0; ceiling <= UINT16_MAX; ceiling += (ceiling < 4096) ? 1 : 251) {
+        uint16_t selected = [MTRDeviceControllerFactory publisherSelectedMaxIntervalForMinInterval:0 maxIntervalCeiling:(uint16_t) ceiling];
+        XCTAssertGreaterThanOrEqual(selected, MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MIN);
+        XCTAssertLessThanOrEqual(selected, MTR_SUBSCRIPTION_SERVER_MAX_INTERVAL_MAX);
     }
 }
 
