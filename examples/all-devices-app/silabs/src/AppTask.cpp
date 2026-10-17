@@ -23,8 +23,16 @@
 #include "AppKeys.h"
 #include "SilabsIdentifyDelegate.h"
 
+#include "delegates/SilabsDimmableLight.h"
+#include "delegates/SilabsHumiditySensor.h"
+#include "delegates/SilabsTemperatureSensor.h"
+
 #ifdef ENABLE_CHIP_SHELL
 #include <DeviceShellCommands.h>
+#endif
+
+#if defined(SL_MATTER_USE_SI70XX_SENSOR) && SL_MATTER_USE_SI70XX_SENSOR
+#include "sensors/Si70xxSensor.h"
 #endif
 
 #include <array>
@@ -40,7 +48,6 @@
 #include <app/EventManagement.h>
 #include <app/InteractionModelEngine.h>
 #include <app/TestEventTriggerDelegate.h>
-#include <app/clusters/ota-requestor/CodegenIntegration.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestor.h>
 #include <app/icd/server/ICDServerConfig.h>
 #include <app/server/Dnssd.h>
@@ -56,6 +63,7 @@
 #include <device/types/root-node/RootNodeWith.h>
 
 #if defined(SILABS_OTA_ENABLED) && SILABS_OTA_ENABLED
+#include "OTAConfig.h"
 #include <device/types/root-node/features/OtaFeature.h>
 #endif
 
@@ -82,6 +90,7 @@ extern chip::DefaultOTARequestor gRequestorCore;
 #endif
 
 #define APP_FUNCTION_BUTTON 0
+#define APP_ACTION_BUTTON 1
 
 using namespace chip;
 using namespace chip::app;
@@ -162,6 +171,14 @@ CHIP_ERROR AppTask::AppInit()
 #ifdef ENABLE_CHIP_SHELL
     chip::Shell::DeviceCommands::GetInstance().Register();
 #endif
+#if defined(SL_MATTER_USE_SI70XX_SENSOR) && SL_MATTER_USE_SI70XX_SENSOR
+    // Non-fatal: individual sensor delegates log per-read failures on top of this.
+    sl_status_t si70xxStatus = Si70xxSensor::Init();
+    if (si70xxStatus != SL_STATUS_OK)
+    {
+        ChipLogError(AppServer, "Si70xxSensor::Init failed: %x", si70xxStatus);
+    }
+#endif
     return CHIP_NO_ERROR;
 }
 
@@ -176,7 +193,24 @@ void AppTask::ButtonEventHandler(uint8_t button, uint8_t btnAction)
         button_event.Handler = BaseApplication::ButtonHandler;
         GetAppTask().PostEvent(&button_event);
     }
+#if SL_MATTER_DISPLAY_ENABLED
+    else if (button == APP_ACTION_BUTTON &&
+             btnAction == static_cast<uint8_t>(chip::DeviceLayer::Silabs::SilabsPlatform::ButtonAction::ButtonPressed))
+    {
+        button_event.Handler = &AppTask::ActionButtonEventHandler;
+        GetAppTask().PostEvent(&button_event);
+    }
+#endif
 }
+
+#if SL_MATTER_DISPLAY_ENABLED
+void AppTask::ActionButtonEventHandler(AppEvent * /* aEvent */)
+{
+    // No-op when the current screen is a built-in one or when the current device
+    // page did not register a button callback (e.g. read-only sensors).
+    (void) BaseApplication::GetLCD().DispatchButtonToCurrentDevicePage();
+}
+#endif
 
 CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & storage,
                                             chip::Credentials::GroupDataProvider * groupDataProvider,
@@ -247,23 +281,23 @@ CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & st
 #if CHIP_ENABLE_OPENTHREAD
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::ThreadFeature, chip::app::IcdFeature, chip::app::OtaFeature>;
-    sRootNode = std::make_unique<RootNodeType>(rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver },
-                                               icdContext, otaContext);
+    auto rootNode      = std::make_unique<RootNodeType>(
+        rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver }, icdContext, otaContext);
 #else
     using RootNodeType = chip::app::RootNodeWith<chip::app::ThreadFeature, chip::app::OtaFeature>;
-    sRootNode = std::make_unique<RootNodeType>(rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver },
-                                               otaContext);
+    auto rootNode      = std::make_unique<RootNodeType>(rootNodeContext,
+                                                   chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver }, otaContext);
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #elif defined(CHIP_DEVICE_CONFIG_ENABLE_WIFI) && CHIP_DEVICE_CONFIG_ENABLE_WIFI
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::WifiFeature, chip::app::IcdFeature, chip::app::OtaFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(
+    auto rootNode      = std::make_unique<RootNodeType>(
         rootNodeContext,
         chip::app::WifiFeature::Context{ .wifiDriver = *chip::DeviceLayer::NetworkCommissioning::SlWiFiDriver::GetInstance() },
         icdContext, otaContext);
 #else
     using RootNodeType = chip::app::RootNodeWith<chip::app::WifiFeature, chip::app::OtaFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(
+    auto rootNode      = std::make_unique<RootNodeType>(
         rootNodeContext,
         chip::app::WifiFeature::Context{ .wifiDriver = *chip::DeviceLayer::NetworkCommissioning::SlWiFiDriver::GetInstance() },
         otaContext);
@@ -271,49 +305,54 @@ CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & st
 #else
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::IcdFeature, chip::app::OtaFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(rootNodeContext, icdContext, otaContext);
+    auto rootNode      = std::make_unique<RootNodeType>(rootNodeContext, icdContext, otaContext);
 #else
     using RootNodeType = chip::app::RootNodeWith<chip::app::OtaFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(rootNodeContext, otaContext);
+    auto rootNode      = std::make_unique<RootNodeType>(rootNodeContext, otaContext);
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #endif
 #else // SILABS_OTA_ENABLED
 #if CHIP_ENABLE_OPENTHREAD
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::ThreadFeature, chip::app::IcdFeature>;
-    sRootNode = std::make_unique<RootNodeType>(rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver },
-                                               icdContext);
+    auto rootNode      = std::make_unique<RootNodeType>(rootNodeContext,
+                                                   chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver }, icdContext);
 #else
     using RootNodeType = chip::app::RootNodeWith<chip::app::ThreadFeature>;
-    sRootNode = std::make_unique<RootNodeType>(rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver });
+    auto rootNode =
+        std::make_unique<RootNodeType>(rootNodeContext, chip::app::ThreadFeature::Context{ .threadDriver = sThreadDriver });
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #elif defined(CHIP_DEVICE_CONFIG_ENABLE_WIFI) && CHIP_DEVICE_CONFIG_ENABLE_WIFI
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::WifiFeature, chip::app::IcdFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(
+    auto rootNode      = std::make_unique<RootNodeType>(
         rootNodeContext,
         chip::app::WifiFeature::Context{ .wifiDriver = *chip::DeviceLayer::NetworkCommissioning::SlWiFiDriver::GetInstance() },
         icdContext);
 #else
     using RootNodeType = chip::app::RootNodeWith<chip::app::WifiFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(
+    auto rootNode      = std::make_unique<RootNodeType>(
         rootNodeContext,
         chip::app::WifiFeature::Context{ .wifiDriver = *chip::DeviceLayer::NetworkCommissioning::SlWiFiDriver::GetInstance() });
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #else
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     using RootNodeType = chip::app::RootNodeWith<chip::app::IcdFeature>;
-    sRootNode          = std::make_unique<RootNodeType>(rootNodeContext, icdContext);
+    auto rootNode      = std::make_unique<RootNodeType>(rootNodeContext, icdContext);
 #else
-    sRootNode = std::make_unique<chip::app::RootNode>(rootNodeContext);
+    auto rootNode = std::make_unique<chip::app::RootNode>(rootNodeContext);
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #endif
 #endif // SILABS_OTA_ENABLED
 
-    VerifyOrReturnError(sRootNode != nullptr, CHIP_ERROR_NO_MEMORY);
+    VerifyOrReturnError(rootNode != nullptr, CHIP_ERROR_NO_MEMORY);
 
     chip::app::ConsecutiveEndpointIdAllocator rootAllocator(kRootEndpointId);
-    ReturnErrorOnFailure(sRootNode->Register(rootAllocator, *sDataModelProvider));
+    ReturnErrorOnFailure(rootNode->Register(rootAllocator, *sDataModelProvider));
+#if defined(SILABS_OTA_ENABLED) && SILABS_OTA_ENABLED
+    chip::SetDefaultOTARequestorEventGenerator(rootNode->GetFeature<chip::app::OtaFeature>().Cluster());
+#endif
+    sRootNode = std::move(rootNode);
 
     chip::app::NoHooksDeviceFactory::GetInstance().Init(chip::app::NoHooksDeviceFactory::Context{
         .groupDataProvider        = *groupDataProvider,
@@ -338,6 +377,51 @@ CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & st
     deviceFactory.RegisterCreator(
         "power-source", []() { return chip::app::NoHooksDeviceFactory::MakeDevice<chip::app::SilabsBatteryPowerSource>(); });
 #endif
+    // Per-device-type Silabs overrides. Each override replaces the default
+    // "logging" delegate with a Silabs implementation that wires hardware
+    // (LED / PWM) and, when the LCD is enabled, an on-device UI page.
+    // Guarded by `if constexpr` so unused overrides are dropped at compile time.
+    if constexpr (ALL_DEVICES_ENABLE_DIMMABLE_LIGHT)
+    {
+        deviceFactory.RegisterCreator("dimmable-light", [groupDataProvider]() {
+            return chip::app::NoHooksDeviceFactory::MakeDevice<chip::app::SilabsDimmableLight>(
+                chip::app::SilabsDimmableLight::Context{
+                    .groupDataProvider = *groupDataProvider,
+                    .fabricTable       = chip::Server::GetInstance().GetFabricTable(),
+                    .timerDelegate     = sTimerDelegate,
+                    .identifyDelegate  = sIdentifyDelegate,
+                },
+#if SL_MATTER_DISPLAY_ENABLED
+                BaseApplication::GetLCD(),
+#endif
+                chip::app::DimmableLoad::Config{
+                    .levelControl = chip::app::DimmableLoad::LevelControlConfig::CiPicsDefaults(),
+                });
+        });
+    }
+
+    if constexpr (ALL_DEVICES_ENABLE_TEMPERATURE_SENSOR)
+    {
+        deviceFactory.RegisterCreator("temperature-sensor", []() {
+            return chip::app::NoHooksDeviceFactory::MakeDevice<chip::app::SilabsTemperatureSensor>(
+#if SL_MATTER_DISPLAY_ENABLED
+                BaseApplication::GetLCD()
+#endif
+            );
+        });
+    }
+
+    if constexpr (ALL_DEVICES_ENABLE_HUMIDITY_SENSOR)
+    {
+        deviceFactory.RegisterCreator("humidity-sensor", []() {
+            return chip::app::NoHooksDeviceFactory::MakeDevice<chip::app::SilabsHumiditySensor>(sTimerDelegate
+#if SL_MATTER_DISPLAY_ENABLED
+                                                                                                ,
+                                                                                                BaseApplication::GetLCD()
+#endif
+            );
+        });
+    }
 
     ConsecutiveEndpointIdAllocator allocator(kDeviceEndpointId);
 
@@ -383,7 +467,7 @@ CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & st
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
     };
 
-    if (!kBuildTimeDevices.empty())
+    if constexpr (!kBuildTimeDevices.empty())
     {
         std::string_view remaining = kBuildTimeDevices;
         while (!remaining.empty())
@@ -401,29 +485,29 @@ CHIP_ERROR AppTask::InitCodeDrivenDataModel(chip::PersistentStorageDelegate & st
         ReturnErrorOnFailure(maybeAddPowerSource());
         return CHIP_NO_ERROR;
     }
-
-    // No build-time selection: fall back to the KVS-stored device type (set via
-    // the `devtype` shell command) or the factory default.
-    std::string deviceType = deviceFactory.GetDefaultDevice();
-
-    char storedDeviceType[64] = {};
-    uint16_t storedLen        = sizeof(storedDeviceType);
-    CHIP_ERROR storedErr      = storage.SyncGetKeyValue(chip::kDeviceTypeKey, storedDeviceType, storedLen);
-    if (storedErr == CHIP_NO_ERROR && storedLen > 0)
+    else
     {
-        deviceType = std::string(storedDeviceType, strnlen(storedDeviceType, storedLen));
-    }
+        // No build-time selection: fall back to the KVS-stored device type (set via
+        // the `devtype` shell command) or the factory default.
+        std::string deviceType = deviceFactory.GetDefaultDevice();
 
-    if (!deviceFactory.IsValidDevice(deviceType))
-    {
-        ChipLogError(AppServer, "Invalid device type: %s, falling back to default", deviceType.c_str());
-        deviceType = deviceFactory.GetDefaultDevice();
-    }
-
-    ReturnErrorOnFailure(instantiateDevice(deviceType));
-    if (deviceType != "power-source")
-    {
-        ReturnErrorOnFailure(maybeAddPowerSource());
+        char storedDeviceType[64] = {};
+        uint16_t storedLen        = sizeof(storedDeviceType);
+        CHIP_ERROR storedErr      = storage.SyncGetKeyValue(chip::kDeviceTypeKey, storedDeviceType, storedLen);
+        if (storedErr == CHIP_NO_ERROR && storedLen > 0)
+        {
+            deviceType = std::string(storedDeviceType, strnlen(storedDeviceType, storedLen));
+        }
+        if (!deviceFactory.IsValidDevice(deviceType))
+        {
+            ChipLogError(AppServer, "Invalid device type: %s, falling back to default", deviceType.c_str());
+            deviceType = deviceFactory.GetDefaultDevice();
+        }
+        ReturnErrorOnFailure(instantiateDevice(deviceType));
+        if (deviceType != "power-source")
+        {
+            ReturnErrorOnFailure(maybeAddPowerSource());
+        }
     }
     return CHIP_NO_ERROR;
 }

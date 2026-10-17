@@ -76,12 +76,12 @@ class TC_DA_1_12(MatterTestCommissionedDevice):
         return "[TC-DA-1.12] ML-DSA Device Attestation Request Validation Scenario [DUT-Commissionee]"
 
     def pics_TC_DA_1_12(self) -> list[str]:
-        return ["MCORE.ROLE.COMMISSIONEE", "OPCREDS.S", "OPCREDS.S.C00.Rsp", "OPCREDS.S.C01.Tx",
+        return ["MCORE.ROLE.COMMISSIONEE", "OPCREDS.S", "OPCREDS.S.F00", "OPCREDS.S.C00.Rsp", "OPCREDS.S.C01.Tx",
                 "OPCREDS.S.C02.Rsp", "OPCREDS.S.C03.Tx"]
 
     def steps_TC_DA_1_12(self) -> list[TestStep]:
         return [
-            TestStep(0, "Commission DUT to TH", is_commissioning=True),
+            TestStep(0, "Commission DUT to TH"),
             TestStep(1, "TH reads the Operational Credentials Cluster FeatureMap attribute from the DUT.",
                      "TH verifies that the PQCDA feature bit is set."),
             TestStep(2, "TH reads the PQCDeviceAttestationProfile attribute from the DUT.",
