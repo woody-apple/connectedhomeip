@@ -232,8 +232,7 @@ public:
         /**
          * This function is invoked when constructing a read/subscribeRequest, to give the callback a chance
          * to provide data version filters.  Data version filters from the ReadPrepareParams are then added
-         * for clusters this function did not encode a filter for.  If those clusters cannot be determined,
-         * the ReadPrepareParams filters are added only if this function did not encode any filters.
+         * for clusters this function did not encode a filter for.
          *
          * This function is expected to encode as many complete data version filters as will fit into
          * the buffer, rolling back any partially-encoded filters if it runs out of space, and set the
@@ -575,8 +574,8 @@ private:
                                              const Span<DataVersionFilter> & aDataVersionFilters, bool & aEncodedDataVersionList);
     CHIP_ERROR BuildDataVersionFilterList(DataVersionFilterIBs::Builder & aDataVersionFilterIBsBuilder,
                                           const Span<AttributePathParams> & aAttributePaths,
-                                          const Span<DataVersionFilter> & aDataVersionFilters,
-                                          DataVersionFilterIBs::Parser * apCallbackFilters, bool & aEncodedDataVersionList);
+                                          const Span<DataVersionFilter> & aDataVersionFilters, ByteSpan aCallbackFilters,
+                                          bool & aEncodedDataVersionList);
     CHIP_ERROR ReadICDOperatingModeFromAttributeDataIB(TLV::TLVReader && aReader, PeerType & aType);
     CHIP_ERROR ProcessAttributeReportIBs(TLV::TLVReader & aAttributeDataIBsReader);
     CHIP_ERROR ProcessEventReportIBs(TLV::TLVReader & aEventReportIBsReader);

@@ -46,10 +46,10 @@ using Status = Protocols::InteractionModel::Status;
 
 namespace {
 
-bool HasFilterForCluster(DataVersionFilterIBs::Parser & aFilters, const DataVersionFilter & aFilter)
+bool ContainsFilterForSameCluster(ByteSpan aEncodedFilters, const DataVersionFilter & aFilter)
 {
     TLV::TLVReader reader;
-    aFilters.GetReader(&reader);
+    reader.Init(aEncodedFilters);
     while (reader.Next() == CHIP_NO_ERROR)
     {
         DataVersionFilterIB::Parser filter;
@@ -425,8 +425,8 @@ CHIP_ERROR ReadClient::GenerateAttributePaths(AttributePathIBs::Builder & aAttri
 
 CHIP_ERROR ReadClient::BuildDataVersionFilterList(DataVersionFilterIBs::Builder & aDataVersionFilterIBsBuilder,
                                                   const Span<AttributePathParams> & aAttributePaths,
-                                                  const Span<DataVersionFilter> & aDataVersionFilters,
-                                                  DataVersionFilterIBs::Parser * apCallbackFilters, bool & aEncodedDataVersionList)
+                                                  const Span<DataVersionFilter> & aDataVersionFilters, ByteSpan aCallbackFilters,
+                                                  bool & aEncodedDataVersionList)
 {
 #if CHIP_PROGRESS_LOGGING
     size_t encodedFilterCount    = 0;
@@ -448,7 +448,9 @@ CHIP_ERROR ReadClient::BuildDataVersionFilterList(DataVersionFilterIBs::Builder 
             }
         }
 
-        if (!intersected || (apCallbackFilters != nullptr && HasFilterForCluster(*apCallbackFilters, filter)))
+        // Per spec, the server ignores all of a cluster's filters unless every one of them matches, so
+        // don't encode our filter if aCallbackFilters already has a filter for the same cluster.
+        if (!intersected || ContainsFilterForSameCluster(aCallbackFilters, filter))
         {
 #if CHIP_PROGRESS_LOGGING
             ++irrelevantFilterCount;
@@ -494,56 +496,21 @@ CHIP_ERROR ReadClient::GenerateDataVersionFilterList(DataVersionFilterIBs::Build
                                                      const Span<DataVersionFilter> & aDataVersionFilters,
                                                      bool & aEncodedDataVersionList)
 {
-    // The callback encodes into a scratch list first, so that we only add our own filters for clusters it did not cover: a
-    // cluster is only skipped by the server if all the filters for it match.
-    constexpr uint32_t kListStartSize = 1;
-    constexpr uint32_t kListEndSize   = 1;
-    TLV::TLVWriter & writer           = *aDataVersionFilterIBsBuilder.GetWriter();
-    const uint32_t scratchSize        = writer.GetRemainingFreeLength() + kListStartSize + kListEndSize;
-    System::PacketBufferHandle scratch;
-    if (!aDataVersionFilters.empty())
+    TLV::TLVWriter callbackStart;
+    aDataVersionFilterIBsBuilder.Checkpoint(callbackStart);
+    ReturnErrorOnFailure(
+        mpCallback.OnUpdateDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aEncodedDataVersionList));
+
+    if (aDataVersionFilters.empty())
     {
-        scratch = System::PacketBufferHandle::New(scratchSize, 0);
+        return CHIP_NO_ERROR;
     }
 
-    if (scratch.IsNull())
-    {
-        ReturnErrorOnFailure(
-            mpCallback.OnUpdateDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aEncodedDataVersionList));
-        if (aEncodedDataVersionList)
-        {
-            return CHIP_NO_ERROR;
-        }
-        return BuildDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aDataVersionFilters, nullptr,
-                                          aEncodedDataVersionList);
-    }
-
-    TLV::TLVWriter scratchWriter;
-    scratchWriter.Init(scratch->Start(), scratchSize);
-    DataVersionFilterIBs::Builder scratchBuilder;
-    ReturnErrorOnFailure(scratchBuilder.Init(&scratchWriter));
-    // Leaves the callback the same free length as the request.
-    ReturnErrorOnFailure(scratchWriter.ReserveBuffer(kListEndSize));
-    ReturnErrorOnFailure(mpCallback.OnUpdateDataVersionFilterList(scratchBuilder, aAttributePaths, aEncodedDataVersionList));
-    ReturnErrorOnFailure(scratchWriter.UnreserveBuffer(kListEndSize));
-    ReturnErrorOnFailure(scratchBuilder.EndOfDataVersionFilterIBs());
-
-    TLV::TLVReader reader;
-    reader.Init(scratch->Start(), scratchWriter.GetLengthWritten());
-    ReturnErrorOnFailure(reader.Next());
-    DataVersionFilterIBs::Parser callbackFilters;
-    ReturnErrorOnFailure(callbackFilters.Init(reader));
-
-    TLV::TLVReader filterReader;
-    callbackFilters.GetReader(&filterReader);
-    CHIP_ERROR err;
-    while ((err = filterReader.Next()) == CHIP_NO_ERROR)
-    {
-        ReturnErrorOnFailure(writer.CopyElement(filterReader));
-    }
-    VerifyOrReturnError(err == CHIP_END_OF_TLV, err);
-
-    return BuildDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aDataVersionFilters, &callbackFilters,
+    // Per spec, the server ignores all of a cluster's filters unless every one of them matches, so tell
+    // BuildDataVersionFilterList what filters got encoded so far.
+    ByteSpan callbackFilters;
+    ReturnErrorOnFailure(aDataVersionFilterIBsBuilder.GetWriter()->GetBytesWrittenSince(callbackStart, callbackFilters));
+    return BuildDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aDataVersionFilters, callbackFilters,
                                       aEncodedDataVersionList);
 }
 

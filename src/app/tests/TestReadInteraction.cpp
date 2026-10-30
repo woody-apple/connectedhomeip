@@ -50,12 +50,10 @@
 #include <messaging/ExchangeContext.h>
 #include <messaging/Flags.h>
 #include <protocols/interaction_model/Constants.h>
-#include <system/SystemFaultInjection.h>
 
 #include <algorithm>
 #include <optional>
 #include <tuple>
-#include <utility>
 #include <vector>
 
 namespace {
@@ -567,12 +565,11 @@ public:
     void TestReadRoundtripWithNoMatchPathDataVersionFilter();
     void TestReadRoundtripWithSameDifferentPathsDataVersionFilter();
     void TestReadRoundtripWithCallbackAndParamsDataVersionFilters();
-    void TestReadClientDataVersionFilterSpaceForCallback();
     void TestReadClientDataVersionFilterMerge();
     static std::vector<EncodedFilter> GenerateFilters(app::ReadClient & aReadClient,
                                                       chip::Span<chip::app::AttributePathParams> aPaths,
                                                       chip::Span<chip::app::DataVersionFilter> aFilters);
-    void TestReadClientDataVersionFilterWithoutScratchBuffer();
+    void TestReadClientDataVersionFilterCallbackFillsList();
     void TestReadClientGetMinEventNumber();
     void TestReadShutdown();
     void TestReadUnexpectedSubscriptionId();
@@ -1557,13 +1554,10 @@ public:
                                              bool & aEncodedDataVersionList) override
     {
         aEncodedDataVersionList = false;
-        mNumEncodedFilters      = 0;
-        mFreeLength             = aDataVersionFilterIBsBuilder.GetWriter()->GetRemainingFreeLength();
         for (const auto & filter : mFilters)
         {
             ReturnErrorOnFailure(aDataVersionFilterIBsBuilder.EncodeDataVersionFilterIB(filter));
             aEncodedDataVersionList = true;
-            ++mNumEncodedFilters;
         }
         chip::ClusterId cluster = 0;
         while (mFillBuffer)
@@ -1577,7 +1571,6 @@ public:
                 break;
             }
             aEncodedDataVersionList = true;
-            ++mNumEncodedFilters;
         }
         return CHIP_NO_ERROR;
     }
@@ -1595,9 +1588,7 @@ public:
     }
 
     std::vector<chip::app::DataVersionFilter> mFilters;
-    bool mFillBuffer          = false;
-    size_t mNumEncodedFilters = 0;
-    uint32_t mFreeLength      = 0;
+    bool mFillBuffer = false;
     chip::Optional<chip::EventNumber> mHighestReceivedEventNumber;
     CHIP_ERROR mEventNumberError = CHIP_NO_ERROR;
 };
@@ -1643,49 +1634,6 @@ void TestReadInteraction::TestReadRoundtripWithCallbackAndParamsDataVersionFilte
     EXPECT_EQ(engine->GetNumActiveReadClients(), 0u);
     engine->Shutdown();
     EXPECT_EQ(GetExchangeManager().GetNumActiveExchanges(), 0u);
-}
-
-TEST_F_FROM_FIXTURE_NO_BODY(TestReadInteraction, TestReadClientDataVersionFilterSpaceForCallback)
-void TestReadInteraction::TestReadClientDataVersionFilterSpaceForCallback()
-{
-    DataVersionFilterAndEventNumberCallback delegate;
-    delegate.mFillBuffer = true;
-    app::ReadClient readClient(chip::app::InteractionModelEngine::GetInstance(), &GetExchangeManager(), delegate,
-                               chip::app::ReadClient::InteractionType::Read);
-
-    chip::app::AttributePathParams attributePathParams[1];
-    attributePathParams[0].mEndpointId = kTestEndpointId;
-
-    chip::app::DataVersionFilter dataVersionFilters[1] = { { kTestEndpointId, chip::Testing::MockClusterId(1),
-                                                             kTestDataVersion1 } };
-
-    auto generate = [&](uint32_t aReserved, chip::Span<chip::app::DataVersionFilter> aFilters) {
-        System::PacketBufferTLVWriter writer;
-        ReadRequestMessage::Builder request;
-        // Like ReadClient::SendReadRequest, keep room to close the list.
-        constexpr uint32_t kEndOfListSize = 1;
-        EXPECT_EQ(InitWriterWithSpaceReserved(writer, aReserved + kEndOfListSize), CHIP_NO_ERROR);
-        EXPECT_EQ(request.Init(&writer), CHIP_NO_ERROR);
-        DataVersionFilterIBs::Builder & builder = request.CreateDataVersionFilters();
-        EXPECT_EQ(request.GetError(), CHIP_NO_ERROR);
-        bool encoded = false;
-        EXPECT_EQ(readClient.GenerateDataVersionFilterList(builder, chip::Span<chip::app::AttributePathParams>(attributePathParams),
-                                                           aFilters, encoded),
-                  CHIP_NO_ERROR);
-        EXPECT_TRUE(encoded);
-        EXPECT_EQ(builder.GetWriter()->UnreserveBuffer(kEndOfListSize), CHIP_NO_ERROR);
-        EXPECT_EQ(builder.EndOfDataVersionFilterIBs(), CHIP_NO_ERROR);
-        return std::make_pair(delegate.mNumEncodedFilters, delegate.mFreeLength);
-    };
-
-    // Each reserved size leaves a different remainder after the last whole filter, so a scratch buffer even one byte
-    // smaller than the request's free space loses a filter for some of them.
-    for (uint32_t reserved = 0; reserved < 32; ++reserved)
-    {
-        auto withoutParamsFilters = generate(reserved, chip::Span<chip::app::DataVersionFilter>());
-        EXPECT_GT(withoutParamsFilters.first, 0u);
-        EXPECT_TRUE(generate(reserved, chip::Span<chip::app::DataVersionFilter>(dataVersionFilters)) == withoutParamsFilters);
-    }
 }
 
 // Runs GenerateDataVersionFilterList into a standalone list and returns the filters it encoded.
@@ -1763,36 +1711,24 @@ void TestReadInteraction::TestReadClientDataVersionFilterMerge()
                                 chip::Span<chip::app::DataVersionFilter>(paramsFilters)) == expected);
 }
 
-TEST_F_FROM_FIXTURE_NO_BODY(TestReadInteraction, TestReadClientDataVersionFilterWithoutScratchBuffer)
-void TestReadInteraction::TestReadClientDataVersionFilterWithoutScratchBuffer()
+TEST_F_FROM_FIXTURE_NO_BODY(TestReadInteraction, TestReadClientDataVersionFilterCallbackFillsList)
+void TestReadInteraction::TestReadClientDataVersionFilterCallbackFillsList()
 {
-#if CHIP_WITH_NLFAULTINJECTION
-    using chip::System::FaultInjection::kFault_PacketBufferNew;
-    auto & faults = chip::System::FaultInjection::GetManager();
-
     DataVersionFilterAndEventNumberCallback delegate;
+    delegate.mFillBuffer = true;
     app::ReadClient readClient(chip::app::InteractionModelEngine::GetInstance(), &GetExchangeManager(), delegate,
                                chip::app::ReadClient::InteractionType::Read);
 
     chip::app::AttributePathParams paths[1];
     paths[0].mEndpointId                         = kTestEndpointId;
-    chip::app::DataVersionFilter paramsFilters[] = { { kTestEndpointId, kTestClusterId, 2 },
-                                                     { kTestEndpointId, kInvalidTestClusterId, 3 } };
+    chip::app::DataVersionFilter paramsFilters[] = { { kTestEndpointId, chip::Testing::MockClusterId(1), kTestDataVersion1 } };
 
-    // Without a scratch buffer, the params filters are used only if the callback encoded none.
-    delegate.mFilters.emplace_back(kTestEndpointId, kTestClusterId, 1);
-    faults.FailAtFault(kFault_PacketBufferNew, 0, 1);
-    std::vector<EncodedFilter> expected = { { kTestEndpointId, kTestClusterId, 1 } };
+    std::vector<EncodedFilter> callbackFilters =
+        GenerateFilters(readClient, chip::Span<chip::app::AttributePathParams>(paths), chip::Span<chip::app::DataVersionFilter>());
+    EXPECT_FALSE(callbackFilters.empty());
+    // The params filters only get the space the callback left.
     EXPECT_TRUE(GenerateFilters(readClient, chip::Span<chip::app::AttributePathParams>(paths),
-                                chip::Span<chip::app::DataVersionFilter>(paramsFilters)) == expected);
-
-    delegate.mFilters.clear();
-    faults.FailAtFault(kFault_PacketBufferNew, 0, 1);
-    expected = { { kTestEndpointId, kTestClusterId, 2 }, { kTestEndpointId, kInvalidTestClusterId, 3 } };
-    EXPECT_TRUE(GenerateFilters(readClient, chip::Span<chip::app::AttributePathParams>(paths),
-                                chip::Span<chip::app::DataVersionFilter>(paramsFilters)) == expected);
-    faults.ResetFaultConfigurations(kFault_PacketBufferNew);
-#endif // CHIP_WITH_NLFAULTINJECTION
+                                chip::Span<chip::app::DataVersionFilter>(paramsFilters)) == callbackFilters);
 }
 
 TEST_F_FROM_FIXTURE_NO_BODY(TestReadInteraction, TestReadClientGetMinEventNumber)
