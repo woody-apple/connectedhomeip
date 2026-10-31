@@ -649,6 +649,7 @@ static NSString * const MTRSetupPayloadCodingKeyDiscriminator = @"MTRSP.ck.discr
 static NSString * const MTRSetupPayloadCodingKeySetupPasscode = @"MTRSP.ck.setupPINCode";
 static NSString * const MTRSetupPayloadCodingKeySerialNumber = @"MTRSP.ck.serialNumber";
 static NSString * const MTRSetupPayloadCodingKeyQRCode = @"qr";
+static NSString * const MTRSetupPayloadCodingKeyConcatenated = @"MTRSP.ck.concatenated";
 
 + (BOOL)supportsSecureCoding
 {
@@ -668,6 +669,9 @@ static NSString * const MTRSetupPayloadCodingKeyQRCode = @"qr";
     [coder encodeObject:self.discriminator forKey:MTRSetupPayloadCodingKeyDiscriminator];
     [coder encodeObject:self.setupPasscode forKey:MTRSetupPayloadCodingKeySetupPasscode];
     [coder encodeObject:self.serialNumber forKey:MTRSetupPayloadCodingKeySerialNumber];
+    if (self.concatenated) {
+        [coder encodeBool:YES forKey:MTRSetupPayloadCodingKeyConcatenated];
+    }
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -677,9 +681,21 @@ static NSString * const MTRSetupPayloadCodingKeyQRCode = @"qr";
     // We can't rely on the QR code to be present because older versions of this class
     // did not encode it. When present, it carries almost the entire state of the object.
     NSString * qrCode = [coder decodeObjectOfClass:NSString.class forKey:MTRSetupPayloadCodingKeyQRCode];
+    CHIP_ERROR err = CHIP_ERROR_KEY_NOT_FOUND;
     if (qrCode != nil) {
-        [self initializeFromQRCode:qrCode validate:NO];
-    } else {
+        err = [self initializeFromQRCode:qrCode validate:NO];
+        if (err != CHIP_NO_ERROR) {
+            MTR_LOG_ERROR("MTRSetupPayload could not decode its QR code: %" CHIP_ERROR_FORMAT, err.Format());
+            // Only the QR code carries the sub-payloads of a concatenated payload, so the
+            // individual properties cannot restore one.
+            // Archives written from this version on mark a concatenated payload explicitly.
+            VerifyOrReturnValue(![coder decodeBoolForKey:MTRSetupPayloadCodingKeyConcatenated], nil);
+            // Older archives don't, but the delimiter is outside the Base38 alphabet, so it marks a concatenated QR code.
+            VerifyOrReturnValue([qrCode rangeOfString:@(std::string(1, chip::kPayloadDelimiter).c_str())].location == NSNotFound, nil);
+            // The individual properties are always encoded alongside the QR code, so fall back to them.
+        }
+    }
+    if (err != CHIP_NO_ERROR) {
         self.version = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyVersion];
         self.vendorID = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyVendorID];
         self.productID = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyProductID];
