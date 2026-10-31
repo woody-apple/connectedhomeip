@@ -18,6 +18,19 @@
 #import <Matter/Matter.h>
 #import <XCTest/XCTest.h>
 
+// Archives as NSKeyedArchiver does, but writes a replacement value for one key, so that key is encoded once.
+@interface MTRSetupPayloadReplacingArchiver : NSKeyedArchiver
+@property (nonatomic, copy) NSString * replacedKey;
+@property (nonatomic, strong) id replacementValue;
+@end
+
+@implementation MTRSetupPayloadReplacingArchiver
+- (void)encodeObject:(id)object forKey:(NSString *)key
+{
+    [super encodeObject:([key isEqualToString:self.replacedKey] ? self.replacementValue : object) forKey:key];
+}
+@end
+
 @interface MTRSetupPayloadTests : XCTestCase
 
 @end
@@ -452,6 +465,63 @@
         XCTAssertEqualObjects([decoded qrCodeString:NULL], [payload qrCodeString:NULL]);
         XCTAssertEqualObjects(decoded.manualEntryCode, payload.manualEntryCode);
     }
+}
+
+- (void)testSecureCodingWithUnparseableQRCode
+{
+    NSError * error;
+    MTRSetupPayload * payload = [MTRSetupPayload setupPayloadWithOnboardingPayload:@"MT:M5L90MP500K64J00000" error:&error];
+    XCTAssertNotNil(payload, @"Error: %@", error);
+    payload.serialNumber = @"SN-1234";
+
+    MTRSetupPayloadReplacingArchiver * archiver = [[MTRSetupPayloadReplacingArchiver alloc] initRequiringSecureCoding:YES];
+    archiver.replacedKey = @"qr";
+    archiver.replacementValue = @"MT:not a setup payload";
+    [payload encodeWithCoder:archiver];
+    [archiver finishEncoding];
+
+    NSKeyedUnarchiver * unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:archiver.encodedData error:&error];
+    XCTAssertNotNil(unarchiver, @"Error: %@", error);
+    MTRSetupPayload * decoded = [[MTRSetupPayload alloc] initWithCoder:unarchiver];
+    XCTAssertNotNil(decoded);
+
+    XCTAssertEqualObjects(decoded.version, payload.version);
+    XCTAssertEqualObjects(decoded.vendorID, payload.vendorID);
+    XCTAssertEqualObjects(decoded.productID, payload.productID);
+    XCTAssertEqual(decoded.commissioningFlow, payload.commissioningFlow);
+    XCTAssertEqual(decoded.discoveryCapabilities, payload.discoveryCapabilities);
+    XCTAssertEqual(decoded.hasShortDiscriminator, payload.hasShortDiscriminator);
+    XCTAssertEqualObjects(decoded.discriminator, payload.discriminator);
+    XCTAssertEqualObjects(decoded.setupPasscode, payload.setupPasscode);
+    XCTAssertEqualObjects(decoded.serialNumber, payload.serialNumber);
+}
+
+- (void)testSecureCodingConcatenatedWithUnparseableQRCode
+{
+    NSError * error;
+    MTRSetupPayload * payload = [MTRSetupPayload setupPayloadWithOnboardingPayload:@"MT:M5L90MP500K64J00000*M5L90MP500OC8010000" error:&error];
+    XCTAssertNotNil(payload, @"Error: %@", error);
+    XCTAssertTrue(payload.concatenated);
+
+    MTRSetupPayloadReplacingArchiver * archiver = [[MTRSetupPayloadReplacingArchiver alloc] initRequiringSecureCoding:YES];
+    archiver.replacedKey = @"qr";
+    // The archive carries nothing but the QR code to mark it concatenated, as archives
+    // written by earlier versions do.
+    archiver.replacementValue = @"MT:not a setup payload*nor is this";
+    [payload encodeWithCoder:archiver];
+    [archiver finishEncoding];
+
+    NSKeyedUnarchiver * unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:archiver.encodedData error:&error];
+    XCTAssertNotNil(unarchiver, @"Error: %@", error);
+    XCTAssertNil([[MTRSetupPayload alloc] initWithCoder:unarchiver]);
+
+    // A caller decoding an archive of the payload gets nil rather than a single-component payload.
+    MTRSetupPayloadReplacingArchiver * rootArchiver = [[MTRSetupPayloadReplacingArchiver alloc] initRequiringSecureCoding:YES];
+    rootArchiver.replacedKey = @"qr";
+    rootArchiver.replacementValue = archiver.replacementValue;
+    [rootArchiver encodeObject:payload forKey:NSKeyedArchiveRootObjectKey];
+    [rootArchiver finishEncoding];
+    XCTAssertNil([NSKeyedUnarchiver unarchivedObjectOfClass:MTRSetupPayload.class fromData:rootArchiver.encodedData error:&error]);
 }
 
 - (void)testCopyingAndEquality

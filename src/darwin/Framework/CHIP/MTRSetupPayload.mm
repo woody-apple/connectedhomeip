@@ -677,9 +677,19 @@ static NSString * const MTRSetupPayloadCodingKeyQRCode = @"qr";
     // We can't rely on the QR code to be present because older versions of this class
     // did not encode it. When present, it carries almost the entire state of the object.
     NSString * qrCode = [coder decodeObjectOfClass:NSString.class forKey:MTRSetupPayloadCodingKeyQRCode];
+    CHIP_ERROR err = CHIP_ERROR_KEY_NOT_FOUND;
     if (qrCode != nil) {
-        [self initializeFromQRCode:qrCode validate:NO];
-    } else {
+        err = [self initializeFromQRCode:qrCode validate:NO];
+        if (err != CHIP_NO_ERROR) {
+            MTR_LOG_ERROR("MTRSetupPayload could not decode its QR code: %" CHIP_ERROR_FORMAT, err.Format());
+            // Only the QR code carries the sub-payloads of a concatenated payload, so the
+            // individual properties cannot restore one. The delimiter is outside the Base38
+            // alphabet, so it marks a concatenated payload in archives of any version.
+            VerifyOrReturnValue([qrCode rangeOfString:@(std::string(1, chip::kPayloadDelimiter).c_str())].location == NSNotFound, nil);
+            // The individual properties are always encoded alongside the QR code, so fall back to them.
+        }
+    }
+    if (err != CHIP_NO_ERROR) {
         self.version = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyVersion];
         self.vendorID = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyVendorID];
         self.productID = [coder decodeObjectOfClass:NSNumber.class forKey:MTRSetupPayloadCodingKeyProductID];
