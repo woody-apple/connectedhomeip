@@ -38,6 +38,7 @@ class TelinkApp(Enum):
     ALL_CLUSTERS_MINIMAL = auto()
     ALL_DEVICES = auto()
     BRIDGE = auto()
+    CLOSURE = auto()
     CONTACT_SENSOR = auto()
     LIGHT = auto()
     SWITCH = auto()
@@ -49,7 +50,6 @@ class TelinkApp(Enum):
     SMOKE_CO_ALARM = auto()
     TEMPERATURE_MEASUREMENT = auto()
     THERMOSTAT = auto()
-    WINDOW_COVERING = auto()
 
     def ExampleName(self):
         if self == TelinkApp.AIR_QUALITY_SENSOR:
@@ -62,6 +62,8 @@ class TelinkApp(Enum):
             return 'all-devices-app'
         if self == TelinkApp.BRIDGE:
             return 'bridge-app'
+        if self == TelinkApp.CLOSURE:
+            return 'closure-app'
         if self == TelinkApp.CONTACT_SENSOR:
             return 'contact-sensor-app'
         if self == TelinkApp.LIGHT:
@@ -84,8 +86,6 @@ class TelinkApp(Enum):
             return 'temperature-measurement-app'
         if self == TelinkApp.THERMOSTAT:
             return 'thermostat'
-        if self == TelinkApp.WINDOW_COVERING:
-            return 'window-app'
         raise Exception(f'Unknown app type: {self!r}')
 
     def AppNamePrefix(self):
@@ -99,6 +99,8 @@ class TelinkApp(Enum):
             return 'all-devices-app'
         if self == TelinkApp.BRIDGE:
             return 'chip-telink-bridge-example'
+        if self == TelinkApp.CLOSURE:
+            return 'chip-telink-closure-example'
         if self == TelinkApp.CONTACT_SENSOR:
             return 'chip-telink-contact-sensor-example'
         if self == TelinkApp.LIGHT:
@@ -123,8 +125,6 @@ class TelinkApp(Enum):
             return 'chip-telink-temperature-measurement-example'
         if self == TelinkApp.THERMOSTAT:
             return 'chip-telink-thermostat-example'
-        if self == TelinkApp.WINDOW_COVERING:
-            return 'chip-telink-window-example'
         raise Exception(f'Unknown app type: {self!r}')
 
 
@@ -133,6 +133,8 @@ class TelinkBoard(Enum):
     TLSR9518ADK80D = auto()
     TLSR9528A = auto()
     TLSR9528A_RETENTION = auto()
+    TL3228X = auto()
+    TL3228X_RETENTION = auto()
     TL3238X = auto()
     TL3238X_RETENTION = auto()
     TL5218X = auto()
@@ -151,6 +153,10 @@ class TelinkBoard(Enum):
             return 'tlsr9528a'
         if self == TelinkBoard.TLSR9528A_RETENTION:
             return 'tlsr9528a_retention'
+        if self == TelinkBoard.TL3228X:
+            return 'tl3228x'
+        if self == TelinkBoard.TL3228X_RETENTION:
+            return 'tl3228x_retention'
         if self == TelinkBoard.TL3238X:
             return 'tl3238x'
         if self == TelinkBoard.TL3238X_RETENTION:
