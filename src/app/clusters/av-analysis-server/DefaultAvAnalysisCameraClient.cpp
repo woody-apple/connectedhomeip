@@ -190,7 +190,14 @@ void DefaultAvAnalysisCameraClient::StartCapabilitiesRead()
 void DefaultAvAnalysisCameraClient::OnAttributeData(const ConcreteDataAttributePath & aPath, TLV::TLVReader * apData,
                                                     const StatusIB & aStatus)
 {
-    VerifyOrReturn(aStatus.IsSuccess() && apData != nullptr);
+    if (!aStatus.IsSuccess() || apData == nullptr)
+    {
+        if (mRequest.GetPhase() == Request::Phase::kDiscoveringEndpoint)
+        {
+            mRequest.SetDiscoveryError(aStatus.IsSuccess() ? CHIP_ERROR_INCORRECT_STATE : aStatus.ToChipError());
+        }
+        return;
+    }
 
     switch (mRequest.GetPhase())
     {
@@ -212,7 +219,12 @@ void DefaultAvAnalysisCameraClient::HandleServerListReport(const ConcreteDataAtt
     VerifyOrReturn(mRequest.Profile().avsmEndpoint == kInvalidEndpointId);
 
     DataModel::DecodableList<ClusterId> serverList;
-    VerifyOrReturn(DataModel::Decode(aData, serverList) == CHIP_NO_ERROR);
+    CHIP_ERROR err = DataModel::Decode(aData, serverList);
+    if (err != CHIP_NO_ERROR)
+    {
+        mRequest.SetDiscoveryError(err);
+        return;
+    }
 
     auto iter = serverList.begin();
     while (iter.Next())
@@ -222,6 +234,12 @@ void DefaultAvAnalysisCameraClient::HandleServerListReport(const ConcreteDataAtt
             mRequest.Profile().avsmEndpoint = aPath.mEndpointId;
             return;
         }
+    }
+
+    err = iter.GetStatus();
+    if (err != CHIP_NO_ERROR)
+    {
+        mRequest.SetDiscoveryError(err);
     }
 }
 
@@ -339,7 +357,8 @@ void DefaultAvAnalysisCameraClient::CompleteEndpointDiscovery()
         // Without a CameraAVStreamManagement endpoint there is nothing to send commands to
         ChipLogError(Zcl, "AvAnalysisCameraClient: no CameraAVStreamManagement endpoint on the camera (%" CHIP_ERROR_FORMAT ")",
                      mRequest.DiscoveryError().Format());
-        FinishRequest(Status::Failure, mRequest.VideoStreamId());
+        const Status status = (mRequest.DiscoveryError() == CHIP_NO_ERROR) ? Status::NotFound : Status::Failure;
+        FinishRequest(status, mRequest.VideoStreamId());
         return;
     }
 
@@ -459,7 +478,7 @@ CHIP_ERROR DefaultAvAnalysisCameraClient::SendPendingCommand()
     // must not be replaced while a previous one's callbacks can still fire.
     VerifyOrReturnError(!mCommandSender, CHIP_ERROR_INCORRECT_STATE);
 
-    mCommandSender = Platform::MakeUnique<CommandSender>(this, &mRequest.ExchangeManager());
+    mCommandSender = Platform::MakeUnique<CommandSender>(this, &mRequest.ExchangeManager(), mRequest.Session().Value());
     VerifyOrReturnError(mCommandSender != nullptr, CHIP_ERROR_NO_MEMORY);
 
     // Recorded before sending: a send can dispatch the interaction's completion synchronously, and
